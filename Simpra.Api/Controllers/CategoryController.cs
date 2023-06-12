@@ -50,7 +50,7 @@ namespace Simpra.Api.Controllers
 
             if (categories == null)
             {
-                return CreateActionResult(CustomResponse<List<CategoryResponse>>.Fail(400, "Bu id'ye sahip ürün bulunmamaktadır."));
+                return CreateActionResult(CustomResponse<CategoryResponse>.Fail(400, "Bu id'ye sahip ürün bulunmamaktadır."));
             }
 
             var categoriesResponse = _mapper.Map<CategoryResponse>(categories);
@@ -58,19 +58,21 @@ namespace Simpra.Api.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Save(CategoryRequest categoryRequest)
+        public async Task<IActionResult> Save(CategoryCreateRequest categoryCreateRequest)
         {
-            var category = await _service.AddAsync(_mapper.Map<Category>(categoryRequest));
-            var categoryRequests = _mapper.Map<List<CategoryRequest>>(category);
-            return CreateActionResult(CustomResponse<List<CategoryRequest>>.Success(201, categoryRequests));
+            var category = await _service.AddAsync(_mapper.Map<Category>(categoryCreateRequest));
+            var categoryResponse = _mapper.Map<CategoryResponse>(category);
+            return CreateActionResult(CustomResponse<CategoryResponse>.Success(201, categoryResponse));
         }
-        [HttpPut]
-        public async Task<IActionResult> Update(CategoryResponse categoryResponse)
-        {
-            await _service.UpdateAsync(_mapper.Map<Category>(categoryResponse));
 
-            return CreateActionResult(CustomResponse<List<NoContent>>.Success(204));
+        [HttpPut]
+        public async Task<IActionResult> Update(CategoryUpdateRequest categoryUpdateRequest)
+        {
+            await _service.UpdateAsync(_mapper.Map<Category>(categoryUpdateRequest));
+
+            return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {

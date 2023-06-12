@@ -18,14 +18,13 @@ namespace Simpra.Api.Controllers
         private readonly IService<Product> _service;
         private readonly IProductService _productService;
 
-
         public ProductController(IMapper mapper, IService<Product> service, IProductService productService)
         {
             _service = service;
             _mapper = mapper;
             _productService = productService;
-
         }
+
         [HttpGet]
         public async Task<IActionResult> All()
         {
@@ -50,19 +49,19 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(ProductRequest productRequest)
+        public async Task<IActionResult> Save(ProductCreateRequest productCreateRequest)
         {
-            var product = await _service.AddAsync(_mapper.Map<Product>(productRequest));
-            var productRequests = _mapper.Map<List<ProductRequest>>(product);
-            return CreateActionResult(CustomResponse<List<ProductRequest>>.Success(201, productRequests));
+            var product = await _service.AddAsync(_mapper.Map<Product>(productCreateRequest));
+            var productResponse = _mapper.Map<ProductResponse>(product);
+            return CreateActionResult(CustomResponse<ProductResponse>.Success(201, productResponse));
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ProductResponse productResponse)
+        public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
-            await _service.UpdateAsync(_mapper.Map<Product>(productResponse));
+            await _service.UpdateAsync(_mapper.Map<Product>(productUpdateRequest));
 
-            return CreateActionResult(CustomResponse<List<NoContent>>.Success(204));
+            return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 
         [HttpDelete("{id}")]

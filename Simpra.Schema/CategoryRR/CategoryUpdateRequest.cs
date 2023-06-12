@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace Simpra.Schema.CategoryRR
 {
-    public class CategoryRequest:BaseRequest
+    public class CategoryUpdateRequest:BaseRequest
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
         public string Tag { get; set; }
-
-
     }
 }

@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Simpra.Schema.ProductRR
 {
-    public class ProductRequest : BaseRequest
+    public class ProductUpdateRequest : BaseRequest
     {
         public int Id { get; set; }
+        public int CategoryId { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public decimal Price { get; set; }

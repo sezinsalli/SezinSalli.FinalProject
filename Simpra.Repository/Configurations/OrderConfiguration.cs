@@ -9,20 +9,21 @@ using System.Threading.Tasks;
 
 namespace Simpra.Repository.Configurations
 {
-    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    internal class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public void Configure(EntityTypeBuilder<Order> builder)
         {
+
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-            
-
-            builder.Property(x => x.Name).IsRequired(true).HasMaxLength(30);
-            builder.Property(x => x.Url).IsRequired(true);
-            builder.Property(x => x.Tag).IsRequired(true);
 
             
+            builder.Property(x=>x.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.IsActive).IsRequired();
+
+            builder.HasOne(x => x.Coupon).WithOne(x => x.Order).HasForeignKey<Order>(x => x.CouponCode);
+
+
         }
     }
-
 }

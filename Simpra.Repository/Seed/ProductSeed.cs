@@ -23,10 +23,11 @@ namespace Simpra.Repository.Seed
                     Price = 9.99m,
                     Property = "Property 1",
                     Definition = "Definition 1",
-                    isActive = true,
+                    IsActive = true,
                     EarningPercentage = 0.5,
-                    MaxPuanAmount = 100.0
-                    
+                    MaxPuanAmount = 100.0,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = "Sezin"
                 }
             );
         }

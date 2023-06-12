@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.Extensions.Logging;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
@@ -15,10 +16,10 @@ namespace Simpra.Service.Service.Concrete
         private readonly IGenericRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitofWork)
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
-            _unitOfWork = unitofWork;
+            _unitOfWork = unitOfWork;
         }
         public async Task<T> AddAsync(T entity)
         {

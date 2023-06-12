@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
@@ -18,10 +19,12 @@ namespace Simpra.Service.Service.Concrete
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+
         public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitofWork, ICategoryRepository categoryRepository, IMapper mapper) : base(repository, unitofWork)
         {
             _mapper = mapper;
             _categoryRepository = categoryRepository;
+
         }
 
        

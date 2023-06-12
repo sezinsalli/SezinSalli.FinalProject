@@ -15,11 +15,14 @@ using Simpra.Service.FluentValidation;
 using Simpra.Service.Service.Abstract;
 using Simpra.Service.Service.Concrete;
 using System.Reflection;
-
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CategoryRequestValidator>());
+
+
+builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CategoryUpdateRequestValidator>());
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -58,8 +61,8 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
 
 
-
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -68,11 +71,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseCustomException();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

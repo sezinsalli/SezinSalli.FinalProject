@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace Simpra.Core.Entity
 {
-    public class BaseEntity
+    public class Coupon
     {
-        public int Id { get; set; }
+        public string CouponCode { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? CreatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
+        public Order Order { get; set; }
 
     }
 }

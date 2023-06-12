@@ -1,5 +1,4 @@
 ﻿using Simpra.Schema.Base;
-using Simpra.Schema.CategoryRR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Simpra.Schema.ProductRR
 {
-    public class ProductResponse : BaseResponse
+    public class ProductCreateRequest:BaseRequest
     {
-        // Product yanıt modeli
         public int CategoryId { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
@@ -20,6 +18,5 @@ namespace Simpra.Schema.ProductRR
         public bool IsActive { get; set; }
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }
-       
     }
 }
