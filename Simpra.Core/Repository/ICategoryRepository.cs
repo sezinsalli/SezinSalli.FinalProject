@@ -9,6 +9,6 @@ namespace Simpra.Core.Repository
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {
-        Task<List<Category>> GetProductsByCategoryId(int categoryId);
+        Task<Category> GetSingleCategoryByIdwithProductAsync(int categoryId);
     }
 }

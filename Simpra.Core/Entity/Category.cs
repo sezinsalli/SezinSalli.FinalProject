@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Simpra.Core.Entity
 {
-    [Table("Category", Schema = "dbo")]
+    
     public class Category : BaseEntity
     {
 
@@ -15,7 +15,8 @@ namespace Simpra.Core.Entity
         public string Name { get; set; }
         public string url { get; set; }
         public string tag { get; set; }
-        public ICollection<ProductCategory> ProductCategories { get; set; }
+
+        public ICollection<Product> Products { get; set; }
 
     }
 }

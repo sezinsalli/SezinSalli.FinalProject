@@ -31,7 +31,7 @@ namespace Simpra.Api.Controllers
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetSingleCategoryByIdwithProducts(int categoryId)
         {
-           return CreateActionResult( await _categoryService.GetProductsByCategoryId(categoryId));
+            return CreateActionResult(await _categoryService.GetSingleCategoryByIdwithProductAsync(categoryId));
         }
 
         [HttpGet]

@@ -23,18 +23,21 @@ namespace Simpra.Service.Service.Concrete
             _mapper = mapper;
             _categoryRepository = categoryRepository;
         }
-        public async Task<CustomResponse<List<ProductwithCategoryResponse>>> GetProductsByCategoryId(int categoryId)
+
+       
+
+        public async Task<CustomResponse<CategorywithProductResponse>> GetSingleCategoryByIdwithProductAsync(int categoryId)
         {
-            var category = await _categoryRepository.GetProductsByCategoryId(categoryId);
-
-            var categoryDto = _mapper.Map<List<ProductwithCategoryResponse>>(category);
-
-            return CustomResponse<List<ProductwithCategoryResponse>>.Success(200, categoryDto);
+            var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
+            var categoryDto = _mapper.Map<CategorywithProductResponse>(category);
+            return CustomResponse<CategorywithProductResponse>.Success(200, categoryDto);
         }
         public async Task<bool> HasProducts(int categoryId)
         {
-            var products = await _categoryRepository.GetProductsByCategoryId(categoryId);
-            return products.Any();
+            var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
+            return category.Products.Any();
         }
+
+       
     }
 }

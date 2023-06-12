@@ -5,16 +5,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simpra.Repository.Migrations
 {
-    public partial class mig2 : Migration
+    public partial class mig1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "dbo");
-
             migrationBuilder.CreateTable(
-                name: "Category",
-                schema: "dbo",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -29,12 +25,11 @@ namespace Simpra.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Product",
-                schema: "dbo",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -47,6 +42,7 @@ namespace Simpra.Repository.Migrations
                     isActive = table.Column<bool>(type: "bit", nullable: false),
                     EarningPercentage = table.Column<double>(type: "float", nullable: false),
                     MaxPuanAmount = table.Column<double>(type: "float", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -54,39 +50,17 @@ namespace Simpra.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Product", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductCategory",
-                schema: "dbo",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategory", x => new { x.ProductId, x.CategoryId });
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductCategory_Category_CategoryId",
+                        name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalSchema: "dbo",
-                        principalTable: "Category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductCategory_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalSchema: "dbo",
-                        principalTable: "Product",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "Category",
+                table: "Categories",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "UpdatedAt", "UpdatedBy", "tag", "url" },
                 values: new object[,]
                 {
@@ -97,43 +71,23 @@ namespace Simpra.Repository.Migrations
                 });
 
             migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "Product",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "MaxPuanAmount", "Name", "Price", "Property", "Stock", "UpdatedAt", "UpdatedBy", "isActive" },
-                values: new object[] { 1, null, null, "Definition 1", 0.5, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null, true });
-
-            migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "ProductCategory",
-                columns: new[] { "CategoryId", "ProductId" },
-                values: new object[] { 1, 1 });
-
-            migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "ProductCategory",
-                columns: new[] { "CategoryId", "ProductId" },
-                values: new object[] { 2, 1 });
+                table: "Products",
+                columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "MaxPuanAmount", "Name", "Price", "Property", "Stock", "UpdatedAt", "UpdatedBy", "isActive" },
+                values: new object[] { 1, 1, null, null, "Definition 1", 0.5, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null, true });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductCategory_CategoryId",
-                schema: "dbo",
-                table: "ProductCategory",
+                name: "IX_Products_CategoryId",
+                table: "Products",
                 column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProductCategory",
-                schema: "dbo");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Category",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "Product",
-                schema: "dbo");
+                name: "Categories");
         }
     }
 }

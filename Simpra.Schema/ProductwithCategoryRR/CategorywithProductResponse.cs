@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Simpra.Schema.ProductwithCategoryRR
 {
-    public class ProductwithCategoryResponse : CategoryResponse
+    public class CategorywithProductResponse : CategoryResponse
     {
 
-       // public ProductResponse Product { get; set; }
+        public List<ProductResponse> Products { get; set; }
     }
 }

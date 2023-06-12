@@ -16,13 +16,9 @@ namespace Simpra.Repository.Repositories
 
         }
 
-        public async Task<List<Category>> GetProductsByCategoryId(int categoryId)
+        public async Task<Category> GetSingleCategoryByIdwithProductAsync(int categoryId)
         {
-            return await _appDbContext.Categories
-        .Where(c => c.Id == categoryId)
-        .Include(c => c.ProductCategories)
-        .ThenInclude(pc => pc.Product)
-        .ToListAsync();
+            return await _appDbContext.Categories.Include(x => x.Products).Where(x => x.Id == categoryId).SingleOrDefaultAsync();
         }
     }
 }

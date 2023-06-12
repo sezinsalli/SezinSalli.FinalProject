@@ -19,6 +19,6 @@ namespace Simpra.Schema.ProductRR
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }
 
-        public ICollection<int> CategoryIds { get; set; }
+        
     }
 }

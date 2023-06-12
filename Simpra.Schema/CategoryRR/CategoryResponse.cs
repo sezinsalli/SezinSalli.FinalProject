@@ -14,6 +14,5 @@ namespace Simpra.Schema.CategoryRR
         public string Name { get; set; }
         public string Url { get; set; }
         public string Tag { get; set; }
-        public ICollection<ProductResponse> Products { get; set; }
     }
 }

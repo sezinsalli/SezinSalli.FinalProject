@@ -12,7 +12,7 @@ namespace Simpra.Service.Service.Abstract
 {
     public interface ICategoryService : IService<Category>
     {
-        Task<CustomResponse<List<ProductwithCategoryResponse>>> GetProductsByCategoryId(int categoryId);
+        Task<CustomResponse<CategorywithProductResponse>> GetSingleCategoryByIdwithProductAsync(int categoryId);
         Task<bool> HasProducts(int categoryId);
     }
 }

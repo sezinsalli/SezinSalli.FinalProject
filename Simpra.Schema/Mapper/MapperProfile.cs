@@ -20,10 +20,11 @@ namespace Simpra.Schema.Mapper
             CreateMap<Category, CategoryResponse>();
             CreateMap<CategoryRequest, Category>();
 
-            CreateMap<Product, ProductwithCategoryResponse>().ReverseMap();
-            CreateMap<Category, ProductwithCategoryResponse>().ReverseMap();
-            
-            
+            //CreateMap<Product, ProductwithCategoryResponse>().ReverseMap();
+            CreateMap<Category, CategorywithProductResponse>().ReverseMap();
+           
+
+
 
 
             CreateMap<Product, ProductResponse>();

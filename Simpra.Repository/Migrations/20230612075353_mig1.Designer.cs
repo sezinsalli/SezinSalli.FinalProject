@@ -12,8 +12,8 @@ using Simpra.Repository;
 namespace Simpra.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230611143755_mig2")]
-    partial class mig2
+    [Migration("20230612075353_mig1")]
+    partial class mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,7 +59,7 @@ namespace Simpra.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category", "dbo");
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -99,6 +99,9 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -144,12 +147,15 @@ namespace Simpra.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product", "dbo");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            CategoryId = 1,
                             Definition = "Definition 1",
                             EarningPercentage = 0.5,
                             MaxPuanAmount = 100.0,
@@ -161,60 +167,20 @@ namespace Simpra.Repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Simpra.Core.Entity.ProductCategory", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ProductCategory", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 2
-                        });
-                });
-
-            modelBuilder.Entity("Simpra.Core.Entity.ProductCategory", b =>
+            modelBuilder.Entity("Simpra.Core.Entity.Product", b =>
                 {
                     b.HasOne("Simpra.Core.Entity.Category", "Category")
-                        .WithMany("ProductCategories")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Simpra.Core.Entity.Product", "Product")
-                        .WithMany("ProductCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Simpra.Core.Entity.Category", b =>
                 {
-                    b.Navigation("ProductCategories");
-                });
-
-            modelBuilder.Entity("Simpra.Core.Entity.Product", b =>
-                {
-                    b.Navigation("ProductCategories");
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
