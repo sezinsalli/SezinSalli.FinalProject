@@ -15,6 +15,9 @@ namespace Simpra.Repository.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.CouponCode).HasMaxLength(10);
+            builder.Property(x => x.DiscountAmount).IsRequired().HasColumnType("decimal(18,2)");
+
+            builder.HasOne(x => x.User).WithOne(x => x.Coupon).HasForeignKey<Coupon>(x => x.UserId);
         }
     }
 }

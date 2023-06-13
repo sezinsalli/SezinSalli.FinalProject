@@ -14,7 +14,7 @@ namespace Simpra.Service.Reponse
         [JsonIgnore]
         public int StatusCode { get; set; }
 
-        public List<String> Eroors { get; set; }
+        public List<String> Errors { get; set; }
 
         public static CustomResponse<T> Success(int statusCode, T data)
         {
@@ -28,12 +28,12 @@ namespace Simpra.Service.Reponse
 
         public static CustomResponse<T> Fail(int statusCode, List<string> errors)
         {
-            return new CustomResponse<T> { StatusCode = statusCode, Eroors = errors };
+            return new CustomResponse<T> { StatusCode = statusCode, Errors = errors };
         }
 
         public static CustomResponse<T> Fail(int statusCode, string error)
         {
-            return new CustomResponse<T> { StatusCode = statusCode, Eroors = new List<string> { error } };
+            return new CustomResponse<T> { StatusCode = statusCode, Errors = new List<string> { error } };
         }
     }
 }

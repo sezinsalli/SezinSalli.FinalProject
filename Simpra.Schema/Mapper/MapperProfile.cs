@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
 using Simpra.Core.Entity;
 using Simpra.Schema.CategoryRR;
+using Simpra.Schema.CouponRR;
 using Simpra.Schema.OrderRR;
 using Simpra.Schema.ProductRR;
 using Simpra.Schema.ProductwithCategoryRR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+
 
 namespace Simpra.Schema.Mapper
 {
@@ -33,6 +28,11 @@ namespace Simpra.Schema.Mapper
             CreateMap<OrderCreateRequest, Order>().ReverseMap();
             CreateMap<OrderDetailRequest, OrderDetail>().ReverseMap();
             CreateMap<OrderDetailResponse, OrderDetail>().ReverseMap();
+
+            CreateMap<Coupon, CouponResponse>().ReverseMap();
+            CreateMap<CouponUpdateRequest, Coupon>().ReverseMap();
+            CreateMap<CouponCreateRequest, Coupon>().ReverseMap();
+            
         }
     }
 }

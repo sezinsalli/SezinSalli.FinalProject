@@ -63,7 +63,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9780),
+                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7518),
                             CreatedBy = "Sezin",
                             Name = "E-book",
                             Tag = "test1",
@@ -72,7 +72,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9812),
+                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7528),
                             CreatedBy = "Sezin",
                             Name = "Videos",
                             Tag = "test1",
@@ -81,7 +81,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9814),
+                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7529),
                             CreatedBy = "Sezin",
                             Name = "Animation",
                             Tag = "test1",
@@ -90,7 +90,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9815),
+                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7530),
                             CreatedBy = "Sezin",
                             Name = "stok fotoğraflar",
                             Tag = "test1",
@@ -132,7 +132,13 @@ namespace Simpra.Repository.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Coupons");
                 });
@@ -258,7 +264,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 13, 10, 58, 53, 743, DateTimeKind.Local).AddTicks(336),
+                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7725),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
                             EarningPercentage = 0.5,
@@ -279,9 +285,6 @@ namespace Simpra.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CouponId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -300,10 +303,18 @@ namespace Simpra.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CouponId")
-                        .IsUnique();
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Simpra.Core.Entity.Coupon", b =>
+                {
+                    b.HasOne("Simpra.Core.Entity.User", "User")
+                        .WithOne("Coupon")
+                        .HasForeignKey("Simpra.Core.Entity.Coupon", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Simpra.Core.Entity.Order", b =>
@@ -347,26 +358,9 @@ namespace Simpra.Repository.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Simpra.Core.Entity.User", b =>
-                {
-                    b.HasOne("Simpra.Core.Entity.Coupon", "Coupon")
-                        .WithOne("User")
-                        .HasForeignKey("Simpra.Core.Entity.User", "CouponId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Coupon");
-                });
-
             modelBuilder.Entity("Simpra.Core.Entity.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Simpra.Core.Entity.Coupon", b =>
-                {
-                    b.Navigation("User")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Simpra.Core.Entity.Order", b =>
@@ -381,6 +375,9 @@ namespace Simpra.Repository.Migrations
 
             modelBuilder.Entity("Simpra.Core.Entity.User", b =>
                 {
+                    b.Navigation("Coupon")
+                        .IsRequired();
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

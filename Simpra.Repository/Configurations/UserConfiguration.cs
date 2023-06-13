@@ -16,7 +16,7 @@ namespace Simpra.Repository.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.HasOne(x => x.Coupon).WithOne(x => x.User).HasForeignKey<User>(x => x.CouponId);
+            
         }
     }
 }
