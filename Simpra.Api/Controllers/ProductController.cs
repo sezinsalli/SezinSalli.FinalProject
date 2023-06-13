@@ -60,7 +60,6 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
             await _service.UpdateAsync(_mapper.Map<Product>(productUpdateRequest));
-
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 
@@ -72,6 +71,15 @@ namespace Simpra.Api.Controllers
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 
+        [HttpPut("[action]")]
+        public async Task<IActionResult> IncreaseOrDecreaseStock(ProductStockUpdateRequest stockUpdateRequest)
+        {
+            var response = await _productService.ProductStockUpdateAsync(stockUpdateRequest);
 
+            var productResponse = _mapper.Map<ProductResponse>(response);
+
+            return CreateActionResult(CustomResponse<ProductResponse>.Success(200, productResponse));
+            
+        }
     }
 }

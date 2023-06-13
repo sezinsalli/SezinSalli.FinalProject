@@ -63,7 +63,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7518),
+                            CreatedAt = new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8541),
                             CreatedBy = "Sezin",
                             Name = "E-book",
                             Tag = "test1",
@@ -72,7 +72,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7528),
+                            CreatedAt = new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8553),
                             CreatedBy = "Sezin",
                             Name = "Videos",
                             Tag = "test1",
@@ -81,7 +81,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7529),
+                            CreatedAt = new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8554),
                             CreatedBy = "Sezin",
                             Name = "Animation",
                             Tag = "test1",
@@ -90,7 +90,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7530),
+                            CreatedAt = new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8555),
                             CreatedBy = "Sezin",
                             Name = "stok fotoğraflar",
                             Tag = "test1",
@@ -150,6 +150,9 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CouponCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -244,6 +247,9 @@ namespace Simpra.Repository.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -264,7 +270,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7725),
+                            CreatedAt = new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8742),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
                             EarningPercentage = 0.5,
@@ -273,6 +279,7 @@ namespace Simpra.Repository.Migrations
                             Name = "Product 1",
                             Price = 9.99m,
                             Property = "Property 1",
+                            Status = 0,
                             Stock = 10
                         });
                 });

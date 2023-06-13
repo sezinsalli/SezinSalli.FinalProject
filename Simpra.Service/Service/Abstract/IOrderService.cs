@@ -10,6 +10,6 @@ namespace Simpra.Service.Service.Abstract
 {
     public interface IOrderService : IService<Order>
     {
-
+        List<Order> GetOrdersWithOrderDetails();
     }
 }

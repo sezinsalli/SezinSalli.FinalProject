@@ -11,9 +11,8 @@ namespace Simpra.Core.Entity
         //Sipariş (sepet tutarı, kupon tutarı, kupon kodu, puan tutarı, vs.)                 
         public bool IsActive { get; set; }
         public decimal TotalPrice { get; set; }
-
+        public string? CouponCode { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
-        
         public User User { get; set; }
         public int UserId { get; set; }
 

@@ -16,9 +16,9 @@ namespace Simpra.Api.Controllers
     public class OrderController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Order> _service;
+        private readonly IOrderService _service;
 
-        public OrderController(IMapper mapper, IService<Order> service)
+        public OrderController(IMapper mapper, IOrderService service)
         {
             _service = service;
             _mapper = mapper;
@@ -28,9 +28,9 @@ namespace Simpra.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            //Include
-            var orders = await _service.GetAllAsync();
-            var orderResponse = _mapper.Map<List<OrderResponse>>(orders.ToList());
+            var orders = _service.GetOrdersWithOrderDetails();
+
+            var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
 
             return Ok(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
         }
@@ -47,14 +47,20 @@ namespace Simpra.Api.Controllers
             }
 
             var orderResponse = _mapper.Map<OrderResponse>(order);
+
             return CreateActionResult(CustomResponse<OrderResponse>.Success(200, orderResponse));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
         {
-            var order = await _service.AddAsync(_mapper.Map<Order>(orderCreateRequest));
-            var orderResponse = _mapper.Map<OrderResponse>(order);
+            var order = _mapper.Map<Order>(orderCreateRequest);
+            order.IsActive = true;
+
+            var orderResult = await _service.AddAsync(order);
+
+            var orderResponse = _mapper.Map<OrderResponse>(orderResult);
+
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }
 

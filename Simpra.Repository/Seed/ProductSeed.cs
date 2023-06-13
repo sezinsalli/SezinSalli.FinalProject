@@ -24,6 +24,7 @@ namespace Simpra.Repository.Seed
                     Property = "Property 1",
                     Definition = "Definition 1",
                     IsActive = true,
+                    Status=0,
                     EarningPercentage = 0.5,
                     MaxPuanAmount = 100.0,
                     CreatedAt = DateTime.Now,

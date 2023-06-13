@@ -53,6 +53,7 @@ namespace Simpra.Repository.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Property = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Definition = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -111,6 +112,7 @@ namespace Simpra.Repository.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CouponCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -159,16 +161,16 @@ namespace Simpra.Repository.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7518), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
-                    { 2, new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7528), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
-                    { 3, new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7529), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
-                    { 4, new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7530), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
+                    { 1, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8541), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
+                    { 2, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8553), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
+                    { 3, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8554), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
+                    { 4, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8555), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Stock", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, 1, new DateTime(2023, 6, 13, 12, 58, 49, 871, DateTimeKind.Local).AddTicks(7725), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null });
+                columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Status", "Stock", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { 1, 1, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8742), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 0, 10, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Coupons_UserId",

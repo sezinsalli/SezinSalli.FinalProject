@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
+using Simpra.Repository.Repositories;
+using Simpra.Schema.OrderRR;
+using Simpra.Schema.ProductwithCategoryRR;
+using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
 using System;
 using System.Collections.Generic;
@@ -13,12 +18,18 @@ namespace Simpra.Service.Service.Concrete
 {
     public class OrderService : Service<Order>, IOrderService
     {
-        private readonly ICouponRepository _couponRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
-        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, ICouponRepository couponRepository, IMapper mapper) : base(repository, unitofWork)
+        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper) : base(repository, unitofWork)
         {
             _mapper = mapper;
-            _couponRepository = couponRepository;
+            _orderRepository = orderRepository;
+        }
+
+        public List<Order> GetOrdersWithOrderDetails()
+        {
+            return _orderRepository.GetOrdersWithOrderDetails();
+
         }
 
     }

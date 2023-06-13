@@ -22,6 +22,9 @@ namespace Simpra.Schema.Mapper
             CreateMap<Product, ProductResponse>();
             CreateMap<ProductUpdateRequest, Product>().ReverseMap();
             CreateMap<ProductCreateRequest, Product>().ReverseMap();
+            CreateMap<ProductStockUpdateRequest, Product>().ReverseMap();
+            CreateMap<ProductStockUpdateResponse, Product>().ReverseMap();
+
 
             CreateMap<Order, OrderResponse>().ReverseMap();
             CreateMap<OrderUpdateRequest, Order>().ReverseMap();

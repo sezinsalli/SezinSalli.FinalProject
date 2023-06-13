@@ -1,5 +1,6 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Core.Service;
+using Simpra.Schema.ProductRR;
 using Simpra.Schema.ProductwithCategoryRR;
 using Simpra.Service.Reponse;
 using System;
@@ -12,6 +13,6 @@ namespace Simpra.Service.Service.Abstract
 {
     public interface IProductService:IService<Product>
     {
-        
+        Task<Product> ProductStockUpdateAsync(ProductStockUpdateRequest stockUpdateRequest);
     }
 }

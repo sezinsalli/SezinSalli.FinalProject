@@ -37,6 +37,7 @@ namespace Simpra.Api.Controllers
             return Ok(CustomResponse<List<CouponResponse>>.Success(200, couponResponse));
         }
 
+        // TODO: mapleme işi kontrollerda yapılacak
         [HttpPost]
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
