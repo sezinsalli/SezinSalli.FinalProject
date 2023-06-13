@@ -9,21 +9,14 @@ using System.Threading.Tasks;
 
 namespace Simpra.Repository.Configurations
 {
-    internal class OrderConfiguration : IEntityTypeConfiguration<Order>
+    internal class UserConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            
-            builder.Property(x=>x.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
-            builder.Property(x => x.IsActive).IsRequired();
-
-
-            builder.HasOne(x => x.User).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
-
+            builder.HasOne(x => x.Coupon).WithOne(x => x.User).HasForeignKey<User>(x => x.CouponId);
         }
     }
 }

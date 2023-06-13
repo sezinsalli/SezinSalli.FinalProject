@@ -22,6 +22,7 @@ namespace Simpra.Repository
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         //CreatedDate ve UpdatedDate bilgilerini client'dan bağımsız otomatik olarak yapabilmek için SaveChange metodunu burada eziyoruz. Ef Core Entity Database'e Save edilene kadar Tracking yani takip ediyor. Biz burada Tracking edilen entity'i SaveChange ile database'e kaydetmeden önce araya girerek CreatedDate ya da UpdatedDate bilgilerini gireceğiz. (SaveChangeAsync ve SaveChange için yaptık)

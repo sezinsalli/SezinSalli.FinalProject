@@ -18,8 +18,10 @@ namespace Simpra.Core.Entity
         public bool IsActive { get; set; }
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }
+
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
         public ICollection<OrderDetail> OrderDetails { get; set; }
 
     }

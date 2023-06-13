@@ -13,12 +13,8 @@ namespace Simpra.Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<Coupon> builder)
         {
-            builder.HasKey(x => x.CouponCode);
+            builder.HasKey(x => x.Id);
             builder.Property(x => x.CouponCode).HasMaxLength(10);
-
-
-
-
         }
     }
 }

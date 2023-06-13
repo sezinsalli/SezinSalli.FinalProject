@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simpra.Repository.Migrations
 {
-    public partial class migV01 : Migration
+    public partial class v01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,16 +32,20 @@ namespace Simpra.Repository.Migrations
                 name: "Coupons",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CouponCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Coupons", x => x.CouponCode);
+                    table.PrimaryKey("PK_Coupons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,14 +80,38 @@ namespace Simpra.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CouponId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Coupons_CouponId",
+                        column: x => x.CouponId,
+                        principalTable: "Coupons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CouponCode = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -93,10 +121,10 @@ namespace Simpra.Repository.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Coupons_CouponCode",
-                        column: x => x.CouponCode,
-                        principalTable: "Coupons",
-                        principalColumn: "CouponCode",
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -131,16 +159,16 @@ namespace Simpra.Repository.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 6, 12, 22, 0, 47, 978, DateTimeKind.Local).AddTicks(2127), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
-                    { 2, new DateTime(2023, 6, 12, 22, 0, 47, 978, DateTimeKind.Local).AddTicks(2137), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
-                    { 3, new DateTime(2023, 6, 12, 22, 0, 47, 978, DateTimeKind.Local).AddTicks(2139), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
-                    { 4, new DateTime(2023, 6, 12, 22, 0, 47, 978, DateTimeKind.Local).AddTicks(2140), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
+                    { 1, new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9780), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
+                    { 2, new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9812), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
+                    { 3, new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9814), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
+                    { 4, new DateTime(2023, 6, 13, 10, 58, 53, 742, DateTimeKind.Local).AddTicks(9815), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Stock", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, 1, new DateTime(2023, 6, 12, 22, 0, 47, 978, DateTimeKind.Local).AddTicks(2532), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null });
+                values: new object[] { 1, 1, new DateTime(2023, 6, 13, 10, 58, 53, 743, DateTimeKind.Local).AddTicks(336), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
@@ -148,15 +176,20 @@ namespace Simpra.Repository.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CouponCode",
+                name: "IX_Orders_UserId",
                 table: "Orders",
-                column: "CouponCode",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_CouponId",
+                table: "Users",
+                column: "CouponId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -171,10 +204,13 @@ namespace Simpra.Repository.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Coupons");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Coupons");
         }
     }
 }
