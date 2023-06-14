@@ -14,5 +14,6 @@ namespace Simpra.Service.Service.Abstract
         Task<Order> CreateOrderAsync(Order order);
         void CheckDigitalWalletBalance(ref User user, ref Order order);
         void CheckCouponUsing(ref Coupon coupon, ref Order order);
+        decimal EarnPoints(Order order, User user);
     }
 }

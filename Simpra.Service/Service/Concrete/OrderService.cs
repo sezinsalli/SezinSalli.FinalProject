@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LinqKit;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
@@ -23,15 +24,17 @@ namespace Simpra.Service.Service.Concrete
         private readonly IOrderRepository _orderRepository;
         private readonly IGenericRepository<User> _userRepository;
         private readonly ICouponRepository _couponRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper,IGenericRepository<User> userRepository, ICouponRepository couponRepository) : base(repository, unitofWork)
+        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper,IGenericRepository<User> userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(repository, unitofWork)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _unitOfWork = unitofWork;
             _userRepository = userRepository;
             _couponRepository = couponRepository;
+            _productRepository = productRepository;
         }
 
         public List<Order> GetOrdersWithOrderDetails()
@@ -72,15 +75,18 @@ namespace Simpra.Service.Service.Concrete
                 order.CouponCode = "No Coupon";
             }
 
-            // Digital Wallet Using
+            // Digital Wallet Kullanımı
             CheckDigitalWalletBalance(ref user, ref order);
 
-            // CheckCreditCartUsing
             // Kredi Kartı Kullanımı
             if (order.BillingAmount > 0)
             {
 
             }
+
+            // Puan Kazanma
+            var earnedPoints = EarnPoints(order, user);
+            user.DigitalWalletBalance = user.DigitalWalletBalance + earnedPoints;
 
             order.IsActive = true;
             _userRepository.Update(user);
@@ -145,6 +151,39 @@ namespace Simpra.Service.Service.Concrete
                 _couponRepository.Update(coupon);
                 order.BillingAmount = 0;
             }
+        }
+
+        public decimal EarnPoints (Order order,User user)
+        {
+            double earnedPoint = 0;
+
+            foreach (var od in order.OrderDetails)
+            {
+                //var product= _productRepository.GetByIdAsync(od.ProductId).Result;
+
+                var product=new Product { Id=1,CategoryId=1,IsActive=true,Price=100,MaxPuanAmount=10,EarningPercentage=0.12};
+
+                if (product == null)
+                {
+                    throw new NotFoundException($"Product with ProductId ({od.ProductId}) didn't find in the database.");
+                }
+
+                if (product.MaxPuanAmount<=(Convert.ToDouble(product.Price)* product.EarningPercentage))
+                {
+                    earnedPoint = earnedPoint + (product.MaxPuanAmount * od.Quantity);
+                }
+                else
+                {
+                    earnedPoint = earnedPoint + (Convert.ToDouble(product.Price) * product.EarningPercentage);
+                }
+
+                if ((order.TotalAmount-order.BillingAmount)>0)
+                {
+                    earnedPoint=earnedPoint*(Convert.ToDouble(order.BillingAmount)/ Convert.ToDouble(order.TotalAmount));
+                }
+            }
+
+            return user.DigitalWalletBalance = user.DigitalWalletBalance + Convert.ToDecimal(earnedPoint);
         }
     }
 

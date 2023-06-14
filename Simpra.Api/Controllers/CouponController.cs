@@ -38,6 +38,7 @@ namespace Simpra.Api.Controllers
         }
 
         // TODO: mapleme işi kontrollerda yapılacak
+        // TODO: bir userın birden fazla koupon kodu olabilir mi?
         [HttpPost]
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
