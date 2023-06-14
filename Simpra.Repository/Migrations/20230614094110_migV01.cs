@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Simpra.Repository.Migrations
 {
-    public partial class v01 : Migration
+    public partial class migV01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,6 +35,10 @@ namespace Simpra.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DigitalWalletBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PointsBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -161,16 +165,16 @@ namespace Simpra.Repository.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8541), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
-                    { 2, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8553), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
-                    { 3, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8554), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
-                    { 4, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8555), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
+                    { 1, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5672), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
+                    { 2, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5681), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
+                    { 3, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5682), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
+                    { 4, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5684), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Status", "Stock", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, 1, new DateTime(2023, 6, 13, 17, 42, 34, 209, DateTimeKind.Local).AddTicks(8742), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 0, 10, null, null });
+                values: new object[] { 1, 1, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5997), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 0, 10, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Coupons_UserId",

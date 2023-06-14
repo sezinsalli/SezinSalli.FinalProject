@@ -11,5 +11,8 @@ namespace Simpra.Service.Service.Abstract
     public interface IOrderService : IService<Order>
     {
         List<Order> GetOrdersWithOrderDetails();
+        Task<Order> CreateOrderAsync(Order order);
+        void CheckPointsBalanceAsync(ref User user, ref decimal totalPrice);
+        void CheckDigitalWalletBalance(ref User user, ref decimal totalPrice);
     }
 }

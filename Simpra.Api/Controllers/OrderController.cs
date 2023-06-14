@@ -51,13 +51,27 @@ namespace Simpra.Api.Controllers
             return CreateActionResult(CustomResponse<OrderResponse>.Success(200, orderResponse));
         }
 
+        /*
+         1. Coupon => 
+            a. Coupon aktif mi? Expiration Date kontrol => is active false => Coupon update
+            b. UserId ve coupon check edeceğiz
+
+         2. Points => 
+            a. 
+         
+         
+         
+         
+         
+         */
+
+
         [HttpPost]
         public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
         {
             var order = _mapper.Map<Order>(orderCreateRequest);
-            order.IsActive = true;
 
-            var orderResult = await _service.AddAsync(order);
+            var orderResult = await _service.CreateOrderAsync(order);
 
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
 
