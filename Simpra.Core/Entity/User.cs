@@ -8,7 +8,7 @@ namespace Simpra.Core.Entity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public decimal DigitalWalletBalance { get; set; }
-        public decimal PointsBalance { get; set; }
+        public string DigitalWalletInformation { get; set; }
         public Coupon Coupon { get; set; }
         public ICollection<Order> Orders { get; set; }
 

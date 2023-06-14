@@ -12,7 +12,7 @@ namespace Simpra.Service.Service.Abstract
     {
         List<Order> GetOrdersWithOrderDetails();
         Task<Order> CreateOrderAsync(Order order);
-        void CheckPointsBalanceAsync(ref User user, ref decimal totalPrice);
-        void CheckDigitalWalletBalance(ref User user, ref decimal totalPrice);
+        void CheckDigitalWalletBalance(ref User user, ref Order order);
+        void CheckCouponUsing(ref Coupon coupon, ref Order order);
     }
 }

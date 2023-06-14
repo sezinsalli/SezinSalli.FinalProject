@@ -38,7 +38,7 @@ namespace Simpra.Repository.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DigitalWalletBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PointsBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DigitalWalletInformation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -115,8 +115,11 @@ namespace Simpra.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CouponCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BillingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CouponAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    WalletAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CouponCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -165,16 +168,16 @@ namespace Simpra.Repository.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5672), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
-                    { 2, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5681), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
-                    { 3, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5682), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
-                    { 4, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5684), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
+                    { 1, new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3618), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
+                    { 2, new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3627), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
+                    { 3, new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3628), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
+                    { 4, new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3630), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Status", "Stock", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, 1, new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5997), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 0, 10, null, null });
+                values: new object[] { 1, 1, new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3812), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 0, 10, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Coupons_UserId",

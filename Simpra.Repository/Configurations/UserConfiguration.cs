@@ -19,10 +19,10 @@ namespace Simpra.Repository.Configurations
             builder.Property(x => x.UserName).IsRequired();
             builder.Property(x => x.FirstName).IsRequired();
             builder.Property(x => x.LastName).IsRequired();
+            builder.Property(x => x.DigitalWalletInformation).IsRequired();
 
             builder.Property(x => x.DigitalWalletBalance).IsRequired().HasColumnType("decimal(18,2)");
-            builder.Property(x => x.PointsBalance).IsRequired().HasColumnType("decimal(18,2)");
-
+            
         }
     }
 }

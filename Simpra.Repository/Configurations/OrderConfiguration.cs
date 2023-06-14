@@ -13,17 +13,16 @@ namespace Simpra.Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-
             
-            builder.Property(x=>x.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x=>x.TotalAmount).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.BillingAmount).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.CouponAmount).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.WalletAmount).IsRequired().HasColumnType("decimal(18,2)");
+
             builder.Property(x => x.IsActive).IsRequired();
-
-
             builder.HasOne(x => x.User).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
-
         }
     }
 }

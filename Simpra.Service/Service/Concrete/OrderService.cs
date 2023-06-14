@@ -22,25 +22,26 @@ namespace Simpra.Service.Service.Concrete
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IGenericRepository<User> _userRepository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper,IGenericRepository<User> userRepository) : base(repository, unitofWork)
+        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper,IGenericRepository<User> userRepository, ICouponRepository couponRepository) : base(repository, unitofWork)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
-            _unitOfWork= unitofWork;
+            _unitOfWork = unitofWork;
             _userRepository = userRepository;
+            _couponRepository = couponRepository;
         }
 
         public List<Order> GetOrdersWithOrderDetails()
         {
             return _orderRepository.GetOrdersWithOrderDetails();
-
         }
 
         public async Task<Order> CreateOrderAsync(Order order)
         {
-            // Get user
+            // Check user
             var user= await _userRepository.GetByIdAsync(order.UserId);
 
             if (user == null)
@@ -49,21 +50,34 @@ namespace Simpra.Service.Service.Concrete
             }
 
             // Calculate total price
-            order.TotalPrice=order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
+            order.TotalAmount =order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
+            order.BillingAmount = order.TotalAmount;
 
-            var totalPrice = order.TotalPrice;
+            // Coupon Using
+            if (order.CouponCode != "" && order.CouponCode != null)
+            {
+                // Get Coupon
+                var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
 
-            // CheckPointsBalance
-            CheckPointsBalanceAsync(ref user, ref totalPrice);
+                if (coupon == null)
+                {
+                    throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
+                }
 
-            // CheckDigitalWalletBalance
-            CheckDigitalWalletBalance(ref user, ref totalPrice);
+                // Check Coupon
+                CheckCouponUsing(ref coupon, ref order);
+            }
+            else
+            {
+                order.CouponCode = "No Coupon";
+            }
 
-            // CheckCouponUsing
+            // Digital Wallet Using
+            CheckDigitalWalletBalance(ref user, ref order);
 
             // CheckCreditCartUsing
             // Kredi Kartı Kullanımı
-            if (totalPrice > 0)
+            if (order.BillingAmount > 0)
             {
 
             }
@@ -75,45 +89,63 @@ namespace Simpra.Service.Service.Concrete
             return order;
         }
 
-
-        public void CheckPointsBalanceAsync(ref User user,ref decimal totalPrice)
+        public void CheckDigitalWalletBalance(ref User user,ref Order order)
         {
-            // Puan kullanımı
-            if (user.PointsBalance > 0 && totalPrice >= user.PointsBalance)
-            {
-                totalPrice = totalPrice - user.PointsBalance;
-                user.PointsBalance = 0;
-            }
-
-            if (user.PointsBalance > 0 && totalPrice < user.PointsBalance)
-            {
-                user.PointsBalance = user.PointsBalance - totalPrice;
-                totalPrice = 0;
-            }
-
-            return;
-        }
-
-        public void CheckDigitalWalletBalance(ref User user,ref decimal totalPrice)
-        {
-
             // Dijital Cüzdan Kullanımı
-            if (totalPrice > 0 && totalPrice >= user.DigitalWalletBalance)
+            if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
             {
-                totalPrice = totalPrice - user.DigitalWalletBalance;
+                order.BillingAmount = order.BillingAmount - user.DigitalWalletBalance;
+                order.WalletAmount = user.DigitalWalletBalance;
                 user.DigitalWalletBalance = 0;
             }
 
-            if (totalPrice > 0 && totalPrice < user.DigitalWalletBalance)
+            if (order.BillingAmount > 0 && order.BillingAmount < user.DigitalWalletBalance)
             {
-                user.DigitalWalletBalance = user.DigitalWalletBalance - totalPrice;
-                totalPrice = 0;
+                user.DigitalWalletBalance = user.DigitalWalletBalance - order.BillingAmount;
+                order.WalletAmount= order.BillingAmount;
+                order.BillingAmount = 0;
             }
         }
 
+        public void CheckCouponUsing (ref Coupon coupon,ref Order order)
+        {
+            if (coupon.UserId != order.UserId)
+            {
+                throw new ClientSideException($"Coupon and User Id doesn't match!");
+            }
+
+            if (coupon.IsActive !=true)
+            {
+                throw new ClientSideException($"Coupon isn't active!");
+            }
 
 
+            if (coupon.ExpirationDate < DateTime.Now)
+            {
+                coupon.IsActive = false;
+                _couponRepository.Update(coupon);
+                _unitOfWork.CompleteAsync();
+                throw new ClientSideException($"Coupon isn't active beacause it was expired!");
+            }
 
+            // Coupon Kullanımı
+            if (order.BillingAmount > 0 && order.BillingAmount >= coupon.DiscountAmount)
+            {
+                order.BillingAmount = order.BillingAmount - coupon.DiscountAmount;
+                order.CouponAmount = coupon.DiscountAmount;
+                coupon.IsActive = false;
+                _couponRepository.Update(coupon);
+                _unitOfWork.CompleteAsync();
+            }
+
+            if (order.BillingAmount > 0 && order.BillingAmount < coupon.DiscountAmount)
+            {
+                order.CouponAmount = order.BillingAmount;
+                coupon.IsActive = false;
+                _couponRepository.Update(coupon);
+                order.BillingAmount = 0;
+            }
+        }
     }
 
 }

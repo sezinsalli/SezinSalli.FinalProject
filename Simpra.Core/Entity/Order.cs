@@ -7,18 +7,15 @@ using System.Threading.Tasks;
 namespace Simpra.Core.Entity
 {
     public class Order : BaseEntity
-    {
-        //Sipariş (sepet tutarı, kupon tutarı, kupon kodu, puan tutarı, vs.)                 
+    {               
         public bool IsActive { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string? CouponCode { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal BillingAmount { get; set; }
+        public decimal CouponAmount { get; set; }
+        public decimal WalletAmount { get; set; }
+        public string CouponCode { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
-
-        //public decimal PointAmount { get; set; }
-        //order ıtemlarla donerek total prıce'ı olusturacagım.
-        //public decimal GetTotalPrice => _orderItems.Sum(x => x.Price);
-        //public decimal DiscountAmount { get; set; }
     }
 }

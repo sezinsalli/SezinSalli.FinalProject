@@ -63,7 +63,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5672),
+                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3618),
                             CreatedBy = "Sezin",
                             Name = "E-book",
                             Tag = "test1",
@@ -72,7 +72,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5681),
+                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3627),
                             CreatedBy = "Sezin",
                             Name = "Videos",
                             Tag = "test1",
@@ -81,7 +81,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5682),
+                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3628),
                             CreatedBy = "Sezin",
                             Name = "Animation",
                             Tag = "test1",
@@ -90,7 +90,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5684),
+                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3630),
                             CreatedBy = "Sezin",
                             Name = "stok fotoğraflar",
                             Tag = "test1",
@@ -151,7 +151,14 @@ namespace Simpra.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("BillingAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("CouponAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("CouponCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -163,7 +170,7 @@ namespace Simpra.Repository.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -174,6 +181,9 @@ namespace Simpra.Repository.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("WalletAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -270,7 +280,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 14, 12, 41, 10, 253, DateTimeKind.Local).AddTicks(5997),
+                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3812),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
                             EarningPercentage = 0.5,
@@ -301,6 +311,10 @@ namespace Simpra.Repository.Migrations
                     b.Property<decimal>("DigitalWalletBalance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("DigitalWalletInformation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -308,9 +322,6 @@ namespace Simpra.Repository.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("PointsBalance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

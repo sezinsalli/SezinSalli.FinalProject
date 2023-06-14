@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
 using Simpra.Repository.Repositories;
 using Simpra.Schema.CouponRR;
 using Simpra.Schema.ProductwithCategoryRR;
+using Simpra.Service.Exceptions;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
 using System;
