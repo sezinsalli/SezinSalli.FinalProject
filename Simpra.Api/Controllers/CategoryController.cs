@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
 using Simpra.Schema.CategoryRR;
 using Simpra.Schema.ProductwithCategoryRR;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 using Simpra.Service.Service.Abstract;
 
 

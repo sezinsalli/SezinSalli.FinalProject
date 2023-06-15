@@ -2,6 +2,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Simpra.Api.Extensions;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
 using Simpra.Repository;
@@ -14,10 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CategoryUpdateRequestValidator>());
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,6 +30,9 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+
+// Add Redis
+builder.Services.AddRedisExtension(builder.Configuration);
 
 
 //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

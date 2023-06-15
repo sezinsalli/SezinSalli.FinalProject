@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 
 namespace Simpra.Api.Controllers
 {

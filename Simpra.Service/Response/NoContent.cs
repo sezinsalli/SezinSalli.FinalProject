@@ -1,4 +1,4 @@
-﻿namespace Simpra.Service.Reponse
+﻿namespace Simpra.Service.Response
 {
     public class NoContent
     {

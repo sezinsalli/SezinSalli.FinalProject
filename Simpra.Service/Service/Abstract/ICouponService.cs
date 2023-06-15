@@ -1,6 +1,6 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Schema.CouponRR;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 
 namespace Simpra.Service.Service.Abstract
 {

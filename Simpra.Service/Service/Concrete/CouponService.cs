@@ -3,7 +3,7 @@ using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
 using Simpra.Schema.CouponRR;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Service.Service.Concrete

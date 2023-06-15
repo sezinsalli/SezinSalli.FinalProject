@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
 using Simpra.Schema.ProductRR;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Api.Controllers

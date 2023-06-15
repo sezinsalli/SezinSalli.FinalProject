@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Reponse;
+using Simpra.Service.Response;
 using System.Text.Json;
 
 namespace Simpra.Api.Middleware

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Simpra.Service.Reponse
+namespace Simpra.Service.Response
 {
     public class CustomResponse<T>
     {
