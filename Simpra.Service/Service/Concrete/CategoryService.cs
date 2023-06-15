@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.Repositories;
 using Simpra.Schema.ProductwithCategoryRR;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.Service.Concrete
 {
@@ -40,6 +33,6 @@ namespace Simpra.Service.Service.Concrete
             return category.Products.Any();
         }
 
-       
+
     }
 }

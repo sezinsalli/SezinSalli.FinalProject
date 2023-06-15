@@ -2,17 +2,9 @@
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.Repositories;
 using Simpra.Schema.ProductRR;
-using Simpra.Schema.ProductwithCategoryRR;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.Service.Concrete
 {
@@ -39,7 +31,7 @@ namespace Simpra.Service.Service.Concrete
                     throw new NotFoundException($"{stockUpdateRequest.Id} not found");
                 }
 
-                if (product.Status==Core.Entity.Enum.Status.OutOfStock)
+                if (product.Status == Core.Entity.Enum.Status.OutOfStock)
                 {
                     throw new NotFoundException($"{stockUpdateRequest.Id} - Ürün stokta bulunmamaktadır.");
                 }

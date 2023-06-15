@@ -9,7 +9,7 @@ using Simpra.Schema.ProductwithCategoryRR;
 
 namespace Simpra.Schema.Mapper
 {
-    public class MapperProfile:Profile
+    public class MapperProfile : Profile
     {
         public MapperProfile()
         {
@@ -35,7 +35,7 @@ namespace Simpra.Schema.Mapper
             CreateMap<Coupon, CouponResponse>().ReverseMap();
             CreateMap<CouponUpdateRequest, Coupon>().ReverseMap();
             CreateMap<CouponCreateRequest, Coupon>().ReverseMap();
-            
+
         }
     }
 }

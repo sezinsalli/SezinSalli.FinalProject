@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
-using Simpra.Schema.CategoryRR;
 using Simpra.Schema.CouponRR;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
-using Simpra.Service.Service.Concrete;
 
 namespace Simpra.Api.Controllers
 {

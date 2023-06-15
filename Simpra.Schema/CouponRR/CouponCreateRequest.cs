@@ -1,14 +1,8 @@
-﻿using Simpra.Core.Entity;
-using Simpra.Schema.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Simpra.Schema.Base;
 
 namespace Simpra.Schema.CouponRR
 {
-    public class CouponCreateRequest:BaseRequest
+    public class CouponCreateRequest : BaseRequest
     {
         public int UserId { get; set; }
         public decimal DiscountAmount { get; set; }

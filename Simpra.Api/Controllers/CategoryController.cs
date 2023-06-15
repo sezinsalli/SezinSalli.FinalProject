@@ -18,14 +18,14 @@ namespace Simpra.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IService<Category> _service;
         private readonly ICategoryService _categoryService;
-       
+
 
         public CategoryController(IMapper mapper, IService<Category> service, ICategoryService categoryService)
         {
             _service = service;
             _mapper = mapper;
             _categoryService = categoryService;
-            
+
         }
 
         [HttpGet("[action]/{categoryId}")]
@@ -56,7 +56,7 @@ namespace Simpra.Api.Controllers
             var categoriesResponse = _mapper.Map<CategoryResponse>(categories);
             return CreateActionResult(CustomResponse<CategoryResponse>.Success(200, categoriesResponse));
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Save(CategoryCreateRequest categoryCreateRequest)
         {
@@ -81,7 +81,7 @@ namespace Simpra.Api.Controllers
                 var category = await _service.GetByIdAsync(id);
                 if (category == null)
                 {
-                    throw new NotFoundException("Category not found"); 
+                    throw new NotFoundException("Category not found");
                 }
 
                 // Check if the category has any associated products
@@ -89,14 +89,14 @@ namespace Simpra.Api.Controllers
                 if (hasProducts)
                 {
                     var errorResponse = CustomResponse<string>.Fail(400, "The category cannot be deleted because it has associated products.");
-                    return BadRequest(errorResponse); 
+                    return BadRequest(errorResponse);
                 }
 
-                
+
                 await _service.RemoveAsync(category);
 
                 var successResponse = CustomResponse<string>.Success(204);
-                return NoContent(); 
+                return NoContent();
             }
             catch (NotFoundException ex)
             {

@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Simpra.Core.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Repository.Seed
 {
@@ -14,35 +9,39 @@ namespace Simpra.Repository.Seed
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasData(
-                new Category { 
-                    Id = 1, 
+                new Category
+                {
+                    Id = 1,
                     Name = "E-book",
-                    Url="www.test1.com",
-                    Tag="test1" ,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy="Sezin"
-                },
-                new Category { 
-                    Id = 2, 
-                    Name = "Videos", 
-                    Url = "www.test1.com", 
-                    Tag = "test1" ,
+                    Url = "www.test1.com",
+                    Tag = "test1",
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Sezin"
                 },
-                new Category { 
-                    Id = 3, 
+                new Category
+                {
+                    Id = 2,
+                    Name = "Videos",
+                    Url = "www.test1.com",
+                    Tag = "test1",
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = "Sezin"
+                },
+                new Category
+                {
+                    Id = 3,
                     Name = "Animation",
-                    Url = "www.test1.com", 
-                    Tag = "test1" ,
+                    Url = "www.test1.com",
+                    Tag = "test1",
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Sezin"
                 },
-                new Category { 
-                    Id = 4, 
-                    Name = "stok fotoğraflar", 
-                    Url = "www.test1.com", 
-                    Tag = "test1" ,
+                new Category
+                {
+                    Id = 4,
+                    Name = "stok fotoğraflar",
+                    Url = "www.test1.com",
+                    Tag = "test1",
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Sezin"
                 }

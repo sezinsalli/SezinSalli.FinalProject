@@ -2,9 +2,9 @@
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
+using Simpra.Repository;
 using Simpra.Repository.Repositories;
 using Simpra.Repository.UnitofWork;
-using Simpra.Repository;
 using Simpra.Service.Service.Concrete;
 using System.Reflection;
 using Module = Autofac.Module;

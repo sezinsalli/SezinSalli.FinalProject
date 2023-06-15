@@ -1,10 +1,4 @@
 ﻿using Simpra.Schema.Base;
-using Simpra.Schema.CategoryRR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Schema.ProductRR
 {
@@ -20,6 +14,6 @@ namespace Simpra.Schema.ProductRR
         public bool IsActive { get; set; }
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }
-       
+
     }
 }

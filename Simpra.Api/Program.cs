@@ -1,22 +1,13 @@
-using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
-using Simpra.Core.Repository;
-using Simpra.Core.Service;
-using Simpra.Core.UnitofWork;
 using Simpra.Repository;
-using Simpra.Repository.Repositories;
-using Simpra.Repository.UnitofWork;
 using Simpra.Schema.Mapper;
 using Simpra.Service.FluentValidation;
-using Simpra.Service.Service.Abstract;
-using Simpra.Service.Service.Concrete;
 using System.Reflection;
-using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,14 +24,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 
-builder.Services.AddDbContext<AppDbContext>(
-    x =>
+builder.Services.AddDbContext<AppDbContext>(x =>
+{
+    x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
+    {
+        option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
+    });
+});
 
-        x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
-        {
-            option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
-        }
-        ));
+
 
 //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

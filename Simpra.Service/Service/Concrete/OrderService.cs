@@ -1,21 +1,10 @@
 ﻿using AutoMapper;
-using LinqKit;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.Repositories;
-using Simpra.Schema.OrderRR;
-using Simpra.Schema.ProductwithCategoryRR;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.Service.Concrete
 {
@@ -27,7 +16,7 @@ namespace Simpra.Service.Service.Concrete
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper,IGenericRepository<User> userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(repository, unitofWork)
+        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper, IGenericRepository<User> userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(repository, unitofWork)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
@@ -45,7 +34,7 @@ namespace Simpra.Service.Service.Concrete
         public async Task<Order> CreateOrderAsync(Order order)
         {
             // Check user
-            var user= await _userRepository.GetByIdAsync(order.UserId);
+            var user = await _userRepository.GetByIdAsync(order.UserId);
 
             if (user == null)
             {
@@ -53,7 +42,7 @@ namespace Simpra.Service.Service.Concrete
             }
 
             // Calculate total price
-            order.TotalAmount =order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
+            order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
             order.BillingAmount = order.TotalAmount;
 
             // Coupon Using
@@ -95,7 +84,7 @@ namespace Simpra.Service.Service.Concrete
             return order;
         }
 
-        public void CheckDigitalWalletBalance(ref User user,ref Order order)
+        public void CheckDigitalWalletBalance(ref User user, ref Order order)
         {
             // Dijital Cüzdan Kullanımı
             if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
@@ -108,19 +97,19 @@ namespace Simpra.Service.Service.Concrete
             if (order.BillingAmount > 0 && order.BillingAmount < user.DigitalWalletBalance)
             {
                 user.DigitalWalletBalance = user.DigitalWalletBalance - order.BillingAmount;
-                order.WalletAmount= order.BillingAmount;
+                order.WalletAmount = order.BillingAmount;
                 order.BillingAmount = 0;
             }
         }
 
-        public void CheckCouponUsing (ref Coupon coupon,ref Order order)
+        public void CheckCouponUsing(ref Coupon coupon, ref Order order)
         {
             if (coupon.UserId != order.UserId)
             {
                 throw new ClientSideException($"Coupon and User Id doesn't match!");
             }
 
-            if (coupon.IsActive !=true)
+            if (coupon.IsActive != true)
             {
                 throw new ClientSideException($"Coupon isn't active!");
             }
@@ -153,7 +142,7 @@ namespace Simpra.Service.Service.Concrete
             }
         }
 
-        public decimal EarnPoints (Order order,User user)
+        public decimal EarnPoints(Order order, User user)
         {
             double earnedPoint = 0;
 
@@ -161,14 +150,14 @@ namespace Simpra.Service.Service.Concrete
             {
                 //var product= _productRepository.GetByIdAsync(od.ProductId).Result;
 
-                var product=new Product { Id=1,CategoryId=1,IsActive=true,Price=100,MaxPuanAmount=10,EarningPercentage=0.12};
+                var product = new Product { Id = 1, CategoryId = 1, IsActive = true, Price = 100, MaxPuanAmount = 10, EarningPercentage = 0.12 };
 
                 if (product == null)
                 {
                     throw new NotFoundException($"Product with ProductId ({od.ProductId}) didn't find in the database.");
                 }
 
-                if (product.MaxPuanAmount<=(Convert.ToDouble(product.Price)* product.EarningPercentage))
+                if (product.MaxPuanAmount <= (Convert.ToDouble(product.Price) * product.EarningPercentage))
                 {
                     earnedPoint = earnedPoint + (product.MaxPuanAmount * od.Quantity);
                 }
@@ -177,9 +166,9 @@ namespace Simpra.Service.Service.Concrete
                     earnedPoint = earnedPoint + (Convert.ToDouble(product.Price) * product.EarningPercentage);
                 }
 
-                if ((order.TotalAmount-order.BillingAmount)>0)
+                if ((order.TotalAmount - order.BillingAmount) > 0)
                 {
-                    earnedPoint=earnedPoint*(Convert.ToDouble(order.BillingAmount)/ Convert.ToDouble(order.TotalAmount));
+                    earnedPoint = earnedPoint * (Convert.ToDouble(order.BillingAmount) / Convert.ToDouble(order.TotalAmount));
                 }
             }
 

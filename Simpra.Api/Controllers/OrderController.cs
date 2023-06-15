@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
-using Simpra.Core.Service;
-using Simpra.Schema.CategoryRR;
 using Simpra.Schema.OrderRR;
-using Simpra.Service.Exceptions;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
 

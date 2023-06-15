@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Simpra.Core.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Repository.Seed
 {
@@ -24,7 +19,7 @@ namespace Simpra.Repository.Seed
                     Property = "Property 1",
                     Definition = "Definition 1",
                     IsActive = true,
-                    Status=0,
+                    Status = 0,
                     EarningPercentage = 0.5,
                     MaxPuanAmount = 100.0,
                     CreatedAt = DateTime.Now,
@@ -34,7 +29,7 @@ namespace Simpra.Repository.Seed
         }
     }
 
-    
+
 
 
 }

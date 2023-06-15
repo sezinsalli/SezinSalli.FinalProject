@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Simpra.Core.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Repository.Configurations
 {
@@ -23,7 +18,7 @@ namespace Simpra.Repository.Configurations
             builder.Property(x => x.Definition).IsRequired().HasMaxLength(100);
             builder.Property(x => x.IsActive).IsRequired();
             builder.Property(x => x.EarningPercentage).IsRequired();
-            builder.Property(x => x.MaxPuanAmount).IsRequired();         
+            builder.Property(x => x.MaxPuanAmount).IsRequired();
 
             builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId);
         }

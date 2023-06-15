@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.Extensions.Logging;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.UnitofWork;
 using Simpra.Service.Exceptions;
 using System.Linq.Expressions;
 

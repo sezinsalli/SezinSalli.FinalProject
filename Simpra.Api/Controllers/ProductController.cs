@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
-using Simpra.Schema.CategoryRR;
 using Simpra.Schema.ProductRR;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
@@ -79,7 +77,7 @@ namespace Simpra.Api.Controllers
             var productResponse = _mapper.Map<ProductResponse>(response);
 
             return CreateActionResult(CustomResponse<ProductResponse>.Success(200, productResponse));
-            
+
         }
     }
 }

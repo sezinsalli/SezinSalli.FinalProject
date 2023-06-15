@@ -1,19 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.Repositories;
 using Simpra.Schema.CouponRR;
-using Simpra.Schema.ProductwithCategoryRR;
-using Simpra.Service.Exceptions;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.Service.Concrete
 {
@@ -33,14 +24,14 @@ namespace Simpra.Service.Service.Concrete
             DateTime expirationDate = DateTime.Now.AddDays(couponCreateRequest.ExpirationDay);
             var coupon = new Coupon
             {
-                UserId=couponCreateRequest.UserId,
+                UserId = couponCreateRequest.UserId,
                 CouponCode = couponCode,
                 DiscountAmount = couponCreateRequest.DiscountAmount,
                 ExpirationDate = expirationDate,
                 IsActive = true,
             };
 
-            var couponResult=await _couponRepository.CreateCouponAsync(coupon);
+            var couponResult = await _couponRepository.CreateCouponAsync(coupon);
 
             var couponResponse = _mapper.Map<CouponResponse>(couponResult);
 

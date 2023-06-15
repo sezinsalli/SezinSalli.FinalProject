@@ -1,13 +1,8 @@
 ﻿using Simpra.Schema.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Schema.ProductRR
 {
-    public class ProductCreateRequest:BaseRequest
+    public class ProductCreateRequest : BaseRequest
     {
         public int CategoryId { get; set; }
         public string Name { get; set; }
