@@ -1,4 +1,5 @@
 ﻿using Simpra.Core.Entity;
+using Simpra.Schema.OrderRR;
 
 namespace Simpra.Service.Service.Abstract
 {
@@ -9,5 +10,6 @@ namespace Simpra.Service.Service.Abstract
         void CheckDigitalWalletBalance(ref User user, ref Order order);
         void CheckCouponUsing(ref Coupon coupon, ref Order order);
         decimal EarnPoints(Order order, User user);
+        Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest);
     }
 }

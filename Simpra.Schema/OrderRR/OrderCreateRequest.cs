@@ -4,6 +4,10 @@ namespace Simpra.Schema.OrderRR
 {
     public class OrderCreateRequest : BaseRequest
     {
+        public OrderCreateRequest()
+        {
+            OrderDetails = new List<OrderDetailRequest>();
+        }
         public string CouponCode { get; set; }
         public int UserId { get; set; }
         public decimal TotalPrice { get; set; }

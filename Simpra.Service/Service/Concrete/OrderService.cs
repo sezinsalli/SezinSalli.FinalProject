@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
+using Simpra.Schema.OrderRR;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Service.Abstract;
 
@@ -174,6 +175,62 @@ namespace Simpra.Service.Service.Concrete
 
             return user.DigitalWalletBalance = user.DigitalWalletBalance + Convert.ToDecimal(earnedPoint);
         }
+
+        public async Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest)
+        {
+            var order = _mapper.Map<Order>(orderRequest);
+
+            // Check user
+            var user = await _userRepository.GetByIdAsync(order.UserId);
+
+            if (user == null)
+            {
+                throw new NotFoundException($"Order with userId ({order.UserId}) didn't find in the database.");
+            }
+
+            // Calculate total price
+            order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
+            order.BillingAmount = order.TotalAmount;
+
+            // Coupon Using
+            if (order.CouponCode != "" && order.CouponCode != null)
+            {
+                // Get Coupon
+                var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
+
+                if (coupon == null)
+                {
+                    throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
+                }
+
+                // Check Coupon
+                CheckCouponUsing(ref coupon, ref order);
+            }
+            else
+            {
+                order.CouponCode = "No Coupon";
+            }
+
+            // Digital Wallet Kullanımı
+            CheckDigitalWalletBalance(ref user, ref order);
+
+            // Kredi Kartı Kullanımı
+            if (order.BillingAmount > 0)
+            {
+
+            }
+
+            // Puan Kazanma
+            var earnedPoints = EarnPoints(order, user);
+            user.DigitalWalletBalance = user.DigitalWalletBalance + earnedPoints;
+
+            order.IsActive = true;
+            _userRepository.Update(user);
+            await _orderRepository.AddAsync(order);
+            await _unitOfWork.CompleteAsync();
+            return order;
+        }
+
     }
 
 }

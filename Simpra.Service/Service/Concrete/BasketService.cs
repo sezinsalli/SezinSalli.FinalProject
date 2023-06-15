@@ -1,26 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
+using Simpra.Core.Entity.Enum;
+using Simpra.Core.Repository;
 using Simpra.Schema.Basket;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Service.Abstract;
 using System.Text.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Simpra.Core.Repository;
-using Simpra.Core.Entity;
-using Simpra.Core.Entity.Enum;
 
 namespace Simpra.Service.Service.Concrete
 {
-    public class BasketService:IBasketService
+    public class BasketService : IBasketService
     {
         private readonly RedisService _redisService;
         private readonly ILogger<BasketService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
-        public BasketService(RedisService redisService, ILogger<BasketService> logger,IUserRepository userRepository,IProductRepository productRepository)
+        public BasketService(RedisService redisService, ILogger<BasketService> logger, IUserRepository userRepository, IProductRepository productRepository)
         {
             _redisService = redisService ?? throw new ArgumentNullException(nameof(redisService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

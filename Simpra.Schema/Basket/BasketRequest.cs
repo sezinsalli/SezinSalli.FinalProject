@@ -8,7 +8,7 @@ namespace Simpra.Schema.Basket
         public List<BasketItemRequest> BasketItems { get; set; }
         public decimal TotalPrice
         {
-            get => BasketItems.Sum(x => x.Price * x.Quantity);
+            get => BasketItems.Sum(x => x.UnitPrice * x.Quantity);
         }
     }
 }

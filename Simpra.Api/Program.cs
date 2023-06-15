@@ -30,6 +30,8 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+// Add RabbitMQ and MassTransit
+builder.Services.AddRabbitMQExtension(builder.Configuration);
 
 // Add Redis
 builder.Services.AddRedisExtension(builder.Configuration);
