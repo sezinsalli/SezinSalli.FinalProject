@@ -1,8 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using Simpra.Core.Entity;
+using System.Linq.Expressions;
 
-namespace Simpra.Core.Service
+namespace Simpra.Service.Service.Abstract
 {
-    public interface IService<T> where T : class
+    public interface IService<T> where T : BaseEntity
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();

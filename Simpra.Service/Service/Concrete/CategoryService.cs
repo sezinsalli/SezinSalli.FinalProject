@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using Simpra.Core.Entity;
+﻿using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.UnitofWork;
-using Simpra.Schema.ProductwithCategoryRR;
-using Simpra.Service.Reponse;
+using Simpra.Service.Exceptions;
 using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Service.Service.Concrete
@@ -11,28 +9,76 @@ namespace Simpra.Service.Service.Concrete
     public class CategoryService : Service<Category>, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
+        private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitofWork, ICategoryRepository categoryRepository, IMapper mapper) : base(repository, unitofWork)
+        public CategoryService(IUnitOfWork unitofWork, ICategoryRepository categoryRepository, IProductRepository productRepository) : base(categoryRepository, unitofWork)
         {
-            _mapper = mapper;
             _categoryRepository = categoryRepository;
-
+            _unitOfWork = unitofWork;
+            _productRepository = productRepository;
         }
 
-        public async Task<CustomResponse<CategorywithProductResponse>> GetSingleCategoryByIdwithProductAsync(int categoryId)
+        public async Task<Category> GetSingleCategoryByIdWithProductsAsync(int categoryId)
         {
-            var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
-            var categoryDto = _mapper.Map<CategorywithProductResponse>(category);
-            return CustomResponse<CategorywithProductResponse>.Success(200, categoryDto);
+            try
+            {
+                var categoryCheck = await _categoryRepository.AnyAsync(x => x.Id == categoryId);
+
+                if (!categoryCheck)
+                {
+                    throw new NotFoundException($"Category with ({categoryId}) not found!");
+                }
+
+                var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
+                return category;
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    throw new NotFoundException($"Category with ({categoryId}) not found!");
+                }
+
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
+            }
         }
 
-        public async Task<bool> HasProducts(int categoryId)
+        public async Task RemoveCategoryWithCheckProduct(int id)
         {
-            var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
-            return category.Products.Any();
+            try
+            {
+                var category = await _categoryRepository.GetByIdAsync(id);
+
+                if (category == null)
+                {
+                    throw new NotFoundException($"Category with ({id}) not found!");
+                }
+
+                var productCheck = await _productRepository.AnyAsync(x => x.CategoryId == id);
+
+                if (productCheck)
+                {
+                    throw new ClientSideException($"Category with ({id}) cannot delete! Firstly remove products with related this category!");
+                }
+
+                _categoryRepository.Remove(category);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    throw new NotFoundException($"Category cannot delete!Error message:{ex.Message}");
+                }
+
+                if (ex is ClientSideException)
+                {
+                    throw new ClientSideException($"Category cannot delete!Error message:{ex.Message}");
+                }
+
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
+            }
         }
-
-
     }
 }

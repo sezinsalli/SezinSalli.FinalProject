@@ -157,16 +157,16 @@ namespace Simpra.Service.Service.Concrete
                     throw new NotFoundException($"Product with ProductId ({od.ProductId}) didn't find in the database.");
                 }
 
-                if (product.MaxPuanAmount <= (Convert.ToDouble(product.Price) * product.EarningPercentage))
+                if (product.MaxPuanAmount <= Convert.ToDouble(product.Price) * product.EarningPercentage)
                 {
-                    earnedPoint = earnedPoint + (product.MaxPuanAmount * od.Quantity);
+                    earnedPoint = earnedPoint + product.MaxPuanAmount * od.Quantity;
                 }
                 else
                 {
-                    earnedPoint = earnedPoint + (Convert.ToDouble(product.Price) * product.EarningPercentage);
+                    earnedPoint = earnedPoint + Convert.ToDouble(product.Price) * product.EarningPercentage;
                 }
 
-                if ((order.TotalAmount - order.BillingAmount) > 0)
+                if (order.TotalAmount - order.BillingAmount > 0)
                 {
                     earnedPoint = earnedPoint * (Convert.ToDouble(order.BillingAmount) / Convert.ToDouble(order.TotalAmount));
                 }

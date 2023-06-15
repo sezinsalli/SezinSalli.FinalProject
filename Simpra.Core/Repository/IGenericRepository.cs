@@ -1,8 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using Simpra.Core.Entity;
+using System.Linq.Expressions;
 
 namespace Simpra.Core.Repository
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : BaseEntity
     {
         Task<T> GetByIdAsync(int id);
         IQueryable<T> Where(Expression<Func<T, bool>> expression);

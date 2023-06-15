@@ -13,7 +13,7 @@ namespace Simpra.Schema.Mapper
     {
         public MapperProfile()
         {
-            CreateMap<Category, CategorywithProductResponse>().ReverseMap();
+            CreateMap<Category, CategoryWithProductResponse>().ReverseMap();
 
             CreateMap<Category, CategoryResponse>().ReverseMap();
             CreateMap<Category, CategoryCreateRequest>().ReverseMap();

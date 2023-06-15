@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Simpra.Core.Entity;
 using Simpra.Core.Repository;
-using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Service.Exceptions;
+using Simpra.Service.Service.Abstract;
 using System.Linq.Expressions;
 
 
 namespace Simpra.Service.Service.Concrete
 {
-    public class Service<T> : IService<T> where T : class
+    public class Service<T> : IService<T> where T : BaseEntity
     {
         private readonly IGenericRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -49,7 +50,7 @@ namespace Simpra.Service.Service.Concrete
 
             if (hasProduct == null)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException($"{typeof(T).Name} ({id}) not found!");
             }
             return hasProduct;
         }
@@ -68,6 +69,13 @@ namespace Simpra.Service.Service.Concrete
 
         public async Task UpdateAsync(T entity)
         {
+            var response = await _repository.AnyAsync(x => x.Id == entity.Id);
+
+            if (!response)
+            {
+                throw new NotFoundException($"{typeof(T).Name} ({entity.Id}) not found!");
+            }
+
             _repository.Update(entity);
             await _unitOfWork.CompleteAsync();
         }

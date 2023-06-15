@@ -1,5 +1,4 @@
 ﻿using Simpra.Core.Entity;
-using Simpra.Core.Service;
 
 namespace Simpra.Service.Service.Abstract
 {

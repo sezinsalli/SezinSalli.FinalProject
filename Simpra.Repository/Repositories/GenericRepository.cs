@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using System.Linq.Expressions;
 
 namespace Simpra.Repository.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         protected readonly AppDbContext _context;
         private readonly DbSet<T> _dbSet;

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
-using Simpra.Core.Service;
 using Simpra.Schema.CouponRR;
 using Simpra.Service.Reponse;
 using Simpra.Service.Service.Abstract;
