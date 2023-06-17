@@ -1,7 +1,6 @@
-﻿using Simpra.Schema.CategoryRR;
-using Simpra.Schema.ProductRR;
+﻿using Simpra.Schema.ProductRR;
 
-namespace Simpra.Schema.ProductwithCategoryRR
+namespace Simpra.Schema.CategoryRR
 {
     public class CategoryWithProductResponse : CategoryResponse
     {

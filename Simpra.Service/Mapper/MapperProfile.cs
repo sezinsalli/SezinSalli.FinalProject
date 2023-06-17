@@ -4,7 +4,6 @@ using Simpra.Schema.CategoryRR;
 using Simpra.Schema.CouponRR;
 using Simpra.Schema.OrderRR;
 using Simpra.Schema.ProductRR;
-using Simpra.Schema.ProductwithCategoryRR;
 
 
 namespace Simpra.Service.Mapper

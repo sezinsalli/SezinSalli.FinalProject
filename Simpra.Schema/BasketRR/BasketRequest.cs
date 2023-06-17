@@ -1,6 +1,6 @@
 ﻿
 
-namespace Simpra.Schema.Basket
+namespace Simpra.Schema.BasketRR
 {
     public class BasketRequest
     {

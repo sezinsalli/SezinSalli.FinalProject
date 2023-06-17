@@ -1,4 +1,4 @@
-﻿using Simpra.Schema.Basket;
+﻿using Simpra.Schema.BasketRR;
 
 namespace Simpra.Core.Service
 {

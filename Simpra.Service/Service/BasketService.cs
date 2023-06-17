@@ -2,7 +2,7 @@
 using Simpra.Core.Entity.Enum;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
-using Simpra.Schema.Basket;
+using Simpra.Schema.BasketRR;
 using Simpra.Service.Exceptions;
 using System.Text.Json;
 

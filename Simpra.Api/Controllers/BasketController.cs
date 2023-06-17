@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Api.Messages;
 using Simpra.Core.Service;
-using Simpra.Schema.Basket;
+using Simpra.Schema.BasketRR;
 using Simpra.Service.Response;
 
 namespace Simpra.Api.Controllers
