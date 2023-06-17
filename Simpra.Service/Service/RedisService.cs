@@ -12,7 +12,7 @@ namespace Simpra.Service.Service
         //appsettings içerisindeki değer => program.cs tarafından gönderilecek.
         public RedisService(string host, int port)
         {
-            _host = host;
+            _host = host ?? throw new ArgumentNullException(nameof(host));
             _port = port;
         }
 

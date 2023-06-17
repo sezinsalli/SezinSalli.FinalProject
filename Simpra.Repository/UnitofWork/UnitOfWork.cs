@@ -8,7 +8,7 @@ namespace Simpra.Repository.UnitofWork
         private readonly AppDbContext _context;
         public UnitOfWork(AppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
         public async Task CompleteAsync()
         {

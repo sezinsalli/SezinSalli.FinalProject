@@ -12,20 +12,20 @@ namespace Simpra.Service.Service
     public class OrderService : BaseService<Order>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ICouponRepository _couponRepository;
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OrderService(IGenericRepository<Order> repository, IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper, IGenericRepository<User> userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(repository, unitofWork)
+        public OrderService(IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper, IUserRepository userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(orderRepository, unitofWork)
         {
-            _mapper = mapper;
-            _orderRepository = orderRepository;
-            _unitOfWork = unitofWork;
-            _userRepository = userRepository;
-            _couponRepository = couponRepository;
-            _productRepository = productRepository;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _couponRepository = couponRepository ?? throw new ArgumentNullException(nameof(couponRepository));
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         public override async Task<IEnumerable<Order>> GetAllAsync()
@@ -40,7 +40,6 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-
         public override async Task<Order> GetByIdAsync(int id)
         {
             try
@@ -60,7 +59,6 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-
         public async Task<Order> CreateOrderAsync(Order order)
         {
             // Check user
@@ -107,7 +105,6 @@ namespace Simpra.Service.Service
             await _unitOfWork.CompleteAsync();
             return order;
         }
-
         public async Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest)
         {
             var order = _mapper.Map<Order>(orderRequest);
@@ -179,7 +176,6 @@ namespace Simpra.Service.Service
                 order.BillingAmount = 0;
             }
         }
-
         private void CheckCouponUsing(ref Coupon coupon, ref Order order)
         {
             if (coupon.UserId != order.UserId)
@@ -213,7 +209,6 @@ namespace Simpra.Service.Service
                 order.BillingAmount = 0;
             }
         }
-
         private async Task<decimal> CheckEarnPoints(Order order, User user)
         {
             double earnedPoint = 0;
@@ -241,7 +236,6 @@ namespace Simpra.Service.Service
             }
             return user.DigitalWalletBalance += Convert.ToDecimal(earnedPoint);
         }
-
         private void CheckCreditCardUsing()
         {
 

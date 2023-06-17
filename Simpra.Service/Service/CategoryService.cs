@@ -14,29 +14,28 @@ namespace Simpra.Service.Service
 
         public CategoryService(IUnitOfWork unitofWork, ICategoryRepository categoryRepository, IProductRepository productRepository) : base(categoryRepository, unitofWork)
         {
-            _categoryRepository = categoryRepository;
-            _unitOfWork = unitofWork;
-            _productRepository = productRepository;
+            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task<Category> GetCategoryByIdWithProductAsync(int categoryId)
+        public override async Task<Category> GetByIdAsync(int id)
         {
             try
             {
-                var categoryCheck = await _categoryRepository.AnyAsync(x => x.Id == categoryId);
-                if (!categoryCheck)
-                    throw new NotFoundException($"Category with ({categoryId}) not found!");
+                var entity = await _categoryRepository.GetByIdWithIncludeAsync(id,"Products");
+                if (entity == null)
+                    throw new NotFoundException($"Category ({id}) not found!");
 
-                var category = await _categoryRepository.GetByIdWithIncludeAsync(categoryId,"Products");
-                return category;
+                return entity;
             }
             catch (Exception ex)
             {
                 if (ex is NotFoundException)
                 {
-                    throw new NotFoundException($"Error Message: {ex.Message}");
+                    throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
-                throw new Exception($"Something went wrong! Error message:{ex.Message}");
+                throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
 

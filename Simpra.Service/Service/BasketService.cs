@@ -11,37 +11,53 @@ namespace Simpra.Service.Service
     public class BasketService : IBasketService
     {
         private readonly RedisService _redisService;
-        private readonly ILogger<BasketService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
 
-        public BasketService(RedisService redisService, ILogger<BasketService> logger, IUserRepository userRepository, IProductRepository productRepository)
+        public BasketService(RedisService redisService, IUserRepository userRepository, IProductRepository productRepository)
         {
             _redisService = redisService ?? throw new ArgumentNullException(nameof(redisService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         public async Task DeleteAsync(int userId)
         {
-            var status = await _redisService.GetDb().KeyDeleteAsync(userId.ToString());
-            if (!status)
+            try
             {
-                _logger.LogError($"Basket with id ({userId}) didn't find in the database.");
-                throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
+                var status = await _redisService.GetDb().KeyDeleteAsync(userId.ToString());
+                if (!status)
+                    throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    throw new NotFoundException($"Basket didn't delete in the redis. Error message:{ex.Message}");
+                }
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
 
         public async Task<BasketResponse> GetBasketAsync(int userId)
         {
-            var existBasket = await _redisService.GetDb().StringGetAsync(userId.ToString());
-            if (existBasket.IsNullOrEmpty)
+            try
             {
-                _logger.LogError($"Basket with id ({userId}) didn't find in the database.");
-                throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
+                var existBasket = await _redisService.GetDb().StringGetAsync(userId.ToString());
+                if (existBasket.IsNullOrEmpty)
+                    throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
+
+                var basketResponse= JsonSerializer.Deserialize<BasketResponse>(existBasket);
+                return basketResponse;
             }
-            return JsonSerializer.Deserialize<BasketResponse>(existBasket);
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+                }
+                throw new Exception($"Something went wrong!. Error message:{ex.Message}");
+            }
         }
 
         public async Task SaveOrUpdateAsync(BasketRequest basketRequest)

@@ -50,7 +50,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        // Not Found durumunda hata fırlatmıyorum cevabı almam gerekebilir başka servislerde kullanırken.
+        // Not Found durumunda hata fırlatmıyorum cevabı almam gerekiyor başka servislerde kullanırken.
         public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             try

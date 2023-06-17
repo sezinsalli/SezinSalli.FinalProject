@@ -40,7 +40,7 @@ namespace Simpra.Api.Controllers
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetSingleCategoryByIdwithProducts(int categoryId)
         {
-            var category = await _categoryService.GetCategoryByIdWithProductAsync(categoryId);
+            var category = await _categoryService.GetByIdAsync(categoryId);
             var categoryResponse = _mapper.Map<CategoryWithProductResponse>(category);
             return CreateActionResult(CustomResponse<CategoryWithProductResponse>.Success(200, categoryResponse));
         }

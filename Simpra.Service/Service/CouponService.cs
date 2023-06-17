@@ -3,6 +3,7 @@ using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
+using Simpra.Repository.Repository;
 using Simpra.Repository.UnitofWork;
 using Simpra.Schema.CouponRR;
 
@@ -12,12 +13,10 @@ namespace Simpra.Service.Service
     {
         private readonly ICouponRepository _couponRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public CouponService(IGenericRepository<Coupon> repository, IUnitOfWork unitofWork, ICouponRepository couponRepository, IMapper mapper) : base(repository, unitofWork)
+        public CouponService(IUnitOfWork unitofWork, ICouponRepository couponRepository) : base(couponRepository, unitofWork)
         {
-            _mapper = mapper;
-            _couponRepository = couponRepository;
-            _unitOfWork = unitofWork;
+            _couponRepository = couponRepository ?? throw new ArgumentNullException(nameof(couponRepository));
+            _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
         }
 
         public async Task<Coupon> CreateCouponAsync(Coupon coupon,int expirationDay)

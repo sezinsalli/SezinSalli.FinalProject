@@ -12,7 +12,7 @@ namespace Simpra.Repository.Repository
 
         public GenericRepository(AppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = context.Set<T>();
         }
 

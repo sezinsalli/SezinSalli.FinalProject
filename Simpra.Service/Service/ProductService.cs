@@ -14,8 +14,8 @@ namespace Simpra.Service.Service
         private readonly IUnitOfWork _unitOfWork;
         public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork) : base(productRepository, unitOfWork)
         {
-            _productRepository = productRepository;
-            _unitOfWork = unitOfWork;
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<Product> ProductStockUpdateAsync(ProductStockUpdateRequest stockUpdateRequest)
@@ -25,19 +25,15 @@ namespace Simpra.Service.Service
                 var product = await _productRepository.GetByIdAsync(stockUpdateRequest.Id);
 
                 if (product == null)
-                {
                     throw new NotFoundException($"Product with ({stockUpdateRequest.Id}) not found!");
-                }
 
                 // Stok artışını gerçekleştir
-                product.Stock = product.Stock + stockUpdateRequest.StockChange;
+                product.Stock += stockUpdateRequest.StockChange;
 
                 // Stok 0 dan küçük olmamalı
                 if (product.Stock < 0)
-                {
                     throw new NotFoundException("Product stock cannot be less than 0!");
-                }
-
+                
                 // Stok 0 ise ürün pasif duruma geçiyor ve status durumu otomatik değiştiriliyor.
                 if (product.Stock == 0)
                 {
