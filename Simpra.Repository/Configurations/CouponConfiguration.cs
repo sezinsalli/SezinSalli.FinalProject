@@ -9,10 +9,23 @@ namespace Simpra.Repository.Configurations
         public void Configure(EntityTypeBuilder<Coupon> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.CouponCode).HasMaxLength(10);
-            builder.Property(x => x.DiscountAmount).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.HasOne(x => x.User).WithOne(x => x.Coupon).HasForeignKey<Coupon>(x => x.UserId);
+            builder.Property(x => x.CreatedAt).IsRequired(true);
+            builder.Property(x => x.CreatedBy).IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.UpdatedAt).IsRequired(false);
+            builder.Property(x => x.UpdatedBy).IsRequired(false).HasMaxLength(30);
+
+            builder.Property(x => x.CouponCode).IsRequired(true).HasMaxLength(10);
+            builder.Property(x => x.DiscountAmount).IsRequired(true).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.ExpirationDate).IsRequired(true);
+
+            builder.HasIndex(x => x.CouponCode).IsUnique(true);
+
+            builder.HasOne(x => x.User)
+                .WithMany(x => x.Coupon)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired(true);
         }
     }
 }

@@ -41,12 +41,18 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
         {
             var order = _mapper.Map<Order>(orderCreateRequest);
-
             var orderResult = await _service.CreateOrderAsync(order);
-
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
-
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStatus(int id,[FromQuery] string status)
+        {
+            var orderResult = await _service.UpdateOrderStatusAsync(id,status);
+            var orderResponse = _mapper.Map<OrderResponse>(orderResult);
+            return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
+        }
+
     }
 }

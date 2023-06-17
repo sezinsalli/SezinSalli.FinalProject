@@ -2,6 +2,8 @@
 {
     public class Order : BaseEntity
     {
+        public string OrderNumber { get; set; }
+        public string Status { get; set; }
         public bool IsActive { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal BillingAmount { get; set; }

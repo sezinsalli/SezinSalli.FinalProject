@@ -1,5 +1,4 @@
-﻿using Simpra.Core.Entity.Enum;
-
+﻿
 namespace Simpra.Core.Entity
 {
 
@@ -7,7 +6,6 @@ namespace Simpra.Core.Entity
     {
         public string Name { get; set; }
         public int Stock { get; set; }
-        public Status Status { get; set; }
         public decimal Price { get; set; }
         public string Property { get; set; }
         public string Definition { get; set; }

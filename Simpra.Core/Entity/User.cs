@@ -9,7 +9,7 @@ namespace Simpra.Core.Entity
         public string LastName { get; set; }
         public decimal DigitalWalletBalance { get; set; }
         public string DigitalWalletInformation { get; set; }
-        public Coupon Coupon { get; set; }
+        public ICollection<Coupon> Coupon { get; set; }
         public ICollection<Order> Orders { get; set; }
 
     }

@@ -11,16 +11,28 @@ namespace Simpra.Repository.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
-            builder.Property(x => x.Stock).IsRequired();
-            builder.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");
-            builder.Property(x => x.Property).IsRequired().HasMaxLength(100);
-            builder.Property(x => x.Definition).IsRequired().HasMaxLength(100);
-            builder.Property(x => x.IsActive).IsRequired();
-            builder.Property(x => x.EarningPercentage).IsRequired();
-            builder.Property(x => x.MaxPuanAmount).IsRequired();
+            builder.Property(x => x.CreatedAt).IsRequired(true);
+            builder.Property(x => x.CreatedBy).IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.UpdatedAt).IsRequired(false);
+            builder.Property(x => x.UpdatedBy).IsRequired(false).HasMaxLength(30);
 
-            builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId);
+            builder.Property(x => x.Name).IsRequired(true).HasMaxLength(100);
+            builder.Property(x => x.Stock).IsRequired(true);
+            builder.Property(x => x.Price).IsRequired(true).HasColumnType("decimal(18,2)");
+
+            builder.Property(x => x.Property).IsRequired(false).HasMaxLength(100);
+            builder.Property(x => x.Definition).IsRequired(false).HasMaxLength(100);
+
+            builder.Property(x => x.IsActive).IsRequired(true);
+            builder.Property(x => x.EarningPercentage).IsRequired(true);
+            builder.Property(x => x.MaxPuanAmount).IsRequired(true);
+
+            builder.HasIndex(x=>x.Name).IsUnique(true);
+
+            builder.HasOne(x => x.Category)
+                .WithMany(x => x.Products)
+                .HasForeignKey(x => x.CategoryId)
+                .IsRequired(true);
         }
     }
 }

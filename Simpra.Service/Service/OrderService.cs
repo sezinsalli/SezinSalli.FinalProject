@@ -59,6 +59,31 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
+
+        public async Task<Order> UpdateOrderStatusAsync(int id,string status)
+        {
+            try
+            {
+                var order = await _orderRepository.GetByIdWithIncludeAsync(id, "OrderDetails");
+
+                if (order == null)
+                    throw new NotFoundException($"Order ({id}) not found!");
+
+                order.Status = status;
+                _orderRepository.Update(order);
+                await _unitOfWork.CompleteAsync();
+                return order;
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotFoundException)
+                {
+                    throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+                }
+                throw new Exception($"Something went wrong. Error message:{ex.Message}");
+            }
+        }
+
         public async Task<Order> CreateOrderAsync(Order order)
         {
             // Check user
@@ -100,6 +125,8 @@ namespace Simpra.Service.Service
             user.DigitalWalletBalance += earnedPoints;
 
             order.IsActive = true;
+            order.Status = "Just Ordered!";
+            order.OrderNumber = await GenerateOrderNumber();
             _userRepository.Update(user);
             await _orderRepository.AddAsync(order);
             await _unitOfWork.CompleteAsync();
@@ -159,7 +186,6 @@ namespace Simpra.Service.Service
             await _unitOfWork.CompleteAsync();
             return order;
         }
-
         private void CheckDigitalWalletUsing(ref User user, ref Order order)
         {
             if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
@@ -240,6 +266,19 @@ namespace Simpra.Service.Service
         {
 
         }
+        private async Task<string> GenerateOrderNumber()
+        {
+            var ordernumber = 0;
+
+            do
+            {
+                Random random = new Random();
+                ordernumber=random.Next(100000000, 999999999);
+            } while (await _orderRepository.AnyAsync(x=>x.OrderNumber==ordernumber.ToString()));
+
+            return ordernumber.ToString();
+        }
+
 
     }
 

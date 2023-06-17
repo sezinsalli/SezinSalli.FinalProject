@@ -12,7 +12,7 @@ using Simpra.Repository;
 namespace Simpra.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230614120232_migV01")]
+    [Migration("20230617171257_migV01")]
     partial class migV01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,8 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -45,17 +46,20 @@ namespace Simpra.Repository.Migrations
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -65,7 +69,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3618),
+                            CreatedAt = new DateTime(2023, 6, 17, 20, 12, 57, 246, DateTimeKind.Local).AddTicks(1004),
                             CreatedBy = "Sezin",
                             Name = "E-book",
                             Tag = "test1",
@@ -74,7 +78,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3627),
+                            CreatedAt = new DateTime(2023, 6, 17, 20, 12, 57, 246, DateTimeKind.Local).AddTicks(1016),
                             CreatedBy = "Sezin",
                             Name = "Videos",
                             Tag = "test1",
@@ -83,7 +87,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3628),
+                            CreatedAt = new DateTime(2023, 6, 17, 20, 12, 57, 246, DateTimeKind.Local).AddTicks(1017),
                             CreatedBy = "Sezin",
                             Name = "Animation",
                             Tag = "test1",
@@ -92,7 +96,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3630),
+                            CreatedAt = new DateTime(2023, 6, 17, 20, 12, 57, 246, DateTimeKind.Local).AddTicks(1018),
                             CreatedBy = "Sezin",
                             Name = "stok fotoğraflar",
                             Tag = "test1",
@@ -117,7 +121,8 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -132,15 +137,18 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("CouponCode")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Coupons");
                 });
@@ -160,17 +168,28 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CouponCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -179,7 +198,8 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -188,6 +208,9 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderNumber")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -230,10 +253,10 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Definition")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -248,19 +271,15 @@ namespace Simpra.Repository.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Property")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -269,11 +288,15 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Products");
 
@@ -282,7 +305,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 14, 15, 2, 32, 218, DateTimeKind.Local).AddTicks(3812),
+                            CreatedAt = new DateTime(2023, 6, 17, 20, 12, 57, 246, DateTimeKind.Local).AddTicks(1563),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
                             EarningPercentage = 0.5,
@@ -291,7 +314,6 @@ namespace Simpra.Repository.Migrations
                             Name = "Product 1",
                             Price = 9.99m,
                             Property = "Property 1",
-                            Status = 0,
                             Stock = 10
                         });
                 });
@@ -308,7 +330,8 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("DigitalWalletBalance")
                         .HasColumnType("decimal(18,2)");
@@ -329,13 +352,17 @@ namespace Simpra.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -343,8 +370,8 @@ namespace Simpra.Repository.Migrations
             modelBuilder.Entity("Simpra.Core.Entity.Coupon", b =>
                 {
                     b.HasOne("Simpra.Core.Entity.User", "User")
-                        .WithOne("Coupon")
-                        .HasForeignKey("Simpra.Core.Entity.Coupon", "UserId")
+                        .WithMany("Coupon")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -409,8 +436,7 @@ namespace Simpra.Repository.Migrations
 
             modelBuilder.Entity("Simpra.Core.Entity.User", b =>
                 {
-                    b.Navigation("Coupon")
-                        .IsRequired();
+                    b.Navigation("Coupon");
 
                     b.Navigation("Orders");
                 });

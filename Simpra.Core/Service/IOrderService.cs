@@ -7,5 +7,6 @@ namespace Simpra.Core.Service
     {
         Task<Order> CreateOrderAsync(Order order);
         Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest);
+        Task<Order> UpdateOrderStatusAsync(int id, string status);
     }
 }

@@ -12,11 +12,13 @@ namespace Simpra.Repository.Configurations
 
             builder.HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)
-                .HasForeignKey(od => od.OrderId);
+                .HasForeignKey(od => od.OrderId)
+                .IsRequired(true);
 
             builder.HasOne(od => od.Product)
                 .WithMany(p => p.OrderDetails)
-                .HasForeignKey(od => od.ProductId);
+                .HasForeignKey(od => od.ProductId)
+                .IsRequired(true);
 
             builder.Property(x => x.Quantity).IsRequired(true);
             builder.Property(x => x.UnitPrice).IsRequired(true).HasColumnType("decimal(18,2)");

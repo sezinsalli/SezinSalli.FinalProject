@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Simpra.Core.Entity.Enum;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
@@ -76,7 +75,7 @@ namespace Simpra.Service.Service
                     if (product == null)
                         throw new NotFoundException($"Product with id ({basketItem.ProductId}) didn't find in the database.");
 
-                    if (product.Stock < basketItem.Quantity || product.Status == Status.OutOfStock)
+                    if (product.Stock < basketItem.Quantity)
                         throw new NotFoundException($"There are not enough products. Exist product ({product.Stock})");
 
                     if (!product.IsActive)
