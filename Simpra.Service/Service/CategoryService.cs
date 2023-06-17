@@ -27,7 +27,7 @@ namespace Simpra.Service.Service
                 if (!categoryCheck)
                     throw new NotFoundException($"Category with ({categoryId}) not found!");
 
-                var category = _categoryRepository.GetByIdWithInclude(categoryId,"Products");
+                var category = await _categoryRepository.GetByIdWithIncludeAsync(categoryId,"Products");
                 return category;
             }
             catch (Exception ex)

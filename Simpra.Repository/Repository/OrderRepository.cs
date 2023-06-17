@@ -11,21 +11,5 @@ namespace Simpra.Repository.Repository
 
         }
 
-        public List<Order> GetOrdersWithOrderDetails()
-        {
-            // TODO: Sonradan incelenecek asenkron yapılamadı!
-            var orders = _context.Orders.ToList();
-
-            foreach (var order in orders)
-            {
-                order.OrderDetails = _context.OrderDetails
-                    .Where(od => od.OrderId == order.Id)
-                    .ToList();
-            }
-
-            return orders;
-
-        }
-
     }
 }

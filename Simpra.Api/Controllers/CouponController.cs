@@ -28,18 +28,18 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> All()
         {
             var coupons = await _service.GetAllAsync();
-            var couponResponse = _mapper.Map<List<CouponResponse>>(coupons.ToList());
-
-            return Ok(CustomResponse<List<CouponResponse>>.Success(200, couponResponse));
+            var couponsResponse = _mapper.Map<List<CouponResponse>>(coupons.ToList());
+            return CreateActionResult(CustomResponse<List<CouponResponse>>.Success(200, couponsResponse));
         }
 
-        // TODO: mapleme işi kontrollerda yapılacak
         // TODO: bir userın birden fazla koupon kodu olabilir mi?
         [HttpPost]
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
-            var response = await _couponService.CreateCouponAsync(couponCreateRequest);
-            return CreateActionResult(CustomResponse<CouponResponse>.Success(200,response));
+            var coupon=_mapper.Map<Coupon>(couponCreateRequest);
+            var response = await _couponService.CreateCouponAsync(coupon,couponCreateRequest.ExpirationDay);
+            var couponResponse = _mapper.Map<CouponResponse>(response);
+            return CreateActionResult(CustomResponse<CouponResponse>.Success(200, couponResponse));
         }
 
         [HttpDelete("{id}")]

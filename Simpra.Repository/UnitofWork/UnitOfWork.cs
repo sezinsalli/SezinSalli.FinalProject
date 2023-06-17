@@ -15,6 +15,28 @@ namespace Simpra.Repository.UnitofWork
             await _context.SaveChangesAsync();
         }
 
+        public void Complete()
+        {
+            _context.SaveChanges();
+        }
+
+        public void CompleteWithTransaction()
+        {
+            using (var dbDcontextTransaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    _context.SaveChanges();
+                    dbDcontextTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    // logging
+                    dbDcontextTransaction.Rollback();
+                }
+            }
+        }
+
         public async Task CompleteWithTransactionAsync()
         {
             await using (var dbDcontextTransaction = await _context.Database.BeginTransactionAsync())

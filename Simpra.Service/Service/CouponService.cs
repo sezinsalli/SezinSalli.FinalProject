@@ -3,6 +3,7 @@ using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
+using Simpra.Repository.UnitofWork;
 using Simpra.Schema.CouponRR;
 
 namespace Simpra.Service.Service
@@ -10,34 +11,41 @@ namespace Simpra.Service.Service
     public class CouponService : BaseService<Coupon>, ICouponService
     {
         private readonly ICouponRepository _couponRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         public CouponService(IGenericRepository<Coupon> repository, IUnitOfWork unitofWork, ICouponRepository couponRepository, IMapper mapper) : base(repository, unitofWork)
         {
             _mapper = mapper;
             _couponRepository = couponRepository;
+            _unitOfWork = unitofWork;
         }
 
-        public async Task<CouponResponse> CreateCouponAsync(CouponCreateRequest couponCreateRequest)
+        public async Task<Coupon> CreateCouponAsync(Coupon coupon,int expirationDay)
         {
-            string couponCode = GenerateUniqueCouponCode();
-            DateTime expirationDate = DateTime.Now.AddDays(couponCreateRequest.ExpirationDay);
-            var coupon = new Coupon
+            try
             {
-                UserId = couponCreateRequest.UserId,
-                CouponCode = couponCode,
-                DiscountAmount = couponCreateRequest.DiscountAmount,
-                ExpirationDate = expirationDate,
-                IsActive = true,
-            };
+                var couponCode = await GenerateUniqueCouponCode();
+                DateTime expirationDate = DateTime.Now.AddDays(expirationDay);
+                var newCoupon = new Coupon
+                {
+                    UserId = coupon.UserId,
+                    CouponCode = couponCode,
+                    DiscountAmount = coupon.DiscountAmount,
+                    ExpirationDate = expirationDate,
+                    IsActive = true,
+                };
 
-            var couponResult = await _couponRepository.CreateCouponAsync(coupon);
-
-            var couponResponse = _mapper.Map<CouponResponse>(couponResult);
-
-            return couponResponse;
+                await _couponRepository.AddAsync(newCoupon);
+                await _unitOfWork.CompleteAsync();
+                return newCoupon;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Coupon cannot create. Error message:{ex.Message}");
+            }
         }
 
-        private string GenerateUniqueCouponCode()
+        private async Task<string> GenerateUniqueCouponCode()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
@@ -48,7 +56,7 @@ namespace Simpra.Service.Service
                 couponCode = new string(Enumerable.Repeat(chars, 10)
                     .Select(s => s[random.Next(s.Length)]).ToArray());
             }
-            while (_couponRepository.IsCouponCodeExists(couponCode));
+            while (await _couponRepository.AnyAsync(x => x.CouponCode == couponCode));
 
             return couponCode;
         }

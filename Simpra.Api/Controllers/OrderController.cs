@@ -24,26 +24,16 @@ namespace Simpra.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var orders = _service.GetOrdersWithOrderDetails();
-
+            var orders = await _service.GetAllAsync();
             var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
-
-            return Ok(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
+            return CreateActionResult(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            //Include
             var order = await _service.GetByIdAsync(id);
-
-            if (order == null)
-            {
-                return CreateActionResult(CustomResponse<OrderResponse>.Fail(400, "Bu id'ye sahip ürün bulunmamaktadır."));
-            }
-
             var orderResponse = _mapper.Map<OrderResponse>(order);
-
             return CreateActionResult(CustomResponse<OrderResponse>.Success(200, orderResponse));
         }
 

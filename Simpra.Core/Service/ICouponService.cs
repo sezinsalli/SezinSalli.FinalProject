@@ -5,6 +5,6 @@ namespace Simpra.Core.Service
 {
     public interface ICouponService : IBaseService<Coupon>
     {
-        Task<CouponResponse> CreateCouponAsync(CouponCreateRequest couponCreateRequest);
+        Task<Coupon> CreateCouponAsync(Coupon coupon, int expirationDay);
     }
 }

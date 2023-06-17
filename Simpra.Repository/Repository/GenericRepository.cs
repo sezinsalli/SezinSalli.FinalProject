@@ -37,11 +37,11 @@ namespace Simpra.Repository.Repository
             return entities;
         }
 
-        public List<T> GetAllWithInclude(params string[] includes)
+        public async Task<List<T>> GetAllWithIncludeAsync(params string[] includes)
         {
             var query = _dbSet.AsQueryable();
             query = includes.Aggregate(query, (current, inc) => current.Include(inc));
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -49,11 +49,11 @@ namespace Simpra.Repository.Repository
             return await _dbSet.FindAsync(id);
         }
 
-        public T GetByIdWithInclude(int id, params string[] includes)
+        public async Task<T> GetByIdWithIncludeAsync(int id, params string[] includes)
         {
             var query = _dbSet.AsQueryable();
             query = includes.Aggregate(query, (current, inc) => current.Include(inc));
-            return query.FirstOrDefault(x => x.Id == id);
+            return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Remove(T entity)

@@ -81,11 +81,11 @@ namespace Simpra.Service.Service
         {
             try
             {
-                var hasProduct = await _repository.GetByIdAsync(id);
-                if (hasProduct == null)
+                var entity = await _repository.GetByIdAsync(id);
+                if (entity == null)
                     throw new NotFoundException($"{typeof(T).Name} ({id}) not found!");
                 
-                return hasProduct;
+                return entity;
             }
             catch (Exception ex)
             {

@@ -10,6 +10,5 @@ namespace Simpra.Repository.Repository
 
         }
 
-
     }
 }
