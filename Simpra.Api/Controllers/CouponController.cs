@@ -32,7 +32,6 @@ namespace Simpra.Api.Controllers
             return CreateActionResult(CustomResponse<List<CouponResponse>>.Success(200, couponsResponse));
         }
 
-        // TODO: bir userın birden fazla koupon kodu olabilir mi?
         [HttpPost]
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
