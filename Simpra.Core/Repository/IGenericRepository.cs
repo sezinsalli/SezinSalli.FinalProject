@@ -14,6 +14,9 @@ namespace Simpra.Core.Repository
         void Update(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+        List<T> GetAllWithInclude(params string[] includes);
+        T GetByIdWithInclude(int id, params string[] includes);
+        IEnumerable<T> WhereWithInclude(Expression<Func<T, bool>> expression, params string[] includes);
 
 
     }

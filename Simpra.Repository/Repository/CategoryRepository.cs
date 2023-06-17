@@ -11,9 +11,5 @@ namespace Simpra.Repository.Repository
 
         }
 
-        public async Task<Category> GetSingleCategoryByIdwithProductAsync(int categoryId)
-        {
-            return await _context.Categories.Include(x => x.Products).Where(x => x.Id == categoryId).SingleOrDefaultAsync();
-        }
     }
 }

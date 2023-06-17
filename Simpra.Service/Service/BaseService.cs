@@ -83,9 +83,8 @@ namespace Simpra.Service.Service
             {
                 var hasProduct = await _repository.GetByIdAsync(id);
                 if (hasProduct == null)
-                {
                     throw new NotFoundException($"{typeof(T).Name} ({id}) not found!");
-                }
+                
                 return hasProduct;
             }
             catch (Exception ex)
@@ -131,9 +130,8 @@ namespace Simpra.Service.Service
             {
                 var response = await _repository.AnyAsync(x => x.Id == entity.Id);
                 if (!response)
-                {
                     throw new NotFoundException($"{typeof(T).Name} ({entity.Id}) not found!");
-                }
+
                 _repository.Update(entity);
                 await _unitOfWork.CompleteAsync();
             }

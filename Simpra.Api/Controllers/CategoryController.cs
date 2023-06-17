@@ -26,8 +26,8 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> All()
         {
             var categories = await _categoryService.GetAllAsync();
-            var categoryResponse = _mapper.Map<List<CategoryResponse>>(categories.ToList());
-            return CreateActionResult(CustomResponse<List<CategoryResponse>>.Success(200, categoryResponse));
+            var categoryResponse = _mapper.Map<List<CategoryWithProductResponse>>(categories.ToList());
+            return CreateActionResult(CustomResponse<List<CategoryWithProductResponse>>.Success(200, categoryResponse));
         }
 
         [HttpGet("{id}")]
@@ -41,7 +41,7 @@ namespace Simpra.Api.Controllers
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetSingleCategoryByIdwithProducts(int categoryId)
         {
-            var category = await _categoryService.GetSingleCategoryByIdWithProductsAsync(categoryId);
+            var category = await _categoryService.GetCategoryByIdWithProductAsync(categoryId);
             var categoryResponse = _mapper.Map<CategoryWithProductResponse>(category);
             return CreateActionResult(CustomResponse<CategoryWithProductResponse>.Success(200, categoryResponse));
         }
@@ -64,7 +64,8 @@ namespace Simpra.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            await _categoryService.RemoveCategoryWithCheckProductAsync(id);
+            var category=await _categoryService.GetByIdAsync(id);
+            await _categoryService.RemoveAsync(category);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 

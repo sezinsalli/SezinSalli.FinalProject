@@ -19,66 +19,47 @@ namespace Simpra.Service.Service
             _productRepository = productRepository;
         }
 
-        public async Task<Category> GetSingleCategoryByIdWithProductsAsync(int categoryId)
+        public async Task<Category> GetCategoryByIdWithProductAsync(int categoryId)
         {
             try
             {
                 var categoryCheck = await _categoryRepository.AnyAsync(x => x.Id == categoryId);
-
                 if (!categoryCheck)
-                {
                     throw new NotFoundException($"Category with ({categoryId}) not found!");
-                }
 
-                var category = await _categoryRepository.GetSingleCategoryByIdwithProductAsync(categoryId);
+                var category = _categoryRepository.GetByIdWithInclude(categoryId,"Products");
                 return category;
             }
             catch (Exception ex)
             {
                 if (ex is NotFoundException)
                 {
-                    throw new NotFoundException($"Category with ({categoryId}) not found!");
+                    throw new NotFoundException($"Error Message: {ex.Message}");
                 }
-
                 throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
 
-        public async Task RemoveCategoryWithCheckProductAsync(int id)
+        public override async Task RemoveAsync(Category entity)
         {
             try
             {
-                var category = await _categoryRepository.GetByIdAsync(id);
-
-                if (category == null)
-                {
-                    throw new NotFoundException($"Category with ({id}) not found!");
-                }
-
-                var productCheck = await _productRepository.AnyAsync(x => x.CategoryId == id);
-
+                var productCheck = await _productRepository.AnyAsync(x => x.CategoryId == entity.Id);
                 if (productCheck)
-                {
-                    throw new ClientSideException($"Category with ({id}) cannot delete! Firstly remove products with related this category!");
-                }
+                    throw new ClientSideException($"Category with ({entity.Id}) cannot delete! Firstly remove products with related this category!");
 
-                _categoryRepository.Remove(category);
+                _categoryRepository.Remove(entity);
                 await _unitOfWork.CompleteAsync();
             }
             catch (Exception ex)
             {
-                if (ex is NotFoundException)
-                {
-                    throw new NotFoundException($"Category cannot delete!Error message:{ex.Message}");
-                }
-
                 if (ex is ClientSideException)
                 {
-                    throw new ClientSideException($"Category cannot delete!Error message:{ex.Message}");
+                    throw new ClientSideException($"Error message:{ex.Message}");
                 }
-
                 throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
+
     }
 }
