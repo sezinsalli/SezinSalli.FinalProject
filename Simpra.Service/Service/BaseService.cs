@@ -16,13 +16,13 @@ namespace Simpra.Service.Service
 
         public BaseService(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
         {
-            _repository = repository;
-            _unitOfWork = unitOfWork;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         // Genel Yaklaşım: Fırlattığım exception'ı error için hazırladığım "UseCustomExceptionHandler "middleware de yakalayıp "Custom Response" dönüyorum.
 
-        public async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+        public virtual async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Simpra.Service.Service
         }
 
         // Not Found durumunda hata fırlatmıyorum cevabı almam gerekebilir başka servislerde kullanırken.
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             try
             {
@@ -77,12 +77,11 @@ namespace Simpra.Service.Service
         }
 
         // Hata durumunda custom olarak oluşturduğum hata tipimi dönmeliyim bu sayede middleware de status codeları doğru ayarlayabilirim.
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             try
             {
                 var hasProduct = await _repository.GetByIdAsync(id);
-
                 if (hasProduct == null)
                 {
                     throw new NotFoundException($"{typeof(T).Name} ({id}) not found!");
@@ -95,13 +94,12 @@ namespace Simpra.Service.Service
                 {
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
-
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
 
         // TODO: Client'a 500 durumunda hata mesajını dönmemeliyiz. Loglama yapıp geçmeliyiz.
-        public async Task RemoveAsync(T entity)
+        public virtual async Task RemoveAsync(T entity)
         {
             try
             {
@@ -114,7 +112,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task RemoveRangeAsync(IEnumerable<T> entities)
+        public virtual async Task RemoveRangeAsync(IEnumerable<T> entities)
         {
             try
             {
@@ -127,17 +125,15 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
             try
             {
                 var response = await _repository.AnyAsync(x => x.Id == entity.Id);
-
                 if (!response)
                 {
                     throw new NotFoundException($"{typeof(T).Name} ({entity.Id}) not found!");
                 }
-
                 _repository.Update(entity);
                 await _unitOfWork.CompleteAsync();
             }
@@ -147,12 +143,11 @@ namespace Simpra.Service.Service
                 {
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
-
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
 
-        public IQueryable<T> Where(Expression<Func<T, bool>> expression)
+        public virtual IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             try
             {

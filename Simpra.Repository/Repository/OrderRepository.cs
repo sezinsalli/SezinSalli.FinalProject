@@ -1,5 +1,6 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Core.Repository;
+using System.Data.Entity;
 
 namespace Simpra.Repository.Repository
 {
