@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Service;
 using Simpra.Schema.CategoryRR;
 using Simpra.Schema.ProductwithCategoryRR;
 using Simpra.Service.Response;
-using Simpra.Service.Service.Abstract;
 
 
 namespace Simpra.Api.Controllers
@@ -64,7 +64,7 @@ namespace Simpra.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            await _categoryService.RemoveCategoryWithCheckProduct(id);
+            await _categoryService.RemoveCategoryWithCheckProductAsync(id);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 

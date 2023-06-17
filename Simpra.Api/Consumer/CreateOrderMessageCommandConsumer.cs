@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Simpra.Api.Messages;
+using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
-using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Api.Consumer
 {

@@ -2,14 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Schema.OrderRR;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Service.Abstract;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
-    public class OrderService : Service<Order>, IOrderService
+    public class OrderService : BaseService<Order>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IGenericRepository<User> _userRepository;

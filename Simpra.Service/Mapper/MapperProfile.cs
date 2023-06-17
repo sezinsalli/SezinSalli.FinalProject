@@ -7,7 +7,7 @@ using Simpra.Schema.ProductRR;
 using Simpra.Schema.ProductwithCategoryRR;
 
 
-namespace Simpra.Schema.Mapper
+namespace Simpra.Service.Mapper
 {
     public class MapperProfile : Profile
     {

@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Repository;
-using Simpra.Repository.Repositories;
+using Simpra.Repository.Repository;
 using Simpra.Repository.UnitofWork;
-using Simpra.Service.Service.Abstract;
-using Simpra.Service.Service.Concrete;
+using Simpra.Service.Service;
 using System.Reflection;
 using Module = Autofac.Module;
 
@@ -16,7 +16,7 @@ namespace Simpra.Api.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(Service<>)).As(typeof(IService<>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(BaseService<>)).As(typeof(IBaseService<>)).InstancePerLifetimeScope();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 

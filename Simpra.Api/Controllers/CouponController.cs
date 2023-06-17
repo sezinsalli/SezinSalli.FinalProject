@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Service;
 using Simpra.Schema.CouponRR;
 using Simpra.Service.Response;
-using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Api.Controllers
 {
@@ -12,11 +12,11 @@ namespace Simpra.Api.Controllers
     public class CouponController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Coupon> _service;
+        private readonly IBaseService<Coupon> _service;
         private readonly ICouponService _couponService;
 
 
-        public CouponController(IMapper mapper, IService<Coupon> service, ICouponService couponService)
+        public CouponController(IMapper mapper, IBaseService<Coupon> service, ICouponService couponService)
         {
             _service = service;
             _mapper = mapper;
@@ -39,7 +39,7 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
             var response = await _couponService.CreateCouponAsync(couponCreateRequest);
-            return CreateActionResult(response);
+            return CreateActionResult(CustomResponse<CouponResponse>.Success(200,response));
         }
 
         [HttpDelete("{id}")]

@@ -1,11 +1,10 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Schema.ProductRR;
 
-namespace Simpra.Service.Service.Abstract
+namespace Simpra.Core.Service
 {
-    public interface IProductService : IService<Product>
+    public interface IProductService : IBaseService<Product>
     {
         Task<Product> ProductStockUpdateAsync(ProductStockUpdateRequest stockUpdateRequest);
-        Task<List<Product>> GetActiveProducts();
     }
 }

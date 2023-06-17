@@ -1,9 +1,9 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Schema.OrderRR;
 
-namespace Simpra.Service.Service.Abstract
+namespace Simpra.Core.Service
 {
-    public interface IOrderService : IService<Order>
+    public interface IOrderService : IBaseService<Order>
     {
         List<Order> GetOrdersWithOrderDetails();
         Task<Order> CreateOrderAsync(Order order);

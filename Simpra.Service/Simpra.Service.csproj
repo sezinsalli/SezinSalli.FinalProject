@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Simpra.Schema\Simpra.Schema.csproj" />
+    <ProjectReference Include="..\Simpra.Repository\Simpra.Repository.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Service;
 using Simpra.Schema.ProductRR;
 using Simpra.Service.Response;
-using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Api.Controllers
 {
@@ -23,7 +23,7 @@ namespace Simpra.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var products = await _productService.GetActiveProducts();
+            var products = await _productService.GetAllAsync();
             var productResponse = _mapper.Map<List<ProductResponse>>(products.ToList());
             return Ok(CustomResponse<List<ProductResponse>>.Success(200, productResponse));
         }

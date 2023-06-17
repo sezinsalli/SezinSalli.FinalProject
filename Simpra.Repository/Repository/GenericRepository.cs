@@ -3,7 +3,7 @@ using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using System.Linq.Expressions;
 
-namespace Simpra.Repository.Repositories
+namespace Simpra.Repository.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {

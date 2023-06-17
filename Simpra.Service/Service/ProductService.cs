@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Schema.ProductRR;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Service.Abstract;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
-    public class ProductService : Service<Product>, IProductService
+    public class ProductService : BaseService<Product>, IProductService
     {
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -65,7 +65,8 @@ namespace Simpra.Service.Service.Concrete
             }
         }
 
-        public async Task<List<Product>> GetActiveProducts()
+
+        public override async Task<IEnumerable<Product>> GetAllAsync()
         {
             try
             {
@@ -74,12 +75,8 @@ namespace Simpra.Service.Service.Concrete
             }
             catch (Exception ex)
             {
-                throw new Exception($"Product didn't get from the database. Error message:{ex.Message}");
+                throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-
-
-
-
     }
 }

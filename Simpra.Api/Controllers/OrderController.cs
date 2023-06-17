@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
 using Simpra.Service.Response;
-using Simpra.Service.Service.Abstract;
 
 namespace Simpra.Api.Controllers
 {

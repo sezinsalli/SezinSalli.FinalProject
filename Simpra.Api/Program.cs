@@ -6,8 +6,8 @@ using Simpra.Api.Extensions;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
 using Simpra.Repository;
-using Simpra.Schema.Mapper;
 using Simpra.Service.FluentValidation;
+using Simpra.Service.Mapper;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

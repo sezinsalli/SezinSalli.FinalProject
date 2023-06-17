@@ -1,12 +1,12 @@
 ﻿using Simpra.Core.Entity;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Service.Abstract;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
-    public class CategoryService : Service<Category>, ICategoryService
+    public class CategoryService : BaseService<Category>, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
@@ -44,7 +44,7 @@ namespace Simpra.Service.Service.Concrete
             }
         }
 
-        public async Task RemoveCategoryWithCheckProduct(int id)
+        public async Task RemoveCategoryWithCheckProductAsync(int id)
         {
             try
             {

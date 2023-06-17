@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Simpra.Api.Settings;
-using Simpra.Service.Service.Concrete;
+using Simpra.Service.Service;
 
 namespace Simpra.Api.Extensions
 {

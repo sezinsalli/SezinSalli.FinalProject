@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Simpra.Core.Entity.Enum;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Schema.Basket;
 using Simpra.Service.Exceptions;
-using Simpra.Service.Service.Abstract;
 using System.Text.Json;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
     public class BasketService : IBasketService
     {
@@ -14,6 +14,7 @@ namespace Simpra.Service.Service.Concrete
         private readonly ILogger<BasketService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+
         public BasketService(RedisService redisService, ILogger<BasketService> logger, IUserRepository userRepository, IProductRepository productRepository)
         {
             _redisService = redisService ?? throw new ArgumentNullException(nameof(redisService));
@@ -22,7 +23,7 @@ namespace Simpra.Service.Service.Concrete
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public async Task Delete(int userId)
+        public async Task DeleteAsync(int userId)
         {
             var status = await _redisService.GetDb().KeyDeleteAsync(userId.ToString());
 
@@ -33,7 +34,7 @@ namespace Simpra.Service.Service.Concrete
             }
         }
 
-        public async Task<BasketResponse> GetBasket(int userId)
+        public async Task<BasketResponse> GetBasketAsync(int userId)
         {
             var existBasket = await _redisService.GetDb().StringGetAsync(userId.ToString());
 
@@ -45,7 +46,7 @@ namespace Simpra.Service.Service.Concrete
             return JsonSerializer.Deserialize<BasketResponse>(existBasket);
         }
 
-        public async Task SaveOrUpdate(BasketRequest basketRequest)
+        public async Task SaveOrUpdateAsync(BasketRequest basketRequest)
         {
             try
             {

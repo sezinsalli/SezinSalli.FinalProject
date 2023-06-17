@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
+using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Schema.CouponRR;
-using Simpra.Service.Response;
-using Simpra.Service.Service.Abstract;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
-    public class CouponService : Service<Coupon>, ICouponService
+    public class CouponService : BaseService<Coupon>, ICouponService
     {
         private readonly ICouponRepository _couponRepository;
         private readonly IMapper _mapper;
@@ -18,7 +17,7 @@ namespace Simpra.Service.Service.Concrete
             _couponRepository = couponRepository;
         }
 
-        public async Task<CustomResponse<CouponResponse>> CreateCouponAsync(CouponCreateRequest couponCreateRequest)
+        public async Task<CouponResponse> CreateCouponAsync(CouponCreateRequest couponCreateRequest)
         {
             string couponCode = GenerateUniqueCouponCode();
             DateTime expirationDate = DateTime.Now.AddDays(couponCreateRequest.ExpirationDay);
@@ -35,7 +34,7 @@ namespace Simpra.Service.Service.Concrete
 
             var couponResponse = _mapper.Map<CouponResponse>(couponResult);
 
-            return CustomResponse<CouponResponse>.Success(200, couponResponse);
+            return couponResponse;
         }
 
         private string GenerateUniqueCouponCode()

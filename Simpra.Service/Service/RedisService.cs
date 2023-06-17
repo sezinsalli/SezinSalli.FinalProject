@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 
-namespace Simpra.Service.Service.Concrete
+namespace Simpra.Service.Service
 {
     public class RedisService
     {
