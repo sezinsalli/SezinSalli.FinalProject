@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Simpra.Api.Logger
+namespace Simpra.Core.Logger
 {
     public class RequestProfilerModel
     {
