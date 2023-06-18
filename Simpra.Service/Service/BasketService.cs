@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Serilog;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
@@ -32,8 +33,10 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "DeleteAsync Exception - Not Found Error");
                     throw new NotFoundException($"Basket didn't delete in the redis. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "DeleteAsync Exception");
                 throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
@@ -53,8 +56,10 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "GetBasketAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "GetBasketAsync Exception");
                 throw new Exception($"Something went wrong!. Error message:{ex.Message}");
             }
         }
@@ -91,12 +96,15 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "SaveOrUpdateAsync Exception - Not Found Error");
                     throw new NotFoundException($"Basket didn't update in the redis. Error message:{ex.Message}");
                 }
                 if (ex is ClientSideException)
                 {
+                    Log.Warning(ex, "SaveOrUpdateAsync Exception - Client Side Error");
                     throw new ClientSideException($"Basket didn't update in the redi. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "SaveOrUpdateAsync Exception");
                 throw new Exception($"Basket didn't update in the redi. Error message:{ex.Message}");
             }
         }

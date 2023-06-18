@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
@@ -40,24 +41,32 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "CreateCouponAsync Exception");
                 throw new Exception($"Coupon cannot create. Error message:{ex.Message}");
             }
         }
 
         private async Task<string> GenerateUniqueCouponCode()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var random = new Random();
-            string couponCode;
-
-            do
+            try
             {
-                couponCode = new string(Enumerable.Repeat(chars, 10)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-            }
-            while (await _couponRepository.AnyAsync(x => x.CouponCode == couponCode));
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var random = new Random();
+                string couponCode;
 
-            return couponCode;
+                do
+                {
+                    couponCode = new string(Enumerable.Repeat(chars, 10)
+                        .Select(s => s[random.Next(s.Length)]).ToArray());
+                }
+                while (await _couponRepository.AnyAsync(x => x.CouponCode == couponCode));
+                return couponCode;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "GenerateUniqueCouponCode Exception");
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
+            }
         }
 
 

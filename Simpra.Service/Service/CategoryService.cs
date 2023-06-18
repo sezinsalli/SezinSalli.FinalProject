@@ -1,4 +1,5 @@
-﻿using Simpra.Core.Entity;
+﻿using Serilog;
+using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
@@ -33,8 +34,10 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "GetByIdAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "GetByIdAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -54,8 +57,10 @@ namespace Simpra.Service.Service
             {
                 if (ex is ClientSideException)
                 {
+                    Log.Warning(ex, "RemoveAsync Exception - Client Side Error");
                     throw new ClientSideException($"Error message:{ex.Message}");
                 }
+                Log.Error(ex, "RemoveAsync Exception");
                 throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }

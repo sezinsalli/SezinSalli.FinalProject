@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
@@ -32,6 +33,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex,"AddAsync Exception");
                 throw new Exception($"{entity.GetType().Name} cannot create. Error message:{ex.Message}");
             }
         }
@@ -46,6 +48,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "AddRangeAsync Exception");
                 throw new Exception($"{entities.GetType().Name} cannot create. Error message:{ex.Message}");
             }
         }
@@ -59,6 +62,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "AnyAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -72,6 +76,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "GetAllAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -91,13 +96,14 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "GetByIdAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "GetByIdAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
 
-        // TODO: Client'a 500 durumunda hata mesajını dönmemeliyiz. Loglama yapıp geçmeliyiz.
         public virtual async Task RemoveAsync(T entity)
         {
             try
@@ -107,6 +113,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "RemoveAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -120,6 +127,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "RemoveRangeAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -139,8 +147,10 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "UpdateAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "UpdateAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
@@ -153,6 +163,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Where Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }

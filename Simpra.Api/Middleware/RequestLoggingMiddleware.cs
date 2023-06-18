@@ -1,6 +1,9 @@
 ﻿using Microsoft.IO;
 using Serilog;
 using Simpra.Core.Logger;
+using Simpra.Service.Exceptions;
+using Simpra.Service.Response;
+using System.Text.Json;
 
 namespace Simpra.Api.Middleware;
 
@@ -34,7 +37,14 @@ public class RequestLoggingMiddleware
         {
             context.Response.Body = newResponseBody;
 
-            await next(context);
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, context);
+            }
 
             newResponseBody.Seek(0, SeekOrigin.Begin);
             await newResponseBody.CopyToAsync(originalBody);
@@ -59,7 +69,6 @@ public class RequestLoggingMiddleware
                 $"StatusCode: {response.StatusCode} {Environment.NewLine}" +
                 $"Response Body: {ReadStreamInChunks(newResponseBody)}";
     }
-
     private async Task<string> FormatRequest(HttpContext context)
     {
         HttpRequest request = context.Request;
@@ -102,6 +111,25 @@ public class RequestLoggingMiddleware
         }
 
         return result;
+    }
+
+    private void HandleException(Exception ex, HttpContext context)
+    {
+        Log.Error(ex, "An unhandled exception occurred");
+
+        context.Response.ContentType = "application/json";
+
+        var statusCode = ex switch
+        {
+            ClientSideException => 400,
+            NotFoundException => 404,
+            _ => 500
+        };
+        context.Response.StatusCode = statusCode;
+
+        var response = CustomResponse<NoContent>.Fail(statusCode, ex.Message);
+
+        context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 
 

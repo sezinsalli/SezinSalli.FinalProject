@@ -57,6 +57,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseMiddleware<ErrorHandlerMiddleware>();
 Action<RequestProfilerModel> requestResponseHandler = requestProfilerModel =>
 {
     Log.Information("-------------Request-Begin------------");
@@ -67,8 +68,8 @@ Action<RequestProfilerModel> requestResponseHandler = requestProfilerModel =>
 };
 app.UseMiddleware<RequestLoggingMiddleware>(requestResponseHandler);
 
+//app.UseCustomException();
 app.UseHttpsRedirection();
-app.UseCustomException();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

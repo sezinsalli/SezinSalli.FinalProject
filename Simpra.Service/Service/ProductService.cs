@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
@@ -48,19 +49,19 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "ProductStockUpdateAsync Exception - Not Found Error");
                     throw new NotFoundException($"Product didn't update in the database. Error message:{ex.Message}");
                 }
 
                 if (ex is ClientSideException)
                 {
+                    Log.Warning(ex, "ProductStockUpdateAsync Exception - Client Side Error");
                     throw new ClientSideException($"Product didn't update in the database. Error message:{ex.Message}");
                 }
-
+                Log.Error(ex, "ProductStockUpdateAsync Exception");
                 throw new Exception($"Product didn't update in the database. Error message:{ex.Message}");
             }
         }
-
-
         public override async Task<IEnumerable<Product>> GetAllAsync()
         {
             try
@@ -70,6 +71,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "GetAllAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }

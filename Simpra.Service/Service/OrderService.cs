@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
@@ -37,7 +38,8 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
-                throw new Exception($"Something went wrong. Error message:{ex.Message}");
+                Log.Error(ex, "GetAllAsync Exception");
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
         public override async Task<Order> GetByIdAsync(int id)
@@ -54,12 +56,13 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "GetByIdAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "GetByIdAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-
         public async Task<Order> UpdateOrderStatusAsync(int id,string status)
         {
             try
@@ -78,59 +81,62 @@ namespace Simpra.Service.Service
             {
                 if (ex is NotFoundException)
                 {
+                    Log.Warning(ex, "UpdateOrderStatusAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                Log.Error(ex, "UpdateOrderStatusAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-
         public async Task<Order> CreateOrderAsync(Order order)
         {
-            // Check user
-            var user = await _userRepository.GetByIdAsync(order.UserId);
-
-            if (user == null)
-                throw new NotFoundException($"Order with userId ({order.UserId}) didn't find in the database.");
-
-            // Calculate total price
-            order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
-            order.BillingAmount = order.TotalAmount;
-
-            // Coupon Using
-            if (order.CouponCode != "" && order.CouponCode != null)
+            try
             {
-                var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
+                var user = await _userRepository.GetByIdAsync(order.UserId);
+                if (user == null)
+                    throw new NotFoundException($"Order with userId ({order.UserId}) didn't find in the database.");
 
-                if (coupon == null)
-                    throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
+                order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
+                order.BillingAmount = order.TotalAmount;
 
-                CheckCouponUsing(ref coupon, ref order);
+                if (order.CouponCode != "" && order.CouponCode != null)
+                {
+                    var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
+                    if (coupon == null)
+                        throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
+                    CheckCouponUsing(ref coupon, ref order);
+                }
+                else
+                {
+                    order.CouponCode = "No Coupon";
+                }
+
+                CheckDigitalWalletUsing(ref user, ref order);
+
+                if (order.BillingAmount > 0)
+                    CheckCreditCardUsing();
+
+                var earnedPoints = await CheckEarnPoints(order, user);
+                user.DigitalWalletBalance += earnedPoints;
+                order.IsActive = true;
+                order.Status = "Just Ordered!";
+                order.OrderNumber = await GenerateOrderNumber();
+
+                _userRepository.Update(user);
+                await _orderRepository.AddAsync(order);
+                await _unitOfWork.CompleteAsync();
+                return order;
             }
-            else
+            catch (Exception ex)
             {
-                order.CouponCode = "No Coupon";
+                if (ex is NotFoundException)
+                {
+                    Log.Warning(ex, "CreateOrderAsync Exception - Not Found Error");
+                    throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+                }
+                Log.Error(ex, "CreateOrderAsync Exception");
+                throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
-
-            // Digital Wallet Kullanımı
-            CheckDigitalWalletUsing(ref user, ref order);
-
-            // Kredi Kartı Kullanımı
-            if (order.BillingAmount > 0)
-            {
-                CheckCreditCardUsing();
-            }
-
-            // Puan Kazanma
-            var earnedPoints = await CheckEarnPoints(order, user);
-            user.DigitalWalletBalance += earnedPoints;
-
-            order.IsActive = true;
-            order.Status = "Just Ordered!";
-            order.OrderNumber = await GenerateOrderNumber();
-            _userRepository.Update(user);
-            await _orderRepository.AddAsync(order);
-            await _unitOfWork.CompleteAsync();
-            return order;
         }
         public async Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest)
         {
@@ -186,6 +192,7 @@ namespace Simpra.Service.Service
             await _unitOfWork.CompleteAsync();
             return order;
         }
+
         private void CheckDigitalWalletUsing(ref User user, ref Order order)
         {
             if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
@@ -238,7 +245,6 @@ namespace Simpra.Service.Service
         private async Task<decimal> CheckEarnPoints(Order order, User user)
         {
             double earnedPoint = 0;
-
             foreach (var od in order.OrderDetails)
             {
                 var product=await _productRepository.GetByIdAsync(od.ProductId);
@@ -269,12 +275,11 @@ namespace Simpra.Service.Service
         private async Task<string> GenerateOrderNumber()
         {
             var ordernumber = 0;
-
             do
             {
                 Random random = new Random();
-                ordernumber=random.Next(100000000, 999999999);
-            } while (await _orderRepository.AnyAsync(x=>x.OrderNumber==ordernumber.ToString()));
+                ordernumber = random.Next(100000000, 999999999);
+            } while (await _orderRepository.AnyAsync(x => x.OrderNumber == ordernumber.ToString()));
 
             return ordernumber.ToString();
         }
