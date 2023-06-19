@@ -25,8 +25,8 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> All()
         {
             var categories = await _categoryService.GetAllAsync();
-            var categoryResponse = _mapper.Map<List<CategoryWithProductResponse>>(categories.ToList());
-            return CreateActionResult(CustomResponse<List<CategoryWithProductResponse>>.Success(200, categoryResponse));
+            var categoryResponse = _mapper.Map<List<CategoryResponse>>(categories.ToList());
+            return CreateActionResult(CustomResponse<List<CategoryResponse>>.Success(200, categoryResponse));
         }
 
         [HttpGet("{id}")]

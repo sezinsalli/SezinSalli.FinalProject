@@ -88,6 +88,8 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
+
+        // TODO: Product Stok düşülmeli
         public async Task<Order> CreateOrderAsync(Order order)
         {
             try
@@ -99,7 +101,7 @@ namespace Simpra.Service.Service
                 order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
                 order.BillingAmount = order.TotalAmount;
 
-                if (order.CouponCode != "" && order.CouponCode != null)
+                if (!string.IsNullOrEmpty(order.CouponCode))
                 {
                     var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
                     if (coupon == null)
@@ -116,8 +118,7 @@ namespace Simpra.Service.Service
                 if (order.BillingAmount > 0)
                     CheckCreditCardUsing();
 
-                var earnedPoints = await CheckEarnPoints(order, user);
-                user.DigitalWalletBalance += earnedPoints;
+                user.DigitalWalletBalance = await CheckEarnPoints(order, user);
                 order.IsActive = true;
                 order.Status = "Just Ordered!";
                 order.OrderNumber = await GenerateOrderNumber();
