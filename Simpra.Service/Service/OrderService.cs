@@ -92,7 +92,7 @@ namespace Simpra.Service.Service
         {
             try
             {
-                var user = await _userService.GetByIdAsync(order.UserId);
+                var user = _userService.GetById(order.UserId);
                 if (user == null)
                     throw new NotFoundException($"Order with userId ({order.UserId}) didn't find in the database.");
 
@@ -143,7 +143,7 @@ namespace Simpra.Service.Service
             var order = _mapper.Map<Order>(orderRequest);
 
             // Check user
-            var user = await _userService.GetByIdAsync(order.UserId);
+            var user = _userService.GetById(order.UserId);
 
             if (user == null)
             {

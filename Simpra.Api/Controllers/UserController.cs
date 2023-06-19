@@ -21,17 +21,17 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
-    public async Task<CustomResponse<List<AppUserResponse>>> GetAll()
+    public CustomResponse<List<AppUserResponse>> GetAll()
     {
-        var users = await _service.GetAllAsycn();
+        var users = _service.GetAll();
         var usersResponse = _mapper.Map<List<AppUserResponse>>(users);
         return CustomResponse<List<AppUserResponse>>.Success(200, usersResponse);
     }
 
     [HttpGet("{id}")]
-    public async Task<CustomResponse<AppUserResponse>> GetById(string id)
+    public CustomResponse<AppUserResponse> GetById(string id)
     {
-        var user = await _service.GetByIdAsync(id);
+        var user = _service.GetById(id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(200, userResponse);
     }
@@ -60,16 +60,17 @@ public class UserController : CustomBaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<CustomResponse<NoContent>> Put(string id, [FromBody] AppUserUpdateRequest request)
+    public async Task<CustomResponse<AppUserResponse>> Put(string id, [FromBody] AppUserUpdateRequest request)
     {
-        await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
-        return CustomResponse<NoContent>.Success(204);
+        var user=await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
+        var userResponse = _mapper.Map<AppUserResponse>(user);
+        return CustomResponse<AppUserResponse>.Success(200,userResponse);
     }
 
     [HttpDelete("{id}")]
     public async Task<CustomResponse<NoContent>> Delete(string id)
     {
-        await _service.Delete(id);
+        await _service.DeleteAsync(id);
         return CustomResponse<NoContent>.Success(204);
     }
 }

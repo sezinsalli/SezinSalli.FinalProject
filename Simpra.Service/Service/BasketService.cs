@@ -68,7 +68,7 @@ namespace Simpra.Service.Service
             try
             {
                 // UserId Check => Token ile alırsak buna gerek yok artık
-                var userCheck = await _userService.GetByIdAsync(basketRequest.UserId);
+                var userCheck = _userService.GetById(basketRequest.UserId);
                 if (userCheck == null)
                     throw new NotFoundException($"User with id ({basketRequest.UserId}) didn't find in the database.");
 

@@ -21,11 +21,11 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<List<AppUser>> GetAllAsycn()
+    public List<AppUser> GetAll()
     {
         try
         {
-            var userList = await _userManager.Users.ToListAsync();
+            var userList = _userManager.Users.ToList();
             return userList;
         }
         catch (Exception ex)
@@ -35,14 +35,13 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<AppUser> GetByIdAsync(string id)
+    public AppUser GetById(string id)
     {
         try
         {
-            var user = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var user = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
             if (user == null)
                 throw new NotFoundException($"User ({id}) not found!");
-
             return user;
         }
         catch (Exception ex)
@@ -83,13 +82,14 @@ public class UserService : IUserService
     }
 
     // Direkt olarak model "userManager.UpdateAsync" metotuna verdiğimizde; Error message:The instance of entity type 'AppUser' cannot be tracked because another instance with the same key value for {'Id'} is already being tracked.
-    public async Task UpdateAsync(AppUser user, string id)
+    public async Task<AppUser> UpdateAsync(AppUser user, string id)
     {
         try
         {
             var userExist = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
             if (userExist == null)
                 throw new NotFoundException($"User ({id}) not found!");
+
             userExist.UserName = user.UserName;
             userExist.FirstName = user.FirstName;
             userExist.LastName = user.LastName;
@@ -97,9 +97,42 @@ public class UserService : IUserService
             userExist.PhoneNumber = user.PhoneNumber;
             userExist.DigitalWalletBalance = user.DigitalWalletBalance;
             userExist.DigitalWalletInformation = user.DigitalWalletInformation;
+            userExist.UpdatedAt = DateTime.Now;
 
             var response = await _userManager.UpdateAsync(userExist);
+            if (!response.Succeeded)
+            {
+                var errorMessages = response.Errors.Select(error => error.Description);
+                var errorMessage = string.Join(", ", errorMessages);
+                throw new Exception(errorMessage);
+            }
+            return userExist;
+        }
+        catch (Exception ex)
+        {
+            if (ex is NotFoundException)
+            {
+                Log.Warning(ex, "UpdateAsync Exception - Not Found Error");
+                throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+            }
+            Log.Error(ex, "UpdateAsync Exception");
+            throw new Exception($"User cannot update. Error message:{ex.Message}");
+        }
+    }
 
+
+    public async Task DeleteAsync(string id)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new ClientSideException("Please put an valid id");
+
+            var user = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
+            if(user== null)
+                throw new NotFoundException($"User ({id}) not found!");
+
+            var response=await _userManager.DeleteAsync(user);
             if (!response.Succeeded)
             {
                 var errorMessages = response.Errors.Select(error => error.Description);
@@ -109,22 +142,19 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "UpdateAsync Exception");
-            throw new Exception($"User cannot update. Error message:{ex.Message}");
+            if (ex is ClientSideException)
+            {
+                Log.Warning(ex, "DeleteAsync Exception - Client Side Error");
+                throw new NotFoundException($"Client Side Error. Error message:{ex.Message}");
+            }
+            if (ex is NotFoundException)
+            {
+                Log.Warning(ex, "DeleteAsync Exception - Not Found Error");
+                throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+            }
+            Log.Error(ex, "DeleteAsync Exception");
+            throw new Exception($"User cannot delete. Error message:{ex.Message}");
         }
-    }
-
-
-    public async Task Delete(string id)
-    {
-        //if (string.IsNullOrWhiteSpace(id))
-        //{
-        //    throw new Exception("Hatalı");
-        //}
-
-        var user = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
-        await _userManager.DeleteAsync(user);
-
     }
 
     public async Task<AppUser> GetUserAsync(ClaimsPrincipal User)
@@ -143,7 +173,16 @@ public class UserService : IUserService
 
     public string GetUserId(ClaimsPrincipal User)
     {
-        var id = _userManager.GetUserId(User);
-        return id;
+        try
+        {
+            var id = _userManager.GetUserId(User);
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "GetUserId Exception");
+            throw new Exception($"Something went wrong! Error message:{ex.Message}");
+        }
+
     }
 }

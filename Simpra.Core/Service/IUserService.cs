@@ -7,11 +7,11 @@ namespace Simpra.Core.Service;
 
 public interface IUserService
 {
-    Task<List<AppUser>> GetAllAsycn();
-    Task<AppUser> GetByIdAsync(string id);
+    List<AppUser> GetAll();
+    AppUser GetById(string id);
     Task<AppUser> InsertAsync(AppUser request, string password);
-    Task UpdateAsync(AppUser request, string id);
-    Task Delete(string id);
+    Task<AppUser> UpdateAsync(AppUser request, string id);
+    Task DeleteAsync(string id);
     Task<AppUser> GetUserAsync(ClaimsPrincipal User);
     string GetUserId(ClaimsPrincipal User);
 
