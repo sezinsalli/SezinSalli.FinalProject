@@ -27,7 +27,7 @@ namespace Simpra.Repository.Configurations
             builder.Property(x => x.EarningPercentage).IsRequired(true);
             builder.Property(x => x.MaxPuanAmount).IsRequired(true);
 
-            builder.HasIndex(x=>x.Name).IsUnique(true);
+            builder.HasIndex(x => x.Name).IsUnique(true);
 
             builder.HasOne(x => x.Category)
                 .WithMany(x => x.Products)

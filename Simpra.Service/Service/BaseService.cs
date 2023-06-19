@@ -33,7 +33,7 @@ namespace Simpra.Service.Service
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"AddAsync Exception");
+                Log.Error(ex, "AddAsync Exception");
                 throw new Exception($"{entity.GetType().Name} cannot create. Error message:{ex.Message}");
             }
         }
@@ -89,7 +89,7 @@ namespace Simpra.Service.Service
                 var entity = await _repository.GetByIdAsync(id);
                 if (entity == null)
                     throw new NotFoundException($"{typeof(T).Name} ({id}) not found!");
-                
+
                 return entity;
             }
             catch (Exception ex)

@@ -11,7 +11,7 @@
         public decimal WalletAmount { get; set; }
         public string CouponCode { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
-        public User User { get; set; }
-        public int UserId { get; set; }
+        public AppUser User { get; set; }
+        public string UserId { get; set; }
     }
 }

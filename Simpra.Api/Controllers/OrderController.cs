@@ -47,9 +47,9 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStatus(int id,[FromQuery] string status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] string status)
         {
-            var orderResult = await _service.UpdateOrderStatusAsync(id,status);
+            var orderResult = await _service.UpdateOrderStatusAsync(id, status);
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }

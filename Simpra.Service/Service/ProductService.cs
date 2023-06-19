@@ -34,7 +34,7 @@ namespace Simpra.Service.Service
                 // Stok 0 dan küçük olmamalı
                 if (product.Stock < 0)
                     throw new NotFoundException("Product stock cannot be less than 0!");
-                
+
                 // Stok 0 ise ürün pasif duruma geçiyor ve status durumu otomatik değiştiriliyor.
                 if (product.Stock == 0)
                 {

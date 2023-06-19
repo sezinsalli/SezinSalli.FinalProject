@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Simpra.Core.Entity;
+﻿using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 
 namespace Simpra.Repository.Repository

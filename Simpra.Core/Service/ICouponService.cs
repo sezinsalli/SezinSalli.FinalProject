@@ -1,5 +1,4 @@
 ﻿using Simpra.Core.Entity;
-using Simpra.Schema.CouponRR;
 
 namespace Simpra.Core.Service
 {

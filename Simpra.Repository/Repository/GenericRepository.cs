@@ -78,7 +78,7 @@ namespace Simpra.Repository.Repository
 
         public IEnumerable<T> WhereWithInclude(Expression<Func<T, bool>> expression, params string[] includes)
         {
-            var query =_dbSet.AsQueryable();
+            var query = _dbSet.AsQueryable();
             query.Where(expression);
             query = includes.Aggregate(query, (current, inc) => current.Include(inc));
             return query.ToList();

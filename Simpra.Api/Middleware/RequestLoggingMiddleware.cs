@@ -13,7 +13,7 @@ public class RequestLoggingMiddleware
     private readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager;
     private readonly Action<RequestProfilerModel> requestResponseHandler;
     private const int ReadChunkBufferLength = 4096;
-    public RequestLoggingMiddleware(RequestDelegate next,Action<RequestProfilerModel> requestResponseHandler)
+    public RequestLoggingMiddleware(RequestDelegate next, Action<RequestProfilerModel> requestResponseHandler)
     {
         this.next = next;
         this.requestResponseHandler = requestResponseHandler;
@@ -53,7 +53,7 @@ public class RequestLoggingMiddleware
             model.Response = FormatResponse(context, newResponseBody);
             model.ResponseTime = new DateTimeOffset();
             requestResponseHandler(model);
-        }    
+        }
     }
 
     private string FormatResponse(HttpContext context, MemoryStream newResponseBody)

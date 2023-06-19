@@ -1,7 +1,6 @@
 ﻿using Serilog;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Response;
-using System.Net;
 using System.Text.Json;
 
 namespace Simpra.Api.Middleware

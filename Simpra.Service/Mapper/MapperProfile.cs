@@ -4,7 +4,7 @@ using Simpra.Schema.CategoryRR;
 using Simpra.Schema.CouponRR;
 using Simpra.Schema.OrderRR;
 using Simpra.Schema.ProductRR;
-
+using Simpra.Schema.UserRR;
 
 namespace Simpra.Service.Mapper
 {
@@ -33,6 +33,10 @@ namespace Simpra.Service.Mapper
             CreateMap<CouponUpdateRequest, Coupon>().ReverseMap();
             CreateMap<CouponCreateRequest, Coupon>().ReverseMap();
 
+
+            CreateMap<AppUser, AppUserResponse>().ReverseMap();
+            CreateMap<AppUser, AppUserCreateRequest>().ReverseMap();
+            CreateMap<AppUser, AppUserUpdateRequest>().ReverseMap();
         }
     }
 }

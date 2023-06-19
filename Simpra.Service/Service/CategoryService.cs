@@ -24,7 +24,7 @@ namespace Simpra.Service.Service
         {
             try
             {
-                var entity = await _categoryRepository.GetByIdWithIncludeAsync(id,"Products");
+                var entity = await _categoryRepository.GetByIdWithIncludeAsync(id, "Products");
                 if (entity == null)
                     throw new NotFoundException($"Category ({id}) not found!");
 

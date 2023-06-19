@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using Serilog;
+﻿using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
-using Simpra.Repository.Repository;
-using Simpra.Repository.UnitofWork;
-using Simpra.Schema.CouponRR;
 
 namespace Simpra.Service.Service
 {
@@ -20,7 +16,7 @@ namespace Simpra.Service.Service
             _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
         }
 
-        public async Task<Coupon> CreateCouponAsync(Coupon coupon,int expirationDay)
+        public async Task<Coupon> CreateCouponAsync(Coupon coupon, int expirationDay)
         {
             try
             {

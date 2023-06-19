@@ -13,18 +13,18 @@ namespace Simpra.Service.Service
     public class OrderService : BaseService<Order>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly ICouponRepository _couponRepository;
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OrderService(IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper, IUserRepository userRepository, ICouponRepository couponRepository, IProductRepository productRepository) : base(orderRepository, unitofWork)
+        public OrderService(IUnitOfWork unitofWork, IOrderRepository orderRepository, IMapper mapper, IUserService userService, ICouponRepository couponRepository, IProductRepository productRepository) : base(orderRepository, unitofWork)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
             _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _couponRepository = couponRepository ?? throw new ArgumentNullException(nameof(couponRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
@@ -46,7 +46,7 @@ namespace Simpra.Service.Service
         {
             try
             {
-                var order = await _orderRepository.GetByIdWithIncludeAsync(id,"OrderDetails");
+                var order = await _orderRepository.GetByIdWithIncludeAsync(id, "OrderDetails");
                 if (order == null)
                     throw new NotFoundException($"Order ({id}) not found!");
 
@@ -63,7 +63,7 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-        public async Task<Order> UpdateOrderStatusAsync(int id,string status)
+        public async Task<Order> UpdateOrderStatusAsync(int id, string status)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Simpra.Service.Service
         {
             try
             {
-                var user = await _userRepository.GetByIdAsync(order.UserId);
+                var user = await _userService.GetByIdAsync(order.UserId);
                 if (user == null)
                     throw new NotFoundException($"Order with userId ({order.UserId}) didn't find in the database.");
 
@@ -122,7 +122,7 @@ namespace Simpra.Service.Service
                 order.Status = "Just Ordered!";
                 order.OrderNumber = await GenerateOrderNumber();
 
-                _userRepository.Update(user);
+                //await _userService.UpdateAsync(user);
                 await _orderRepository.AddAsync(order);
                 await _unitOfWork.CompleteAsync();
                 return order;
@@ -143,7 +143,7 @@ namespace Simpra.Service.Service
             var order = _mapper.Map<Order>(orderRequest);
 
             // Check user
-            var user = await _userRepository.GetByIdAsync(order.UserId);
+            var user = await _userService.GetByIdAsync(order.UserId);
 
             if (user == null)
             {
@@ -187,13 +187,13 @@ namespace Simpra.Service.Service
             user.DigitalWalletBalance += earnedPoints;
 
             order.IsActive = true;
-            _userRepository.Update(user);
+            //await _userService.UpdateAsync(user);
             await _orderRepository.AddAsync(order);
             await _unitOfWork.CompleteAsync();
             return order;
         }
 
-        private void CheckDigitalWalletUsing(ref User user, ref Order order)
+        private void CheckDigitalWalletUsing(ref AppUser user, ref Order order)
         {
             if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
             {
@@ -242,12 +242,12 @@ namespace Simpra.Service.Service
                 order.BillingAmount = 0;
             }
         }
-        private async Task<decimal> CheckEarnPoints(Order order, User user)
+        private async Task<decimal> CheckEarnPoints(Order order, AppUser user)
         {
             double earnedPoint = 0;
             foreach (var od in order.OrderDetails)
             {
-                var product=await _productRepository.GetByIdAsync(od.ProductId);
+                var product = await _productRepository.GetByIdAsync(od.ProductId);
 
                 if (product == null)
                     throw new NotFoundException($"Product with ProductId ({od.ProductId}) didn't find in the database.");
@@ -258,7 +258,7 @@ namespace Simpra.Service.Service
                 }
                 else
                 {
-                    earnedPoint += (Convert.ToDouble(product.Price) * product.EarningPercentage*od.Quantity);
+                    earnedPoint += (Convert.ToDouble(product.Price) * product.EarningPercentage * od.Quantity);
                 }
 
                 if (order.TotalAmount - order.BillingAmount > 0)

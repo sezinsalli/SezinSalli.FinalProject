@@ -35,8 +35,8 @@ namespace Simpra.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
         {
-            var coupon=_mapper.Map<Coupon>(couponCreateRequest);
-            var response = await _couponService.CreateCouponAsync(coupon,couponCreateRequest.ExpirationDay);
+            var coupon = _mapper.Map<Coupon>(couponCreateRequest);
+            var response = await _couponService.CreateCouponAsync(coupon, couponCreateRequest.ExpirationDay);
             var couponResponse = _mapper.Map<CouponResponse>(response);
             return CreateActionResult(CustomResponse<CouponResponse>.Success(200, couponResponse));
         }

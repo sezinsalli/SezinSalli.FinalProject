@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Serilog;
+﻿using Serilog;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
@@ -11,13 +10,13 @@ namespace Simpra.Service.Service
     public class BasketService : IBasketService
     {
         private readonly RedisService _redisService;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly IProductRepository _productRepository;
 
-        public BasketService(RedisService redisService, IUserRepository userRepository, IProductRepository productRepository)
+        public BasketService(RedisService redisService, IUserService userService, IProductRepository productRepository)
         {
             _redisService = redisService ?? throw new ArgumentNullException(nameof(redisService));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
@@ -49,7 +48,7 @@ namespace Simpra.Service.Service
                 if (existBasket.IsNullOrEmpty)
                     throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
 
-                var basketResponse= JsonSerializer.Deserialize<BasketResponse>(existBasket);
+                var basketResponse = JsonSerializer.Deserialize<BasketResponse>(existBasket);
                 return basketResponse;
             }
             catch (Exception ex)
@@ -69,8 +68,8 @@ namespace Simpra.Service.Service
             try
             {
                 // UserId Check => Token ile alırsak buna gerek yok artık
-                var userCheck = await _userRepository.AnyAsync(x => x.Id == basketRequest.UserId);
-                if (!userCheck)
+                var userCheck = await _userService.GetByIdAsync(basketRequest.UserId);
+                if (userCheck == null)
                     throw new NotFoundException($"User with id ({basketRequest.UserId}) didn't find in the database.");
 
                 // Product Check => Product stoktan fazla olan bir ürün eklenmemesi için kontrol
