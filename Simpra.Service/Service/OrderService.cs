@@ -122,7 +122,7 @@ namespace Simpra.Service.Service
                 order.Status = "Just Ordered!";
                 order.OrderNumber = await GenerateOrderNumber();
 
-                //await _userService.UpdateAsync(user);
+                await _userService.UpdateWalletBalanceAsync(user.DigitalWalletBalance, user.Id);
                 await _orderRepository.AddAsync(order);
                 await _unitOfWork.CompleteAsync();
                 return order;
@@ -187,7 +187,7 @@ namespace Simpra.Service.Service
             user.DigitalWalletBalance += earnedPoints;
 
             order.IsActive = true;
-            //await _userService.UpdateAsync(user);
+            await _userService.UpdateWalletBalanceAsync(user.DigitalWalletBalance, user.Id);
             await _orderRepository.AddAsync(order);
             await _unitOfWork.CompleteAsync();
             return order;

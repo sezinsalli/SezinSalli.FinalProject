@@ -30,9 +30,7 @@ namespace Simpra.Service.Mapper
             CreateMap<OrderDetailResponse, OrderDetail>().ReverseMap();
 
             CreateMap<Coupon, CouponResponse>().ReverseMap();
-            CreateMap<CouponUpdateRequest, Coupon>().ReverseMap();
             CreateMap<CouponCreateRequest, Coupon>().ReverseMap();
-
 
             CreateMap<AppUser, AppUserResponse>().ReverseMap();
             CreateMap<AppUser, AppUserCreateRequest>().ReverseMap();

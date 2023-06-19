@@ -62,9 +62,9 @@ public class UserController : CustomBaseController
     [HttpPut("{id}")]
     public async Task<CustomResponse<AppUserResponse>> Put(string id, [FromBody] AppUserUpdateRequest request)
     {
-        var user=await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
+        var user = await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
-        return CustomResponse<AppUserResponse>.Success(200,userResponse);
+        return CustomResponse<AppUserResponse>.Success(200, userResponse);
     }
 
     [HttpDelete("{id}")]
@@ -73,4 +73,6 @@ public class UserController : CustomBaseController
         await _service.DeleteAsync(id);
         return CustomResponse<NoContent>.Success(204);
     }
+
+    // TODO: Puan Sorgulama
 }

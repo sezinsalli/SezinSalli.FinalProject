@@ -12,7 +12,7 @@ namespace Simpra.Schema.OrderRR
         public decimal CouponAmount { get; set; }
         public decimal WalletAmount { get; set; }
         public string CouponCode { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ICollection<OrderDetailResponse> OrderDetails { get; set; }
     }
 }

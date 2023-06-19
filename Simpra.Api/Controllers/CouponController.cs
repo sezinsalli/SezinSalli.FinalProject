@@ -21,7 +21,6 @@ namespace Simpra.Api.Controllers
             _service = service;
             _mapper = mapper;
             _couponService = couponService;
-
         }
 
         [HttpGet]

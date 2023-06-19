@@ -8,6 +8,6 @@ namespace Simpra.Schema.CouponRR
         public decimal DiscountAmount { get; set; }
         public DateTime ExpirationDate { get; set; }
         public bool IsActive { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
     }
 }

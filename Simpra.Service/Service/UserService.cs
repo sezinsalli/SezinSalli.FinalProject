@@ -1,12 +1,10 @@
 ﻿
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
 using Simpra.Service.Exceptions;
-using System.Data.Entity;
 using System.Security.Claims;
 
 namespace Simpra.Service.Service;
@@ -121,6 +119,39 @@ public class UserService : IUserService
     }
 
 
+    public async Task<bool> UpdateWalletBalanceAsync(decimal balance, string id)
+    {
+        try
+        {
+            var userExist = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
+            if (userExist == null)
+                throw new NotFoundException($"User ({id}) not found!");
+
+            userExist.DigitalWalletBalance = balance;
+            userExist.UpdatedAt = DateTime.Now;
+
+            var response = await _userManager.UpdateAsync(userExist);
+            if (!response.Succeeded)
+            {
+                var errorMessages = response.Errors.Select(error => error.Description);
+                var errorMessage = string.Join(", ", errorMessages);
+                throw new Exception(errorMessage);
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            if (ex is NotFoundException)
+            {
+                Log.Warning(ex, "UpdateWalletBalanceAsync Exception - Not Found Error");
+                throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
+            }
+            Log.Error(ex, "UpdateWalletBalanceAsync Exception");
+            throw new Exception($"User cannot update. Error message:{ex.Message}");
+        }
+    }
+
+
     public async Task DeleteAsync(string id)
     {
         try
@@ -129,10 +160,10 @@ public class UserService : IUserService
                 throw new ClientSideException("Please put an valid id");
 
             var user = _userManager.Users.Where(x => x.Id == id).FirstOrDefault();
-            if(user== null)
+            if (user == null)
                 throw new NotFoundException($"User ({id}) not found!");
 
-            var response=await _userManager.DeleteAsync(user);
+            var response = await _userManager.DeleteAsync(user);
             if (!response.Succeeded)
             {
                 var errorMessages = response.Errors.Select(error => error.Description);
