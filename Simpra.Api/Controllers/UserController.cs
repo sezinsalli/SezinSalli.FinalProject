@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
@@ -21,6 +22,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
+    [Authorize]
     public CustomResponse<List<AppUserResponse>> GetAll()
     {
         var users = _service.GetAll();

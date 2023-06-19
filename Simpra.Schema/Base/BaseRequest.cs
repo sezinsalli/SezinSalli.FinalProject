@@ -1,6 +1,6 @@
 ﻿namespace Simpra.Schema.Base
 {
-    public class BaseRequest
+    public abstract class BaseRequest
     {
     }
 }

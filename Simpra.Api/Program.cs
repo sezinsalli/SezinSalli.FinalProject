@@ -1,14 +1,18 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Simpra.Api.Extensions;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
+using Simpra.Core.Jwt;
 using Simpra.Service.FluentValidation;
 using Simpra.Service.Mapper;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Serilog
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
@@ -31,6 +35,9 @@ builder.Services.AddRabbitMQExtension(builder.Configuration);
 // Add Redis
 builder.Services.AddRedisExtension(builder.Configuration);
 
+// Add JWT
+builder.Services.AddJwtExtension(builder.Configuration);
+
 //Autofac kütüphanesini yükledikten sonra kullanmak için yazýyoruz.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -40,6 +47,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerB
 // Serilog kullanýyoruz.
 builder.Host.UseSerilog();
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -47,7 +55,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+// Add Auth
+app.UseAuthentication();
 app.UseCustomException();
 app.UseHttpsRedirection();
 app.UseAuthorization();

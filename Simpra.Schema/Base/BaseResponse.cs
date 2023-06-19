@@ -1,6 +1,6 @@
 ﻿namespace Simpra.Schema.Base
 {
-    public class BaseResponse
+    public abstract class BaseResponse
     {
         public int Id { get; set; }
     }
