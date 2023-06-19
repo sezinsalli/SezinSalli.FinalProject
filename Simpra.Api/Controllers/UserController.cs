@@ -22,7 +22,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public CustomResponse<List<AppUserResponse>> GetAll()
     {
         var users = _service.GetAll();
@@ -31,14 +31,16 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public CustomResponse<AppUserResponse> GetById(string id)
     {
+        //var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
         var user = _service.GetById(id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(200, userResponse);
     }
 
-    [HttpGet("GetUser")]
+    [HttpGet("[action]")]
     public async Task<CustomResponse<AppUserResponse>> GetUser()
     {
         var user = await _service.GetUserAsync(HttpContext.User);
@@ -46,7 +48,7 @@ public class UserController : CustomBaseController
         return CustomResponse<AppUserResponse>.Success(200, userResponse);
     }
 
-    [HttpGet("GetUserId")]
+    [HttpGet("[action]")]
     public CustomResponse<string> GetUserId()
     {
         var userId = _service.GetUserId(HttpContext.User);

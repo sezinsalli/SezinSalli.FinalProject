@@ -102,8 +102,8 @@ namespace Simpra.Service.Service
             new Claim("UserId",user.Id.ToString()),
             new Claim("FirstName",user.FirstName),
             new Claim("LastName",user.LastName),
-            new Claim("UserName",user.UserName)
-        };
+            new Claim(ClaimTypes.Role,"admin"),
+            };
 
             return claims;
         }

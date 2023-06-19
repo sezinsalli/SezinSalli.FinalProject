@@ -26,16 +26,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
-// Add DbContext and IdentityUser
+// DbContext and IdentityUser
 builder.Services.AddDbContextExtension(builder.Configuration);
 
-// Add RabbitMQ and MassTransit
+// RabbitMQ and MassTransit
 builder.Services.AddRabbitMQExtension(builder.Configuration);
 
-// Add Redis
+// Redis
 builder.Services.AddRedisExtension(builder.Configuration);
 
-// Add JWT
+// JWT
 builder.Services.AddJwtExtension(builder.Configuration);
 
 //Autofac kütüphanesini yükledikten sonra kullanmak için yazýyoruz.
