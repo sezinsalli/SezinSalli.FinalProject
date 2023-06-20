@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Service;
 using Simpra.Schema.TokenRR;
@@ -33,9 +34,11 @@ public class AuthenticationController : CustomBaseController
     }
 
     [HttpPost("ChangePassword")]
+    [Authorize]
     public async Task<CustomResponse<NoContent>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await service.ChangePassword(HttpContext.User,request);
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        await service.ChangePassword(userId,request);
         return CustomResponse<NoContent>.Success(204);
     }    
 

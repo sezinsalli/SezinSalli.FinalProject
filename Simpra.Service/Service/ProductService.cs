@@ -38,6 +38,7 @@ namespace Simpra.Service.Service
                 // Stok 0 ise ürün pasif duruma geçiyor ve status durumu otomatik değiştiriliyor.
                 if (product.Stock == 0)
                 {
+                    product.Status = Core.Enum.ProductStatus.OutOfStock;
                     product.IsActive = false;
                 }
 

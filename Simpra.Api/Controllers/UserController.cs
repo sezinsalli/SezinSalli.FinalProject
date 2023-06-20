@@ -23,7 +23,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
-    [Authorize(Roles = Role.Admin)]
+    //[Authorize(Roles = Role.Admin)]
     public CustomResponse<List<AppUserResponse>> GetAll()
     {
         var users = _service.GetAll();
@@ -32,7 +32,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = Role.User)]
+    //[Authorize(Roles = Role.User)]
     public CustomResponse<AppUserResponse> GetById(string id)
     {
         var user = _service.GetById(id);

@@ -13,6 +13,6 @@ namespace Simpra.Core.Service
     {
         Task<TokenResponse> SignIn(TokenRequest request);
         Task SignOut();
-        Task ChangePassword(ClaimsPrincipal User, ChangePasswordRequest request);
+        Task ChangePassword(string userId, ChangePasswordRequest request);
     }
 }

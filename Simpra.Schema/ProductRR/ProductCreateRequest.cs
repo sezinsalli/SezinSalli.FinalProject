@@ -10,6 +10,7 @@ namespace Simpra.Schema.ProductRR
         public decimal Price { get; set; }
         public string Property { get; set; }
         public string Definition { get; set; }
+        public int Status { get; set; }
         public bool IsActive { get; set; }
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }

@@ -22,13 +22,15 @@ namespace Simpra.Service.Service
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IUserService _userService;
         private readonly JwtConfig _jwtConfig;
 
-        public AuthenticationService(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager, IOptionsMonitor<JwtConfig> jwtConfig)
+        public AuthenticationService(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager, IOptionsMonitor<JwtConfig> jwtConfig, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtConfig = jwtConfig.CurrentValue;
+            _userService = userService;
         }
 
         public async Task<TokenResponse> SignIn(TokenRequest request)
@@ -65,7 +67,7 @@ namespace Simpra.Service.Service
             await _signInManager.SignOutAsync();
         }
 
-        public async Task ChangePassword(ClaimsPrincipal User, ChangePasswordRequest request)
+        public async Task ChangePassword(string userId, ChangePasswordRequest request)
         {
             if (request is null)
                 throw new ClientSideException($"Request was null!");
@@ -73,7 +75,8 @@ namespace Simpra.Service.Service
             if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.OldPassword))
                 throw new ClientSideException($"Request was null!");
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = _userService.GetById(userId);
+
             var response = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.Password);
 
             if (!response.Succeeded)

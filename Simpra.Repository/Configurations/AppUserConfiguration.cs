@@ -8,10 +8,15 @@ namespace Simpra.Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.Property(x => x.DigitalWalletInformation).IsRequired(true);
+            builder.Property(x => x.FirstName).IsRequired(true).HasMaxLength(30);
+            builder.Property(x => x.LastName).IsRequired(true).HasMaxLength(30);
             builder.Property(x => x.DigitalWalletBalance).IsRequired(true).HasColumnType("decimal(18,2)");
-
-            builder.HasIndex(x => x.UserName).IsUnique();
+            builder.Property(x => x.DigitalWalletInformation).IsRequired(false).HasMaxLength(100);
+            builder.Property(x => x.CreatedAt).IsRequired(true);
+            builder.Property(x => x.CreatedBy).IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.UpdatedAt).IsRequired(false);
+            builder.Property(x => x.UpdatedBy).IsRequired(false).HasMaxLength(30);
+            builder.HasIndex(x => x.UserName).IsUnique(true);
         }
     }
 }
