@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Simpra.Core.Entity;
+using Simpra.Core.Enum;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
@@ -63,7 +64,7 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-        public async Task<Order> UpdateOrderStatusAsync(int id, string status)
+        public async Task<Order> UpdateOrderStatusAsync(int id, int status)
         {
             try
             {
@@ -72,7 +73,7 @@ namespace Simpra.Service.Service
                 if (order == null)
                     throw new NotFoundException($"Order ({id}) not found!");
 
-                order.Status = status;
+                order.Status=SetOrderStatus(status);
                 _orderRepository.Update(order);
                 await _unitOfWork.CompleteAsync();
                 return order;
@@ -120,7 +121,7 @@ namespace Simpra.Service.Service
 
                 user.DigitalWalletBalance = await CheckEarnPoints(order, user);
                 order.IsActive = true;
-                order.Status = "Just Ordered!";
+                order.Status = Core.Enum.OrderStatus.Pending;
                 order.OrderNumber = await GenerateOrderNumber();
 
                 await _userService.UpdateWalletBalanceAsync(user.DigitalWalletBalance, user.Id);
@@ -285,7 +286,30 @@ namespace Simpra.Service.Service
             return ordernumber.ToString();
         }
 
-
+        private OrderStatus SetOrderStatus(int status)
+        {
+            switch (status)
+            {
+                case 1:
+                    return OrderStatus.Pending;
+                case 2:
+                    return OrderStatus.Processing;
+                case 3:
+                    return OrderStatus.Shipped;
+                case 4:
+                    return OrderStatus.Delivered;
+                case 5:
+                    return OrderStatus.Cancelled;
+                case 6:
+                    return OrderStatus.Returned;
+                case 7:
+                    return OrderStatus.OnHold;
+                case 8:
+                    return OrderStatus.None;
+                default:
+                    throw new ClientSideException("Invalid order status!");
+            }
+        }
     }
 
 }

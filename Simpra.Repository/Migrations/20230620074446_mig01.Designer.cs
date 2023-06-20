@@ -12,8 +12,8 @@ using Simpra.Repository;
 namespace Simpra.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230618130902_migV01")]
-    partial class migV01
+    [Migration("20230620074446_mig01")]
+    partial class mig01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -298,38 +298,20 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(509),
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 481, DateTimeKind.Local).AddTicks(9979),
                             CreatedBy = "Sezin",
-                            Name = "E-book",
+                            Name = "Category 1",
                             Tag = "test1",
-                            Url = "www.test1.com"
+                            Url = "www.test.com"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(520),
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 481, DateTimeKind.Local).AddTicks(9989),
                             CreatedBy = "Sezin",
-                            Name = "Videos",
-                            Tag = "test1",
-                            Url = "www.test1.com"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(521),
-                            CreatedBy = "Sezin",
-                            Name = "Animation",
-                            Tag = "test1",
-                            Url = "www.test1.com"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(522),
-                            CreatedBy = "Sezin",
-                            Name = "stok fotoğraflar",
-                            Tag = "test1",
-                            Url = "www.test1.com"
+                            Name = "Category 2",
+                            Tag = "test2",
+                            Url = "www.test.com"
                         });
                 });
 
@@ -416,10 +398,9 @@ namespace Simpra.Repository.Migrations
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -512,6 +493,9 @@ namespace Simpra.Repository.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -536,16 +520,65 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(939),
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(193),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
-                            EarningPercentage = 0.5,
+                            EarningPercentage = 0.12,
                             IsActive = true,
-                            MaxPuanAmount = 100.0,
+                            MaxPuanAmount = 10.0,
                             Name = "Product 1",
-                            Price = 9.99m,
+                            Price = 100.00m,
                             Property = "Property 1",
-                            Stock = 10
+                            Status = 1,
+                            Stock = 20
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(197),
+                            CreatedBy = "Sezin",
+                            Definition = "Definition 2",
+                            EarningPercentage = 0.20000000000000001,
+                            IsActive = true,
+                            MaxPuanAmount = 30.0,
+                            Name = "Product 2",
+                            Price = 200.00m,
+                            Property = "Property 2",
+                            Status = 1,
+                            Stock = 15
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(200),
+                            CreatedBy = "Sezin",
+                            Definition = "Definition 3",
+                            EarningPercentage = 0.20000000000000001,
+                            IsActive = true,
+                            MaxPuanAmount = 8.0,
+                            Name = "Product 3",
+                            Price = 50.00m,
+                            Property = "Property 3",
+                            Status = 1,
+                            Stock = 8
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(201),
+                            CreatedBy = "Sezin",
+                            Definition = "Definition 4",
+                            EarningPercentage = 0.050000000000000003,
+                            IsActive = false,
+                            MaxPuanAmount = 4.0,
+                            Name = "Product 4",
+                            Price = 100.00m,
+                            Property = "Property 4",
+                            Status = 3,
+                            Stock = 20
                         });
                 });
 

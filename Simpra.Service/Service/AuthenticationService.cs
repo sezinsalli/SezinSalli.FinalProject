@@ -44,8 +44,11 @@ namespace Simpra.Service.Service
                 throw new ClientSideException($"Invalid user!");
 
             var user = await _userManager.FindByNameAsync(request.UserName);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles is null)
+                throw new ClientSideException($"User role was null!");
 
-            string token = Token(user);
+            string token = Token(user,roles.FirstOrDefault());
 
             TokenResponse tokenResponse = new TokenResponse
             {
@@ -77,9 +80,9 @@ namespace Simpra.Service.Service
                 throw new ClientSideException($"Change password error");
         }
 
-        private string Token(AppUser user)
+        private string Token(AppUser user,string role)
         {
-            Claim[] claims = GetClaims(user);
+            Claim[] claims = GetClaims(user,role);
             var secret = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
             var jwtToken = new JwtSecurityToken(
@@ -94,7 +97,7 @@ namespace Simpra.Service.Service
             return accessToken;
         }
 
-        private Claim[] GetClaims(AppUser user)
+        private Claim[] GetClaims(AppUser user, string role)
         {
             var claims = new[]
             {
@@ -102,7 +105,7 @@ namespace Simpra.Service.Service
             new Claim("UserId",user.Id.ToString()),
             new Claim("FirstName",user.FirstName),
             new Claim("LastName",user.LastName),
-            new Claim(ClaimTypes.Role,"admin"),
+            new Claim(ClaimTypes.Role,role),
             };
 
             return claims;

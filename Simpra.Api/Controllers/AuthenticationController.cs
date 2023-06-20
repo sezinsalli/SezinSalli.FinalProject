@@ -38,4 +38,5 @@ public class AuthenticationController : CustomBaseController
         await service.ChangePassword(HttpContext.User,request);
         return CustomResponse<NoContent>.Success(204);
     }    
+
 }

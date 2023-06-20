@@ -13,7 +13,6 @@ namespace Simpra.Service.Mapper
         public MapperProfile()
         {
             CreateMap<Category, CategoryWithProductResponse>().ReverseMap();
-
             CreateMap<Category, CategoryResponse>().ReverseMap();
             CreateMap<Category, CategoryCreateRequest>().ReverseMap();
             CreateMap<CategoryUpdateRequest, Category>().ReverseMap();
@@ -35,6 +34,7 @@ namespace Simpra.Service.Mapper
             CreateMap<AppUser, AppUserResponse>().ReverseMap();
             CreateMap<AppUser, AppUserCreateRequest>().ReverseMap();
             CreateMap<AppUser, AppUserUpdateRequest>().ReverseMap();
+            CreateMap<AppUser, AdminAppUserCreateRequest>().ReverseMap();
         }
     }
 }

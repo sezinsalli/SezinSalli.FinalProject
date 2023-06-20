@@ -12,8 +12,8 @@ namespace Simpra.Repository.Seed
                 new Category
                 {
                     Id = 1,
-                    Name = "E-book",
-                    Url = "www.test1.com",
+                    Name = "Category 1",
+                    Url = "www.test.com",
                     Tag = "test1",
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Sezin"
@@ -21,27 +21,9 @@ namespace Simpra.Repository.Seed
                 new Category
                 {
                     Id = 2,
-                    Name = "Videos",
-                    Url = "www.test1.com",
-                    Tag = "test1",
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "Sezin"
-                },
-                new Category
-                {
-                    Id = 3,
-                    Name = "Animation",
-                    Url = "www.test1.com",
-                    Tag = "test1",
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "Sezin"
-                },
-                new Category
-                {
-                    Id = 4,
-                    Name = "stok fotoğraflar",
-                    Url = "www.test1.com",
-                    Tag = "test1",
+                    Name = "Category 2",
+                    Url = "www.test.com",
+                    Tag = "test2",
                     CreatedAt = DateTime.Now,
                     CreatedBy = "Sezin"
                 }

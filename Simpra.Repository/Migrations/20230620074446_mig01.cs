@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Simpra.Repository.Migrations
 {
-    public partial class migV01 : Migration
+    public partial class mig01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -214,7 +215,7 @@ namespace Simpra.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Status = table.Column<int>(type: "int", maxLength: 30, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BillingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -249,6 +250,7 @@ namespace Simpra.Repository.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Property = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Definition = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     EarningPercentage = table.Column<double>(type: "float", nullable: false),
                     MaxPuanAmount = table.Column<double>(type: "float", nullable: false),
@@ -298,18 +300,23 @@ namespace Simpra.Repository.Migrations
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(509), "Sezin", "E-book", "test1", null, null, "www.test1.com" },
-                    { 2, new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(520), "Sezin", "Videos", "test1", null, null, "www.test1.com" },
-                    { 3, new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(521), "Sezin", "Animation", "test1", null, null, "www.test1.com" },
-                    { 4, new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(522), "Sezin", "stok fotoğraflar", "test1", null, null, "www.test1.com" }
-                });
+                values: new object[] { 1, new DateTime(2023, 6, 20, 10, 44, 46, 481, DateTimeKind.Local).AddTicks(9979), "Sezin", "Category 1", "test1", null, null, "www.test.com" });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
+                values: new object[] { 2, new DateTime(2023, 6, 20, 10, 44, 46, 481, DateTimeKind.Local).AddTicks(9989), "Sezin", "Category 2", "test2", null, null, "www.test.com" });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Stock", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, 1, new DateTime(2023, 6, 18, 16, 9, 1, 716, DateTimeKind.Local).AddTicks(939), "Sezin", "Definition 1", 0.5, true, 100.0, "Product 1", 9.99m, "Property 1", 10, null, null });
+                columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Status", "Stock", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(193), "Sezin", "Definition 1", 0.12, true, 10.0, "Product 1", 100.00m, "Property 1", 1, 20, null, null },
+                    { 2, 1, new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(197), "Sezin", "Definition 2", 0.20000000000000001, true, 30.0, "Product 2", 200.00m, "Property 2", 1, 15, null, null },
+                    { 3, 2, new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(200), "Sezin", "Definition 3", 0.20000000000000001, true, 8.0, "Product 3", 50.00m, "Property 3", 1, 8, null, null },
+                    { 4, 2, new DateTime(2023, 6, 20, 10, 44, 46, 482, DateTimeKind.Local).AddTicks(201), "Sezin", "Definition 4", 0.050000000000000003, false, 4.0, "Product 4", 100.00m, "Property 4", 3, 20, null, null }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

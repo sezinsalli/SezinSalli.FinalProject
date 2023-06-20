@@ -1,7 +1,8 @@
 ﻿
+using Simpra.Core.Enum;
+
 namespace Simpra.Core.Entity
 {
-    // TODO: Product Status
     public class Product : BaseEntity
     {
         public string Name { get; set; }
@@ -9,6 +10,7 @@ namespace Simpra.Core.Entity
         public decimal Price { get; set; }
         public string Property { get; set; }
         public string Definition { get; set; }
+        public ProductStatus Status { get; set; }
         public bool IsActive { get; set; }
         public double EarningPercentage { get; set; }
         public double MaxPuanAmount { get; set; }

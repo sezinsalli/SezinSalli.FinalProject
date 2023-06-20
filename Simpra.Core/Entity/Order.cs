@@ -1,9 +1,11 @@
-﻿namespace Simpra.Core.Entity
+﻿using Simpra.Core.Enum;
+
+namespace Simpra.Core.Entity
 {
     public class Order : BaseEntity
     {
         public string OrderNumber { get; set; }
-        public string Status { get; set; }
+        public OrderStatus Status { get; set; }
         public bool IsActive { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal BillingAmount { get; set; }

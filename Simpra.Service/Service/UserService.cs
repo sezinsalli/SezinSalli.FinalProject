@@ -12,11 +12,14 @@ namespace Simpra.Service.Service;
 public class UserService : IUserService
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
-    public UserService(UserManager<AppUser> userManager, IMapper mapper)
+    public UserService(UserManager<AppUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _mapper = mapper;
+        _roleManager = roleManager;
+
     }
 
     public List<AppUser> GetAll()
@@ -54,14 +57,18 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<AppUser> InsertAsync(AppUser user, string password)
+    public async Task<AppUser> InsertAsync(AppUser user, string password,string role)
     {
         try
         {
+            if (!await _roleManager.RoleExistsAsync(role))
+            {
+                var userRole = new IdentityRole(role);
+                await _roleManager.CreateAsync(userRole);
+            }
             user.EmailConfirmed = true;
             user.TwoFactorEnabled = false;
             user.CreatedAt = DateTime.Now;
-
             var response = await _userManager.CreateAsync(user, password);
             if (!response.Succeeded)
             {
@@ -69,7 +76,7 @@ public class UserService : IUserService
                 var errorMessage = string.Join(", ", errorMessages);
                 throw new Exception(errorMessage);
             }
-
+            await _userManager.AddToRoleAsync(user, role);
             return user;
         }
         catch (Exception ex)
@@ -78,6 +85,7 @@ public class UserService : IUserService
             throw new Exception($"User cannot create. Error message:{ex.Message}");
         }
     }
+
 
     // Direkt olarak model "userManager.UpdateAsync" metotuna verdiğimizde; Error message:The instance of entity type 'AppUser' cannot be tracked because another instance with the same key value for {'Id'} is already being tracked.
     public async Task<AppUser> UpdateAsync(AppUser user, string id)

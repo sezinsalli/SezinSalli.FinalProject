@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.UserRR;
 using Simpra.Service.Response;
@@ -22,7 +23,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles = Role.Admin)]
     public CustomResponse<List<AppUserResponse>> GetAll()
     {
         var users = _service.GetAll();
@@ -31,10 +32,9 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("{id}")]
-    [Authorize]
+    [Authorize(Roles = Role.User)]
     public CustomResponse<AppUserResponse> GetById(string id)
     {
-        //var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
         var user = _service.GetById(id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(200, userResponse);
@@ -55,13 +55,22 @@ public class UserController : CustomBaseController
         return CustomResponse<string>.Success(200, userId);
     }
 
-    [HttpPost]
-    public async Task<CustomResponse<AppUserResponse>> Post([FromBody] AppUserCreateRequest request)
+    [HttpPost("[action]")]
+    public async Task<CustomResponse<AppUserResponse>> CreateUser([FromBody] AppUserCreateRequest request)
     {
-        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password);
+        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password,Role.User);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(201, userResponse);
     }
+
+    [HttpPost("[action]")]
+    public async Task<CustomResponse<AppUserResponse>> CreateAdmin([FromBody] AdminAppUserCreateRequest request)
+    {
+        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password,Role.Admin);
+        var userResponse = _mapper.Map<AppUserResponse>(user);
+        return CustomResponse<AppUserResponse>.Success(201, userResponse);
+    }
+
 
     [HttpPut("{id}")]
     public async Task<CustomResponse<AppUserResponse>> Put(string id, [FromBody] AppUserUpdateRequest request)
@@ -78,5 +87,12 @@ public class UserController : CustomBaseController
         return CustomResponse<NoContent>.Success(204);
     }
 
-    // TODO: Puan Sorgulama
+    [HttpGet("[action]")]
+    [Authorize]
+    public CustomResponse<decimal> GetPointBalance()
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        var user=_service.GetById(userId);
+        return CustomResponse<decimal>.Success(200, user.DigitalWalletBalance);
+    }
 }
