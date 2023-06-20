@@ -1,6 +1,6 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Simpra.Api.Messages;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
 using Simpra.Service.Response;
@@ -12,64 +12,45 @@ namespace Simpra.Api.Controllers
     public class BasketController : CustomBaseController
     {
         private readonly IBasketService _basketService;
-        private readonly ISendEndpointProvider _sendEndpointProvider;
-
-        public BasketController(IBasketService basketService, ISendEndpointProvider sendEndpointProvider)
+        public BasketController(IBasketService basketService)
         {
             _basketService = basketService ?? throw new ArgumentNullException(nameof(basketService));
-            _sendEndpointProvider = sendEndpointProvider ?? throw new ArgumentNullException(nameof(sendEndpointProvider));
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBasket(int userId)
+        [Authorize]
+        public async Task<IActionResult> GetBasket()
         {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             var basketResponse = await _basketService.GetBasketAsync(userId);
             return CreateActionResult(CustomResponse<BasketResponse>.Success(200, basketResponse));
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SaveOrUpdateBasket([FromBody] BasketRequest basketRequest)
         {
-            await _basketService.SaveOrUpdateAsync(basketRequest);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            await _basketService.SaveOrUpdateAsync(basketRequest,userId);
             return CreateActionResult(CustomResponse<bool>.Success(204));
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBasket(int userId)
+        [Authorize]
+        public async Task<IActionResult> DeleteBasket()
         {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             await _basketService.DeleteAsync(userId);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 
-        // Basket Check Out UserId ile de alabilir
-
         [Route("[action]")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CheckOut([FromBody] BasketCheckOutRequest basketRequest)
         {
-            //Kuyruk oluşturduk
-            var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:create-order-service"));
-
-            var createOrderMessageCommand = new CreateOrderMessageCommand()
-            {
-                UserId = basketRequest.UserId,
-                TotalPrice = basketRequest.TotalPrice,
-                CouponCode = basketRequest.CouponCode,
-            };
-
-            basketRequest.BasketItems.ForEach(x =>
-            {
-                createOrderMessageCommand.OrderItems.Add(new OrderItemDto
-                {
-                    Quantity = x.Quantity,
-                    UnitPrice = x.UnitPrice,
-                    ProductId = x.ProductId,
-                });
-            });
-
-            //Mesajı gönderiyoruz. Order ayakta olmasa bile mesaj kuyrukta bekleyecek.
-            await sendEndPoint.Send<CreateOrderMessageCommand>(createOrderMessageCommand);
-
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            await _basketService.CheckOutBasketAsync(basketRequest,userId);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 

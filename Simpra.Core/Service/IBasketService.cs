@@ -4,8 +4,9 @@ namespace Simpra.Core.Service
 {
     public interface IBasketService
     {
-        Task<BasketResponse> GetBasketAsync(int userId);
-        Task SaveOrUpdateAsync(BasketRequest basketDto);
-        Task DeleteAsync(int userId);
+        Task<BasketResponse> GetBasketAsync(string userId);
+        Task SaveOrUpdateAsync(BasketRequest basketRequest, string userId);
+        Task DeleteAsync(string userId);
+        Task CheckOutBasketAsync(BasketCheckOutRequest basketRequest, string userId);
     }
 }

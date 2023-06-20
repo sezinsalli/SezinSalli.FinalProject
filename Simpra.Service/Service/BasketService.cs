@@ -1,8 +1,11 @@
-﻿using Serilog;
+﻿using MassTransit;
+using Serilog;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
 using Simpra.Service.Exceptions;
+using Simpra.Service.Messages;
+using Simpra.Service.Response;
 using System.Text.Json;
 
 namespace Simpra.Service.Service
@@ -12,19 +15,21 @@ namespace Simpra.Service.Service
         private readonly RedisService _redisService;
         private readonly IUserService _userService;
         private readonly IProductRepository _productRepository;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public BasketService(RedisService redisService, IUserService userService, IProductRepository productRepository)
+        public BasketService(RedisService redisService, IUserService userService, IProductRepository productRepository, ISendEndpointProvider sendEndpointProvider)
         {
             _redisService = redisService ?? throw new ArgumentNullException(nameof(redisService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _sendEndpointProvider = sendEndpointProvider ?? throw new ArgumentNullException(nameof(sendEndpointProvider));
         }
 
-        public async Task DeleteAsync(int userId)
+        public async Task DeleteAsync(string userId)
         {
             try
             {
-                var status = await _redisService.GetDb().KeyDeleteAsync(userId.ToString());
+                var status = await _redisService.GetDb().KeyDeleteAsync(userId);
                 if (!status)
                     throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
             }
@@ -40,11 +45,11 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task<BasketResponse> GetBasketAsync(int userId)
+        public async Task<BasketResponse> GetBasketAsync(string userId)
         {
             try
             {
-                var existBasket = await _redisService.GetDb().StringGetAsync(userId.ToString());
+                var existBasket = await _redisService.GetDb().StringGetAsync(userId);
                 if (existBasket.IsNullOrEmpty)
                     throw new NotFoundException($"Basket with id ({userId}) didn't find in the database.");
 
@@ -63,14 +68,14 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task SaveOrUpdateAsync(BasketRequest basketRequest)
+        public async Task SaveOrUpdateAsync(BasketRequest basketRequest,string userId)
         {
             try
             {
                 // UserId Check => Token ile alırsak buna gerek yok artık
-                var userCheck = _userService.GetById(basketRequest.UserId);
+                var userCheck = _userService.GetById(userId);
                 if (userCheck == null)
-                    throw new NotFoundException($"User with id ({basketRequest.UserId}) didn't find in the database.");
+                    throw new NotFoundException($"User with id ({userId}) didn't find in the database.");
 
                 // Product Check => Product stoktan fazla olan bir ürün eklenmemesi için kontrol
                 foreach (var basketItem in basketRequest.BasketItems)
@@ -86,7 +91,7 @@ namespace Simpra.Service.Service
                         throw new NotFoundException($"Product with id ({basketItem.ProductId}) didn't active in the database.");
                 }
                 // Create or update basket 
-                var status = await _redisService.GetDb().StringSetAsync(basketRequest.UserId.ToString(), JsonSerializer.Serialize(basketRequest));
+                var status = await _redisService.GetDb().StringSetAsync(userId, JsonSerializer.Serialize(basketRequest));
 
                 if (!status)
                     throw new Exception($"Basket didn't save or update in the database.");
@@ -106,6 +111,34 @@ namespace Simpra.Service.Service
                 Log.Error(ex, "SaveOrUpdateAsync Exception");
                 throw new Exception($"Basket didn't update in the redi. Error message:{ex.Message}");
             }
+        }
+
+        public async Task CheckOutBasketAsync(BasketCheckOutRequest basketRequest,string userId)
+        {
+            //Kuyruk oluşturduk
+            var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:create-order-service"));
+            var basket = await GetBasketAsync(userId);
+
+            var createOrderMessageCommand = new CreateOrderMessageCommand()
+            {
+                UserId = userId,
+                TotalPrice = basket.TotalPrice,
+                CouponCode = basketRequest.CouponCode,
+                CreditCard = basketRequest.CreditCard,
+            };
+
+            basket.BasketItems.ForEach(x =>
+            {
+                createOrderMessageCommand.OrderItems.Add(new OrderItemDto
+                {
+                    Quantity = x.Quantity,
+                    UnitPrice = x.UnitPrice,
+                    ProductId = x.ProductId,
+                });
+            });
+
+            //Mesajı gönderiyoruz. Order ayakta olmasa bile mesaj kuyrukta bekleyecek.
+            await sendEndPoint.Send<CreateOrderMessageCommand>(createOrderMessageCommand);
         }
     }
 }

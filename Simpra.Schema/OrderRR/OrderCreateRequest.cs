@@ -1,4 +1,5 @@
 ﻿using Simpra.Schema.Base;
+using Simpra.Schema.CreditCardRR;
 
 namespace Simpra.Schema.OrderRR
 {
@@ -12,6 +13,7 @@ namespace Simpra.Schema.OrderRR
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
         public ICollection<OrderDetailRequest> OrderDetails { get; set; }
+        public CreditCardRequest CreditCard { get; set; }
 
     }
 }
