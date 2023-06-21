@@ -24,7 +24,6 @@ namespace Simpra.Api.Consumer
 
             var orderCreaterequest = new OrderCreateRequest()
             {
-                TotalPrice = message.TotalPrice,
                 CouponCode = message.CouponCode,
                 CreditCard=message.CreditCard,
             };
@@ -41,7 +40,7 @@ namespace Simpra.Api.Consumer
 
             var order = _mapper.Map<Order>(orderCreaterequest);
 
-            await _orderService.CreateOrderAsync(order,message.UserId);
+            await _orderService.CreateOrderAsync(order,message.UserId,"test");
         }
     }
 }

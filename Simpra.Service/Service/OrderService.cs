@@ -6,6 +6,7 @@ using Simpra.Core.Enum;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
+using Simpra.Schema.CreditCardRR;
 using Simpra.Schema.OrderRR;
 using Simpra.Service.Exceptions;
 
@@ -87,7 +88,7 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-        public async Task<Order> CreateOrderAsync(Order order,string userId)
+        public async Task<Order> CreateOrderAsync(Order order,string userId,string hashedCreditCard)
         {
             try
             {
@@ -98,31 +99,16 @@ namespace Simpra.Service.Service
                 order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
                 order.BillingAmount = order.TotalAmount;
                 order.UserId= user.Id;
-                await CheckAndUpdateProductStock(order);
 
-                if (!string.IsNullOrEmpty(order.CouponCode))
-                {
-                    var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
-                    if (coupon == null)
-                        throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
-                    CheckCouponUsing(ref coupon, ref order);
-                }
-                else
-                {
-                    order.CouponCode = "No Coupon";
-                }
+                await CheckAndUpdateProductStockAsync(order);
+                await CheckCouponUsingAsync(order);
+                CheckDigitalWalletUsing(user, order);
+                CheckCreditCardUsing(hashedCreditCard, order.BillingAmount);
+                await CheckEarnPointsAsync(order, user);
 
-                CheckDigitalWalletUsing(ref user, ref order);
-
-                if (order.BillingAmount > 0)
-                {
-                    CheckCreditCardUsing();
-                }
-
-                user.DigitalWalletBalance = await CheckEarnPoints(order, user);
                 order.IsActive = true;
                 order.Status = Core.Enum.OrderStatus.Pending;
-                order.OrderNumber = await GenerateOrderNumber();
+                order.OrderNumber = await GenerateOrderNumberAsync();
                 await _userService.UpdateWalletBalanceAsync(user.DigitalWalletBalance, user.Id);
                 await _orderRepository.AddAsync(order);
                 await _unitOfWork.CompleteAsync();
@@ -135,12 +121,17 @@ namespace Simpra.Service.Service
                     Log.Warning(ex, "CreateOrderAsync Exception - Not Found Error");
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
+                if (ex is ClientSideException)
+                {
+                    Log.Warning(ex, "CreateOrderAsync Exception - Not Found Error");
+                    throw new ClientSideException($"Client Side Error. Error message:{ex.Message}");
+                }
                 Log.Error(ex, "CreateOrderAsync Exception");
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
 
-        private async Task CheckAndUpdateProductStock(Order order)
+        private async Task CheckAndUpdateProductStockAsync(Order order)
         {
             foreach (var od in order.OrderDetails)
             {
@@ -156,8 +147,18 @@ namespace Simpra.Service.Service
                 _productRepository.Update(product);
             }
         }
-        private void CheckCouponUsing(ref Coupon coupon, ref Order order)
+        private async Task CheckCouponUsingAsync(Order order)
         {
+            if (string.IsNullOrEmpty(order.CouponCode))
+            {
+                order.CouponCode = "No Coupon";
+                return;
+            }
+
+            var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
+            if (coupon == null)
+                throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
+
             if (coupon.UserId != order.UserId)
                 throw new ClientSideException($"Coupon and User Id doesn't match!");
 
@@ -168,7 +169,7 @@ namespace Simpra.Service.Service
             {
                 coupon.IsActive = false;
                 _couponRepository.Update(coupon);
-                _unitOfWork.CompleteAsync();
+                await _unitOfWork.CompleteAsync();
                 throw new ClientSideException($"Coupon isn't active beacause it was expired!");
             }
 
@@ -184,11 +185,11 @@ namespace Simpra.Service.Service
             {
                 order.CouponAmount = order.BillingAmount;
                 coupon.IsActive = false;
-                _couponRepository.Update(coupon);
                 order.BillingAmount = 0;
+                _couponRepository.Update(coupon);
             }
         }
-        private void CheckDigitalWalletUsing(ref AppUser user, ref Order order)
+        private void CheckDigitalWalletUsing(AppUser user, Order order)
         {
             if (order.BillingAmount > 0 && order.BillingAmount >= user.DigitalWalletBalance)
             {
@@ -204,17 +205,21 @@ namespace Simpra.Service.Service
                 order.BillingAmount = 0;
             }
         }
-        private void CheckCreditCardUsing()
+        private void CheckCreditCardUsing(string hashedCreditCard, decimal billingAmount)
         {
+            if (billingAmount <= 0)
+                return;
 
+            if (string.IsNullOrEmpty(hashedCreditCard))
+                throw new Exception("Creditcard is invalid!");
         }
-        private async Task<decimal> CheckEarnPoints(Order order, AppUser user)
+        private async Task CheckEarnPointsAsync(Order order, AppUser user)
         {
             double earnedPoint = 0;
             double discountRate = Convert.ToDouble(order.BillingAmount/order.TotalAmount);
 
             if (discountRate == 0)
-                return user.DigitalWalletBalance;
+                return;
 
             foreach (var od in order.OrderDetails)
             {
@@ -231,9 +236,9 @@ namespace Simpra.Service.Service
                     earnedPoint += (Convert.ToDouble(product.Price) * product.EarningPercentage * od.Quantity * discountRate);
                 }
             }
-            return user.DigitalWalletBalance += Convert.ToDecimal(earnedPoint);
+            user.DigitalWalletBalance += Convert.ToDecimal(earnedPoint);
         }
-        private async Task<string> GenerateOrderNumber()
+        private async Task<string> GenerateOrderNumberAsync()
         {
             var ordernumber = 0;
             do

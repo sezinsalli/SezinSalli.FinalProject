@@ -5,6 +5,7 @@ using Simpra.Core.Entity;
 using Simpra.Core.Jwt;
 using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
+using Simpra.Service.Helper;
 using Simpra.Service.Response;
 
 namespace Simpra.Api.Controllers
@@ -44,7 +45,13 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
-            var orderResult = await _service.CreateOrderAsync(_mapper.Map<Order>(orderCreateRequest),userId);
+
+            // Kredi kartı bilgilerini hashleme
+            string hashedCreditCard = CreditCardHashHelper.HashCreditCardInfo(orderCreateRequest.CreditCard);
+
+            var orderResult = await _service
+                .CreateOrderAsync(_mapper.Map<Order>(orderCreateRequest),userId, hashedCreditCard);
+
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }
