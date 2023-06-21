@@ -14,5 +14,6 @@ namespace Simpra.Core.Service
         Task UpdateAsync(T entity, string changedBy);
         Task RemoveAsync(T entity);
         Task RemoveRangeAsync(IEnumerable<T> entities);
+        IEnumerable<T> WhereWithInclude(Expression<Func<T, bool>> expression, params string[] includes);
     }
 }

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Enum;
 using Simpra.Core.Jwt;
 using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.ProductRR;
 using Simpra.Service.Response;
+using System.Data.Entity;
 
 namespace Simpra.Api.Controllers
 {
@@ -37,6 +39,15 @@ namespace Simpra.Api.Controllers
             var product = await _productService.GetByIdAsync(id);
             var productResponse = _mapper.Map<ProductResponse>(product);
             return CreateActionResult(CustomResponse<ProductResponse>.Success(200, productResponse));
+        }
+
+        [HttpGet("[action]")]
+        [Authorize(Roles = Role.Admin)]
+        public IActionResult GetProductsByStatus([FromQuery] int status)
+        {
+            var products = _productService.Where(x=>x.Status== (ProductStatus)status).ToList();
+            var productResponses = _mapper.Map<List<ProductResponse>>(products);
+            return CreateActionResult(CustomResponse<List<ProductResponse>>.Success(200, productResponses));
         }
 
         [HttpPost]

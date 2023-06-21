@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Simpra.Api.Helper;
 using Simpra.Core.Entity;
+using Simpra.Core.Enum;
 using Simpra.Core.Jwt;
 using Simpra.Core.Role;
 using Simpra.Core.Service;
@@ -25,6 +27,7 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> All()
         {
             var orders = await _service.GetAllAsync();
@@ -33,11 +36,31 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetById(int id)
         {
             var order = await _service.GetByIdAsync(id);
             var orderResponse = _mapper.Map<OrderResponse>(order);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(200, orderResponse));
+        }
+
+        [HttpGet("[action]")]
+        [Authorize(Roles = Role.Admin)]
+        public IActionResult GetOrdersByStatus([FromQuery] int status)
+        {
+            var orders=_service.WhereWithInclude(x=> x.Status==(OrderStatus)status,"OrderDetails");
+            var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
+            return CreateActionResult(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetByUserId()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
+            var orders = await _service.Where(x => x.UserId == userId).ToListAsync();
+            var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
+            return CreateActionResult(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
         }
 
         [HttpPost]
@@ -46,7 +69,7 @@ namespace Simpra.Api.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
 
-            // Kredi kartı bilgilerini hashleme
+            // Kredi kartı bilgilerini hashleme => Gerçek proejelerde Stripe.net gibi araçlar kullanılabilir.
             string hashedCreditCard = CreditCardHashHelper.HashCreditCardInfo(orderCreateRequest.CreditCard);
 
             var orderResult = await _service

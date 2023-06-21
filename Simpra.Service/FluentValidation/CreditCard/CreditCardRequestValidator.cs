@@ -10,7 +10,7 @@ namespace Simpra.Service.FluentValidation.CreditCard
             RuleFor(x => x.CardNumber)
                 .NotNull().WithMessage("{PropertyName} is required")
                 .NotEmpty().WithMessage("{PropertyName} is required")
-                .Length(12).WithMessage("Length of {PropertyName} has to be 12");
+                .Length(16).WithMessage("Length of {PropertyName} has to be 16");
 
             RuleFor(x => x.CVV)
                 .NotNull().WithMessage("{PropertyName} is required")

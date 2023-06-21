@@ -10,7 +10,6 @@ namespace Simpra.Api.Controllers
         [NonAction]
         public IActionResult CreateActionResult<T>(CustomResponse<T> response)
         {
-
             if (response.StatusCode == 204)
                 return new ObjectResult(null)
                 {

@@ -68,7 +68,7 @@ namespace Simpra.Service.Service
                 if (order == null)
                     throw new NotFoundException($"Order ({id}) not found!");
 
-                order.Status = SetOrderStatus(status);
+                order.Status = (OrderStatus)status;
                 order.UpdatedBy = username;
                 _orderRepository.Update(order);
                 await _unitOfWork.CompleteAsync();
@@ -245,30 +245,6 @@ namespace Simpra.Service.Service
             } while (await _orderRepository.AnyAsync(x => x.OrderNumber == ordernumber.ToString()));
 
             return ordernumber.ToString();
-        }
-        private OrderStatus SetOrderStatus(int status)
-        {
-            switch (status)
-            {
-                case 1:
-                    return OrderStatus.Pending;
-                case 2:
-                    return OrderStatus.Processing;
-                case 3:
-                    return OrderStatus.Shipped;
-                case 4:
-                    return OrderStatus.Delivered;
-                case 5:
-                    return OrderStatus.Cancelled;
-                case 6:
-                    return OrderStatus.Returned;
-                case 7:
-                    return OrderStatus.OnHold;
-                case 8:
-                    return OrderStatus.None;
-                default:
-                    throw new ClientSideException("Invalid order status!");
-            }
         }
     }
 

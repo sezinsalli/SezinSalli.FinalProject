@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Simpra.Core.Jwt;
 using Simpra.Core.Service;
 using Simpra.Schema.TokenRR;
 using Simpra.Schema.UserRR;
@@ -36,7 +37,7 @@ public class AuthenticationController : CustomBaseController
     [Authorize]
     public async Task<CustomResponse<NoContent>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
         await service.ChangePassword(userId, request);
         return CustomResponse<NoContent>.Success(204);
     }

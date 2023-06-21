@@ -173,5 +173,18 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
+
+        public virtual IEnumerable<T> WhereWithInclude(Expression<Func<T, bool>> expression, params string[] includes)
+        {
+            try
+            {
+                return _repository.WhereWithInclude(expression,includes);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "WhereWithInclude Exception");
+                throw new Exception($"Something went wrong. Error message:{ex.Message}");
+            }
+        }
     }
 }
