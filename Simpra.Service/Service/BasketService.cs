@@ -118,7 +118,7 @@ namespace Simpra.Service.Service
             try
             {
                 //Kuyruk oluşturduk
-                var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri(Queues.OrderCreate));
+                var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMQConfig.OrderCreate}"));
                 var basket = await GetBasketAsync(userId);
 
                 var createOrderMessageCommand = new CreateOrderMessageCommand()

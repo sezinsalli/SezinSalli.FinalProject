@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Simpra.Api.Consumer;
+using Simpra.Core.RabbitMQ;
 
 namespace Simpra.Api.Extensions
 {
@@ -16,12 +17,12 @@ namespace Simpra.Api.Extensions
                     config.Host(configuration["RabbitMQUrl"], "/", host =>
                     {
                         //Default olarak username ve password guest olarak gelmektedir.
-                        host.Username("guest");
-                        host.Password("guest");
+                        host.Username(RabbitMQConfig.Username);
+                        host.Password(RabbitMQConfig.Password);
                     });
 
                     //Command i okumak için Basket.Api tarafında oluşturduğumuz kuyruğu dinliyoruz.
-                    config.ReceiveEndpoint("create-order-service", e =>
+                    config.ReceiveEndpoint(RabbitMQConfig.OrderCreate, e =>
                     {
                         e.ConfigureConsumer<CreateOrderMessageCommandConsumer>(context);
                     });
