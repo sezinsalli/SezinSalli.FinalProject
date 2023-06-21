@@ -1,4 +1,5 @@
-﻿using Simpra.Core.UnitofWork;
+﻿using Serilog;
+using Simpra.Core.UnitofWork;
 
 namespace Simpra.Repository.UnitofWork
 {
@@ -31,8 +32,9 @@ namespace Simpra.Repository.UnitofWork
                 }
                 catch (Exception ex)
                 {
-                    // logging
+                    Log.Error(ex, "CompleteWithTransaction Exception");                    
                     dbDcontextTransaction.Rollback();
+                    throw new Exception($"Something went wrong! Error message:{ex.Message}");
                 }
             }
         }
@@ -48,8 +50,9 @@ namespace Simpra.Repository.UnitofWork
                 }
                 catch (Exception ex)
                 {
-                    // logging
+                    Log.Error(ex, "CompleteWithTransactionAsync Exception");
                     await dbDcontextTransaction.RollbackAsync();
+                    throw new Exception($"Something went wrong! Error message:{ex.Message}");
                 }
             }
         }
