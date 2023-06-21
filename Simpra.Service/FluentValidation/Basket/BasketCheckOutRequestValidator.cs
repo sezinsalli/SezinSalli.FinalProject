@@ -15,7 +15,7 @@ namespace Simpra.Service.FluentValidation.Basket
         public BasketCheckOutRequestValidator()
         {
             RuleFor(x => x.CouponCode)
-                .MaximumLength(9).WithMessage("{PropertyName} must be less than 10 character");
+                .MaximumLength(10).WithMessage("{PropertyName} must be less than 11 character");
 
             RuleFor(x => x.CreditCard).SetValidator(new CreditCardRequestValidator());
         }

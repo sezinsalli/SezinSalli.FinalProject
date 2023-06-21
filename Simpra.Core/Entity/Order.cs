@@ -1,9 +1,15 @@
 ﻿using Simpra.Core.Enum;
+using Simpra.Schema.OrderRR;
 
 namespace Simpra.Core.Entity
 {
     public class Order : BaseEntity
     {
+        public Order()
+        {
+            OrderDetails = new List<OrderDetail>();
+        }
+
         public string OrderNumber { get; set; }
         public OrderStatus Status { get; set; }
         public bool IsActive { get; set; }

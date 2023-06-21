@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MassTransit;
+using Serilog;
+using Simpra.Api.Helper;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
@@ -22,15 +24,14 @@ namespace Simpra.Api.Consumer
         {
             var message = context.Message;
 
-            var orderCreaterequest = new OrderCreateRequest()
+            var order = new Order
             {
                 CouponCode = message.CouponCode,
-                CreditCard = message.CreditCard,
             };
 
             message.OrderItems.ForEach(x =>
             {
-                orderCreaterequest.OrderDetails.Add(new OrderDetailRequest
+                order.OrderDetails.Add(new OrderDetail
                 {
                     Quantity = x.Quantity,
                     UnitPrice = x.UnitPrice,
@@ -38,9 +39,12 @@ namespace Simpra.Api.Consumer
                 });
             });
 
-            var order = _mapper.Map<Order>(orderCreaterequest);
+            // Kredi kartı bilgilerini hashleme => Gerçek proejelerde Stripe.net gibi araçlar kullanılabilir.
+            string hashedCreditCard = CreditCardHashHelper.HashCreditCardInfo(message.CreditCard);
 
-            await _orderService.CreateOrderAsync(order, message.UserId, "test");
+            var response = await _orderService.CreateOrderAsync(order, message.UserId, hashedCreditCard);
+
+            Log.Information($"Order ({response.OrderNumber}) is successfully created!");
         }
     }
 }

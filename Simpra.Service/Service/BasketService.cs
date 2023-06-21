@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Serilog;
+using Simpra.Core.RabbitMQ;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
@@ -63,7 +64,7 @@ namespace Simpra.Service.Service
                     throw new NotFoundException($"Not Found Error. Error message:{ex.Message}");
                 }
                 Log.Error(ex, "GetBasketAsync Exception");
-                throw new Exception($"Something went wrong!. Error message:{ex.Message}");
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
             }
         }
 
@@ -108,36 +109,44 @@ namespace Simpra.Service.Service
                     throw new ClientSideException($"Basket didn't update in the redi. Error message:{ex.Message}");
                 }
                 Log.Error(ex, "SaveOrUpdateAsync Exception");
-                throw new Exception($"Basket didn't update in the redi. Error message:{ex.Message}");
+                throw new Exception($"Basket didn't update in the redis. Error message:{ex.Message}");
             }
         }
 
         public async Task CheckOutBasketAsync(BasketCheckOutRequest basketRequest, string userId)
         {
-            //Kuyruk oluşturduk
-            var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:create-order-service"));
-            var basket = await GetBasketAsync(userId);
-
-            var createOrderMessageCommand = new CreateOrderMessageCommand()
+            try
             {
-                UserId = userId,
-                TotalPrice = basket.TotalPrice,
-                CouponCode = basketRequest.CouponCode,
-                CreditCard = basketRequest.CreditCard,
-            };
+                //Kuyruk oluşturduk
+                var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri(Queues.OrderCreate));
+                var basket = await GetBasketAsync(userId);
 
-            basket.BasketItems.ForEach(x =>
-            {
-                createOrderMessageCommand.OrderItems.Add(new OrderItemDto
+                var createOrderMessageCommand = new CreateOrderMessageCommand()
                 {
-                    Quantity = x.Quantity,
-                    UnitPrice = x.UnitPrice,
-                    ProductId = x.ProductId,
-                });
-            });
+                    UserId = userId,
+                    TotalPrice = basket.TotalPrice,
+                    CouponCode = basketRequest.CouponCode,
+                    CreditCard = basketRequest.CreditCard,
+                };
 
-            //Mesajı gönderiyoruz. Order ayakta olmasa bile mesaj kuyrukta bekleyecek.
-            await sendEndPoint.Send<CreateOrderMessageCommand>(createOrderMessageCommand);
+                basket.BasketItems.ForEach(x =>
+                {
+                    createOrderMessageCommand.OrderItems.Add(new OrderItemDto
+                    {
+                        Quantity = x.Quantity,
+                        UnitPrice = x.UnitPrice,
+                        ProductId = x.ProductId,
+                    });
+                });
+
+                //Mesajı gönderiyoruz. Order ayakta olmasa bile mesaj kuyrukta bekleyecek.
+                await sendEndPoint.Send<CreateOrderMessageCommand>(createOrderMessageCommand);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "CheckOutBasketAsync Exception");
+                throw new Exception($"Something went wrong! Error message:{ex.Message}");
+            }
         }
     }
 }
