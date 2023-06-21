@@ -5,8 +5,7 @@ namespace Simpra.Core.Service
 {
     public interface IOrderService : IBaseService<Order>
     {
-        Task<Order> CreateOrderAsync(Order order);
-        Task<Order> CreateOrderFromMessage(OrderCreateRequest orderRequest);
+        Task<Order> CreateOrderAsync(Order order, string userId);
         Task<Order> UpdateOrderStatusAsync(int id, int status);
     }
 }

@@ -10,7 +10,6 @@ namespace Simpra.Schema.OrderRR
             OrderDetails = new List<OrderDetailRequest>();
         }
         public string CouponCode { get; set; }
-        public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
         public ICollection<OrderDetailRequest> OrderDetails { get; set; }
         public CreditCardRequest CreditCard { get; set; }

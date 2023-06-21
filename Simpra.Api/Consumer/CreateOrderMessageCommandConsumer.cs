@@ -1,4 +1,6 @@
-﻿using MassTransit;
+﻿using AutoMapper;
+using MassTransit;
+using Simpra.Core.Entity;
 using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
 using Simpra.Service.Messages;
@@ -8,10 +10,12 @@ namespace Simpra.Api.Consumer
     public class CreateOrderMessageCommandConsumer : IConsumer<CreateOrderMessageCommand>
     {
         private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
 
-        public CreateOrderMessageCommandConsumer(IOrderService orderService)
+        public CreateOrderMessageCommandConsumer(IOrderService orderService,IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         public async Task Consume(ConsumeContext<CreateOrderMessageCommand> context)
@@ -21,7 +25,6 @@ namespace Simpra.Api.Consumer
             var orderCreaterequest = new OrderCreateRequest()
             {
                 TotalPrice = message.TotalPrice,
-                UserId = message.UserId,
                 CouponCode = message.CouponCode,
                 CreditCard=message.CreditCard,
             };
@@ -36,7 +39,9 @@ namespace Simpra.Api.Consumer
                 });
             });
 
-            await _orderService.CreateOrderFromMessage(orderCreaterequest);
+            var order = _mapper.Map<Order>(orderCreaterequest);
+
+            await _orderService.CreateOrderAsync(order,message.UserId);
         }
     }
 }

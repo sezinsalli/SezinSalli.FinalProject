@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Jwt;
 using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
 using Simpra.Service.Response;
@@ -38,10 +40,11 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
         {
-            var order = _mapper.Map<Order>(orderCreateRequest);
-            var orderResult = await _service.CreateOrderAsync(order);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
+            var orderResult = await _service.CreateOrderAsync(_mapper.Map<Order>(orderCreateRequest),userId);
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }
