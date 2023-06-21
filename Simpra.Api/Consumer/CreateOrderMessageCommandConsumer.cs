@@ -12,7 +12,7 @@ namespace Simpra.Api.Consumer
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
 
-        public CreateOrderMessageCommandConsumer(IOrderService orderService,IMapper mapper)
+        public CreateOrderMessageCommandConsumer(IOrderService orderService, IMapper mapper)
         {
             _orderService = orderService;
             _mapper = mapper;
@@ -25,7 +25,7 @@ namespace Simpra.Api.Consumer
             var orderCreaterequest = new OrderCreateRequest()
             {
                 CouponCode = message.CouponCode,
-                CreditCard=message.CreditCard,
+                CreditCard = message.CreditCard,
             };
 
             message.OrderItems.ForEach(x =>
@@ -40,7 +40,7 @@ namespace Simpra.Api.Consumer
 
             var order = _mapper.Map<Order>(orderCreaterequest);
 
-            await _orderService.CreateOrderAsync(order,message.UserId,"test");
+            await _orderService.CreateOrderAsync(order, message.UserId, "test");
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Simpra.Schema.Base;
-
-namespace Simpra.Schema.TokenRR;
+﻿namespace Simpra.Schema.TokenRR;
 
 public class TokenRequest
 {

@@ -300,7 +300,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 261, DateTimeKind.Local).AddTicks(9881),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8145),
                             CreatedBy = "Sezin",
                             Name = "Category 1",
                             Tag = "test1",
@@ -309,7 +309,7 @@ namespace Simpra.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 261, DateTimeKind.Local).AddTicks(9895),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8155),
                             CreatedBy = "Sezin",
                             Name = "Category 2",
                             Tag = "test2",
@@ -521,7 +521,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(79),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8364),
                             CreatedBy = "Sezin",
                             Definition = "Definition 1",
                             EarningPercentage = 0.12,
@@ -537,7 +537,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(82),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8368),
                             CreatedBy = "Sezin",
                             Definition = "Definition 2",
                             EarningPercentage = 0.20000000000000001,
@@ -553,7 +553,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 3,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(83),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8369),
                             CreatedBy = "Sezin",
                             Definition = "Definition 3",
                             EarningPercentage = 0.20000000000000001,
@@ -569,7 +569,7 @@ namespace Simpra.Repository.Migrations
                         {
                             Id = 4,
                             CategoryId = 2,
-                            CreatedAt = new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(84),
+                            CreatedAt = new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8370),
                             CreatedBy = "Sezin",
                             Definition = "Definition 4",
                             EarningPercentage = 0.050000000000000003,

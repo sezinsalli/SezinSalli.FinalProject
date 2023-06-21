@@ -34,6 +34,7 @@ namespace Simpra.Repository
                         case EntityState.Modified:
                             //Önemli! UpdatedDate'i güncellerken CreatedDate'i default bir değer atıyor bunu yapmaması için aşağıdaki gibi bir tanımalama yaparak şunu diyoruz CreatedDate'e dokunma UpdatedDate'i oluştur.
                             Entry(entityReference).Property(x => x.CreatedAt).IsModified = false;
+                            Entry(entityReference).Property(x => x.CreatedBy).IsModified = false;
                             entityReference.UpdatedAt = DateTime.Now;
                             break;
                     }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Jwt;
+using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.CategoryRR;
 using Simpra.Service.Response;
@@ -46,21 +49,26 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Save([FromBody] CategoryCreateRequest categoryCreateRequest)
         {
-            var category = await _categoryService.AddAsync(_mapper.Map<Category>(categoryCreateRequest));
+            var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
+            var category = await _categoryService.AddAsync(_mapper.Map<Category>(categoryCreateRequest), username);
             var categoryResponse = _mapper.Map<CategoryResponse>(category);
             return CreateActionResult(CustomResponse<CategoryResponse>.Success(201, categoryResponse));
         }
 
         [HttpPut]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Update([FromBody] CategoryUpdateRequest categoryUpdateRequest)
         {
-            await _categoryService.UpdateAsync(_mapper.Map<Category>(categoryUpdateRequest));
+            var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
+            await _categoryService.UpdateAsync(_mapper.Map<Category>(categoryUpdateRequest), username);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Remove(int id)
         {
             var category = await _categoryService.GetByIdAsync(id);

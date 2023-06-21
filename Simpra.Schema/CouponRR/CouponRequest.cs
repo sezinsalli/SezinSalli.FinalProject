@@ -2,7 +2,7 @@
 
 namespace Simpra.Schema.CouponRR
 {
-    public class CouponCreateRequest : BaseRequest
+    public class CouponRequest : BaseRequest
     {
         public string UserId { get; set; }
         public decimal DiscountAmount { get; set; }

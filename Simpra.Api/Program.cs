@@ -1,13 +1,11 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Serilog;
 using Simpra.Api.Extensions;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
-using Simpra.Core.Jwt;
-using Simpra.Service.FluentValidation;
+using Simpra.Service.FluentValidation.Category;
 using Simpra.Service.Mapper;
 
 
@@ -47,8 +45,10 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerB
 // Serilog kullanýyoruz.
 builder.Host.UseSerilog();
 
-
 var app = builder.Build();
+
+// Otomatik update-database ve admin user seed
+app.AddMigrateAndSeedDatabase();
 
 if (app.Environment.IsDevelopment())
 {

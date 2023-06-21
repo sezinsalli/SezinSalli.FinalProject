@@ -16,7 +16,7 @@ namespace Simpra.Service.Service
             _unitOfWork = unitofWork ?? throw new ArgumentNullException(nameof(unitofWork));
         }
 
-        public async Task<Coupon> CreateCouponAsync(Coupon coupon, int expirationDay)
+        public async Task<Coupon> CreateCouponAsync(Coupon coupon, int expirationDay, string createdBy)
         {
             try
             {
@@ -25,6 +25,7 @@ namespace Simpra.Service.Service
                 var newCoupon = new Coupon
                 {
                     UserId = coupon.UserId,
+                    CreatedBy = createdBy,
                     CouponCode = couponCode,
                     DiscountAmount = coupon.DiscountAmount,
                     ExpirationDate = expirationDate,

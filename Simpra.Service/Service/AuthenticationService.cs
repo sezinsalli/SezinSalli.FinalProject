@@ -8,24 +8,20 @@ using Simpra.Core.Service;
 using Simpra.Schema.TokenRR;
 using Simpra.Schema.UserRR;
 using Simpra.Service.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.Service
 {
-    public class AuthenticationService:IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IUserService _userService;
         private readonly JwtConfig _jwtConfig;
 
-        public AuthenticationService(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager, IOptionsMonitor<JwtConfig> jwtConfig, IUserService userService)
+        public AuthenticationService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptionsMonitor<JwtConfig> jwtConfig, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -50,7 +46,7 @@ namespace Simpra.Service.Service
             if (roles is null)
                 throw new ClientSideException($"User role was null!");
 
-            string token = Token(user,roles.FirstOrDefault());
+            string token = Token(user, roles.FirstOrDefault());
 
             TokenResponse tokenResponse = new TokenResponse
             {
@@ -83,9 +79,9 @@ namespace Simpra.Service.Service
                 throw new ClientSideException($"Change password error");
         }
 
-        private string Token(AppUser user,string role)
+        private string Token(AppUser user, string role)
         {
-            Claim[] claims = GetClaims(user,role);
+            Claim[] claims = GetClaims(user, role);
             var secret = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
             var jwtToken = new JwtSecurityToken(

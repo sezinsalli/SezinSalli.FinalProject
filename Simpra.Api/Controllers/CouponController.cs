@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Jwt;
+using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.CouponRR;
 using Simpra.Service.Response;
@@ -14,8 +17,6 @@ namespace Simpra.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IBaseService<Coupon> _service;
         private readonly ICouponService _couponService;
-
-
         public CouponController(IMapper mapper, IBaseService<Coupon> service, ICouponService couponService)
         {
             _service = service;
@@ -24,6 +25,7 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> All()
         {
             var coupons = await _service.GetAllAsync();
@@ -32,15 +34,18 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCoupon(CouponCreateRequest couponCreateRequest)
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> CreateCoupon(CouponRequest couponCreateRequest)
         {
+            var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
             var coupon = _mapper.Map<Coupon>(couponCreateRequest);
-            var response = await _couponService.CreateCouponAsync(coupon, couponCreateRequest.ExpirationDay);
+            var response = await _couponService.CreateCouponAsync(coupon, couponCreateRequest.ExpirationDay, username);
             var couponResponse = _mapper.Map<CouponResponse>(response);
             return CreateActionResult(CustomResponse<CouponResponse>.Success(200, couponResponse));
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Remove(int id)
         {
             var coupon = await _service.GetByIdAsync(id);

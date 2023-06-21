@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Simpra.Core.Jwt;
-using System.Configuration;
 using System.Text;
 
 namespace Simpra.Api.Extensions;
@@ -25,7 +24,7 @@ public static class JwtExtension
             x.SaveToken = true;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true, 
+                ValidateIssuer = true,
                 ValidIssuer = JwtConfig.Issuer,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtConfig.Secret)),

@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
@@ -31,7 +30,7 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> SaveOrUpdateBasket([FromBody] BasketRequest basketRequest)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-            await _basketService.SaveOrUpdateAsync(basketRequest,userId);
+            await _basketService.SaveOrUpdateAsync(basketRequest, userId);
             return CreateActionResult(CustomResponse<bool>.Success(204));
         }
 
@@ -50,7 +49,7 @@ namespace Simpra.Api.Controllers
         public async Task<IActionResult> CheckOut([FromBody] BasketCheckOutRequest basketRequest)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-            await _basketService.CheckOutBasketAsync(basketRequest,userId);
+            await _basketService.CheckOutBasketAsync(basketRequest, userId);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 

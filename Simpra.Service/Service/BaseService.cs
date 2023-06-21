@@ -23,10 +23,11 @@ namespace Simpra.Service.Service
 
         // Genel Yaklaşım: Fırlattığım exception'ı error için hazırladığım "UseCustomExceptionHandler "middleware de yakalayıp "Custom Response" dönüyorum.
 
-        public virtual async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity, string changedBy = "admin")
         {
             try
             {
+                entity.CreatedBy = changedBy;
                 await _repository.AddAsync(entity);
                 await _unitOfWork.CompleteAsync();
                 return entity;
@@ -38,10 +39,14 @@ namespace Simpra.Service.Service
             }
         }
 
-        public virtual async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+        public virtual async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities, string changedBy = "admin")
         {
             try
             {
+                foreach (var entity in entities)
+                {
+                    entity.CreatedBy = changedBy;
+                }
                 await _repository.AddRangeAsync(entities);
                 await _unitOfWork.CompleteAsync();
                 return entities;
@@ -132,7 +137,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        public virtual async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity, string changedBy = "admin")
         {
             try
             {
@@ -140,6 +145,7 @@ namespace Simpra.Service.Service
                 if (!response)
                     throw new NotFoundException($"{typeof(T).Name} ({entity.Id}) not found!");
 
+                entity.UpdatedBy = changedBy;
                 _repository.Update(entity);
                 await _unitOfWork.CompleteAsync();
             }

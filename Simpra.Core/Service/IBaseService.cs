@@ -9,9 +9,9 @@ namespace Simpra.Core.Service
         Task<IEnumerable<T>> GetAllAsync();
         IQueryable<T> Where(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
-        Task<T> AddAsync(T entity);
-        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
-        Task UpdateAsync(T entity);
+        Task<T> AddAsync(T entity, string changedBy);
+        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities, string changedBy);
+        Task UpdateAsync(T entity, string changedBy);
         Task RemoveAsync(T entity);
         Task RemoveRangeAsync(IEnumerable<T> entities);
     }

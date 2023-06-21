@@ -19,7 +19,7 @@ namespace Simpra.Repository.Seed
                     Property = "Property 1",
                     Definition = "Definition 1",
                     IsActive = true,
-                    Status=Core.Enum.ProductStatus.InStock,
+                    Status = Core.Enum.ProductStatus.InStock,
                     EarningPercentage = 0.12,
                     MaxPuanAmount = 10.0,
                     CreatedAt = DateTime.Now,

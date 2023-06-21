@@ -57,7 +57,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<AppUser> InsertAsync(AppUser user, string password,string role)
+    public async Task<AppUser> InsertAsync(AppUser user, string password, string role)
     {
         try
         {

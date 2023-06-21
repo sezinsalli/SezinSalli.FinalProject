@@ -1,15 +1,13 @@
-﻿
-using BCrypt.Net;
-using Simpra.Schema.CreditCardRR;
+﻿using Simpra.Schema.CreditCardRR;
 
-namespace Simpra.Service.Helper
+namespace Simpra.Api.Helper
 {
     public static class CreditCardHashHelper
     {
         public static string HashCreditCardInfo(CreditCardRequest creditCard)
         {
             string cardInfo = $"{creditCard.CardNumber}-{creditCard.CVV}-{creditCard.ExpiryYear}-{creditCard.ExpiryMonth}";
-            return BCrypt.Net.BCrypt.HashPassword(cardInfo) ;
+            return BCrypt.Net.BCrypt.HashPassword(cardInfo);
         }
 
     }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Simpra.Api.Helper;
 using Simpra.Core.Entity;
 using Simpra.Core.Jwt;
+using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.OrderRR;
-using Simpra.Service.Helper;
 using Simpra.Service.Response;
 
 namespace Simpra.Api.Controllers
@@ -21,7 +22,6 @@ namespace Simpra.Api.Controllers
         {
             _service = service;
             _mapper = mapper;
-
         }
 
         [HttpGet]
@@ -50,16 +50,18 @@ namespace Simpra.Api.Controllers
             string hashedCreditCard = CreditCardHashHelper.HashCreditCardInfo(orderCreateRequest.CreditCard);
 
             var orderResult = await _service
-                .CreateOrderAsync(_mapper.Map<Order>(orderCreateRequest),userId, hashedCreditCard);
+                .CreateOrderAsync(_mapper.Map<Order>(orderCreateRequest), userId, hashedCreditCard);
 
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }
 
         [HttpPut("[action]/{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> UpdateStatus(int id, [FromQuery] int status)
         {
-            var orderResult = await _service.UpdateOrderStatusAsync(id, status);
+            var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
+            var orderResult = await _service.UpdateOrderStatusAsync(id, status, username);
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
             return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
         }

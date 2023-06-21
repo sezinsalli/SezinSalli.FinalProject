@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Entity;
+using Simpra.Core.Jwt;
 using Simpra.Core.Role;
 using Simpra.Core.Service;
 using Simpra.Schema.UserRR;
@@ -23,7 +24,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet]
-    //[Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin)]
     public CustomResponse<List<AppUserResponse>> GetAll()
     {
         var users = _service.GetAll();
@@ -32,7 +33,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("{id}")]
-    //[Authorize(Roles = Role.User)]
+    [Authorize]
     public CustomResponse<AppUserResponse> GetById(string id)
     {
         var user = _service.GetById(id);
@@ -41,6 +42,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("[action]")]
+    [Authorize]
     public async Task<CustomResponse<AppUserResponse>> GetUser()
     {
         var user = await _service.GetUserAsync(HttpContext.User);
@@ -49,6 +51,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpGet("[action]")]
+    [Authorize]
     public CustomResponse<string> GetUserId()
     {
         var userId = _service.GetUserId(HttpContext.User);
@@ -58,7 +61,7 @@ public class UserController : CustomBaseController
     [HttpPost("[action]")]
     public async Task<CustomResponse<AppUserResponse>> CreateUser([FromBody] AppUserCreateRequest request)
     {
-        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password,Role.User);
+        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password, Role.User);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(201, userResponse);
     }
@@ -66,13 +69,14 @@ public class UserController : CustomBaseController
     [HttpPost("[action]")]
     public async Task<CustomResponse<AppUserResponse>> CreateAdmin([FromBody] AdminAppUserCreateRequest request)
     {
-        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password,Role.Admin);
+        var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password, Role.Admin);
         var userResponse = _mapper.Map<AppUserResponse>(user);
         return CustomResponse<AppUserResponse>.Success(201, userResponse);
     }
 
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<CustomResponse<AppUserResponse>> Put(string id, [FromBody] AppUserUpdateRequest request)
     {
         var user = await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
@@ -81,6 +85,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = Role.Admin)]
     public async Task<CustomResponse<NoContent>> Delete(string id)
     {
         await _service.DeleteAsync(id);
@@ -91,8 +96,8 @@ public class UserController : CustomBaseController
     [Authorize]
     public CustomResponse<decimal> GetPointBalance()
     {
-        var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-        var user=_service.GetById(userId);
+        var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
+        var user = _service.GetById(userId);
         return CustomResponse<decimal>.Success(200, user.DigitalWalletBalance);
     }
 }

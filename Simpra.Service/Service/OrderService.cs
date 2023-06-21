@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Enum;
 using Simpra.Core.Repository;
 using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
-using Simpra.Schema.CreditCardRR;
-using Simpra.Schema.OrderRR;
 using Simpra.Service.Exceptions;
 
 namespace Simpra.Service.Service
@@ -63,16 +60,16 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-        public async Task<Order> UpdateOrderStatusAsync(int id, int status)
+        public async Task<Order> UpdateOrderStatusAsync(int id, int status, string username)
         {
             try
             {
                 var order = await _orderRepository.GetByIdWithIncludeAsync(id, "OrderDetails");
-
                 if (order == null)
                     throw new NotFoundException($"Order ({id}) not found!");
 
-                order.Status=SetOrderStatus(status);
+                order.Status = SetOrderStatus(status);
+                order.UpdatedBy = username;
                 _orderRepository.Update(order);
                 await _unitOfWork.CompleteAsync();
                 return order;
@@ -88,7 +85,7 @@ namespace Simpra.Service.Service
                 throw new Exception($"Something went wrong. Error message:{ex.Message}");
             }
         }
-        public async Task<Order> CreateOrderAsync(Order order,string userId,string hashedCreditCard)
+        public async Task<Order> CreateOrderAsync(Order order, string userId, string hashedCreditCard)
         {
             try
             {
@@ -98,7 +95,7 @@ namespace Simpra.Service.Service
 
                 order.TotalAmount = order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice);
                 order.BillingAmount = order.TotalAmount;
-                order.UserId= user.Id;
+                order.UserId = user.Id;
 
                 await CheckAndUpdateProductStockAsync(order);
                 await CheckCouponUsingAsync(order);
@@ -135,7 +132,7 @@ namespace Simpra.Service.Service
         {
             foreach (var od in order.OrderDetails)
             {
-                var product =await _productRepository.GetByIdAsync(od.ProductId);
+                var product = await _productRepository.GetByIdAsync(od.ProductId);
                 if (product == null)
                     throw new NotFoundException($"Product with ProductId ({od.ProductId}) didn't find in the database.");
 
@@ -216,7 +213,7 @@ namespace Simpra.Service.Service
         private async Task CheckEarnPointsAsync(Order order, AppUser user)
         {
             double earnedPoint = 0;
-            double discountRate = Convert.ToDouble(order.BillingAmount/order.TotalAmount);
+            double discountRate = Convert.ToDouble(order.BillingAmount / order.TotalAmount);
 
             if (discountRate == 0)
                 return;

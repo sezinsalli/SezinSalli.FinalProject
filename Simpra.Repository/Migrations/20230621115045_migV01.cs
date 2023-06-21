@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Simpra.Repository.Migrations
 {
-    public partial class mig01 : Migration
+    public partial class migV01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -300,22 +299,22 @@ namespace Simpra.Repository.Migrations
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
-                values: new object[] { 1, new DateTime(2023, 6, 20, 14, 42, 23, 261, DateTimeKind.Local).AddTicks(9881), "Sezin", "Category 1", "test1", null, null, "www.test.com" });
+                values: new object[] { 1, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8145), "Sezin", "Category 1", "test1", null, null, "www.test.com" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "Tag", "UpdatedAt", "UpdatedBy", "Url" },
-                values: new object[] { 2, new DateTime(2023, 6, 20, 14, 42, 23, 261, DateTimeKind.Local).AddTicks(9895), "Sezin", "Category 2", "test2", null, null, "www.test.com" });
+                values: new object[] { 2, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8155), "Sezin", "Category 2", "test2", null, null, "www.test.com" });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CategoryId", "CreatedAt", "CreatedBy", "Definition", "EarningPercentage", "IsActive", "MaxPuanAmount", "Name", "Price", "Property", "Status", "Stock", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(79), "Sezin", "Definition 1", 0.12, true, 10.0, "Product 1", 100.00m, "Property 1", 1, 20, null, null },
-                    { 2, 1, new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(82), "Sezin", "Definition 2", 0.20000000000000001, true, 30.0, "Product 2", 200.00m, "Property 2", 1, 15, null, null },
-                    { 3, 2, new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(83), "Sezin", "Definition 3", 0.20000000000000001, true, 8.0, "Product 3", 50.00m, "Property 3", 1, 8, null, null },
-                    { 4, 2, new DateTime(2023, 6, 20, 14, 42, 23, 262, DateTimeKind.Local).AddTicks(84), "Sezin", "Definition 4", 0.050000000000000003, false, 4.0, "Product 4", 100.00m, "Property 4", 3, 20, null, null }
+                    { 1, 1, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8364), "Sezin", "Definition 1", 0.12, true, 10.0, "Product 1", 100.00m, "Property 1", 1, 20, null, null },
+                    { 2, 1, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8368), "Sezin", "Definition 2", 0.20000000000000001, true, 30.0, "Product 2", 200.00m, "Property 2", 1, 15, null, null },
+                    { 3, 2, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8369), "Sezin", "Definition 3", 0.20000000000000001, true, 8.0, "Product 3", 50.00m, "Property 3", 1, 8, null, null },
+                    { 4, 2, new DateTime(2023, 6, 21, 14, 50, 45, 507, DateTimeKind.Local).AddTicks(8370), "Sezin", "Definition 4", 0.050000000000000003, false, 4.0, "Product 4", 100.00m, "Property 4", 3, 20, null, null }
                 });
 
             migrationBuilder.CreateIndex(

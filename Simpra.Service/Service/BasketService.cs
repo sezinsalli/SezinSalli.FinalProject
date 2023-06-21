@@ -5,7 +5,6 @@ using Simpra.Core.Service;
 using Simpra.Schema.BasketRR;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Messages;
-using Simpra.Service.Response;
 using System.Text.Json;
 
 namespace Simpra.Service.Service
@@ -68,7 +67,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task SaveOrUpdateAsync(BasketRequest basketRequest,string userId)
+        public async Task SaveOrUpdateAsync(BasketRequest basketRequest, string userId)
         {
             try
             {
@@ -113,7 +112,7 @@ namespace Simpra.Service.Service
             }
         }
 
-        public async Task CheckOutBasketAsync(BasketCheckOutRequest basketRequest,string userId)
+        public async Task CheckOutBasketAsync(BasketCheckOutRequest basketRequest, string userId)
         {
             //Kuyruk oluşturduk
             var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:create-order-service"));

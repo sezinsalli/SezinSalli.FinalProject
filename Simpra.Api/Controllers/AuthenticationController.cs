@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Simpra.Core.Service;
 using Simpra.Schema.TokenRR;
@@ -23,7 +22,7 @@ public class AuthenticationController : CustomBaseController
     public async Task<CustomResponse<TokenResponse>> SignIn(TokenRequest request)
     {
         var response = await service.SignIn(request);
-        return CustomResponse<TokenResponse>.Success(200,response);
+        return CustomResponse<TokenResponse>.Success(200, response);
     }
 
     [HttpPost("SignOut")]
@@ -38,8 +37,8 @@ public class AuthenticationController : CustomBaseController
     public async Task<CustomResponse<NoContent>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-        await service.ChangePassword(userId,request);
+        await service.ChangePassword(userId, request);
         return CustomResponse<NoContent>.Success(204);
-    }    
+    }
 
 }
