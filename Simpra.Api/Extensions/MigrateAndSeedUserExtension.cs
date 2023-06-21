@@ -8,7 +8,7 @@ namespace Simpra.Api.Extensions
 {
     public static class MigrateAndSeedUserExtension
     {
-        public static void AddMigrateAndSeedDatabase(this IApplicationBuilder app)
+        public static void AddMigrateAndUserSeedDatabase(this IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.CreateScope())
             {

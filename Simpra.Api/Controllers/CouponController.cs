@@ -35,7 +35,7 @@ namespace Simpra.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> CreateCoupon(CouponRequest couponCreateRequest)
+        public async Task<IActionResult> CreateCoupon([FromBody] CouponRequest couponCreateRequest)
         {
             var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
             var coupon = _mapper.Map<Coupon>(couponCreateRequest);
@@ -46,7 +46,7 @@ namespace Simpra.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove([FromRoute] int id)
         {
             var coupon = await _service.GetByIdAsync(id);
             await _service.RemoveAsync(coupon);

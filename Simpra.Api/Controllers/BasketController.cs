@@ -51,6 +51,7 @@ namespace Simpra.Api.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
             await _basketService.CheckOutBasketAsync(basketRequest, userId);
+            await _basketService.DeleteAsync(userId);
             return CreateActionResult(CustomResponse<NoContent>.Success(204));
         }
 

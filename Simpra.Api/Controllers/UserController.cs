@@ -34,7 +34,7 @@ public class UserController : CustomBaseController
 
     [HttpGet("{id}")]
     [Authorize]
-    public CustomResponse<AppUserResponse> GetById(string id)
+    public CustomResponse<AppUserResponse> GetById([FromRoute] string id)
     {
         var user = _service.GetById(id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
@@ -67,6 +67,7 @@ public class UserController : CustomBaseController
     }
 
     [HttpPost("[action]")]
+    [Authorize(Roles = Role.Admin)]
     public async Task<CustomResponse<AppUserResponse>> CreateAdmin([FromBody] AdminAppUserCreateRequest request)
     {
         var user = await _service.InsertAsync(_mapper.Map<AppUser>(request), request.Password, Role.Admin);
@@ -74,10 +75,9 @@ public class UserController : CustomBaseController
         return CustomResponse<AppUserResponse>.Success(201, userResponse);
     }
 
-
     [HttpPut("{id}")]
-    [Authorize]
-    public async Task<CustomResponse<AppUserResponse>> Put(string id, [FromBody] AppUserUpdateRequest request)
+    [Authorize(Roles = Role.Admin)]
+    public async Task<CustomResponse<AppUserResponse>> Put([FromRoute] string id, [FromBody] AppUserUpdateRequest request)
     {
         var user = await _service.UpdateAsync(_mapper.Map<AppUser>(request), id);
         var userResponse = _mapper.Map<AppUserResponse>(user);
@@ -86,7 +86,7 @@ public class UserController : CustomBaseController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = Role.Admin)]
-    public async Task<CustomResponse<NoContent>> Delete(string id)
+    public async Task<CustomResponse<NoContent>> Delete([FromRoute] string id)
     {
         await _service.DeleteAsync(id);
         return CustomResponse<NoContent>.Success(204);

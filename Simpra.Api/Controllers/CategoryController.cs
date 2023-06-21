@@ -33,17 +33,17 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             var categoryResponse = _mapper.Map<CategoryResponse>(category);
             return CreateActionResult(CustomResponse<CategoryResponse>.Success(200, categoryResponse));
         }
 
-        [HttpGet("[action]/{categoryId}")]
-        public async Task<IActionResult> GetSingleCategoryByIdwithProducts(int categoryId)
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetSingleCategoryByIdwithProducts([FromRoute] int id)
         {
-            var category = await _categoryService.GetByIdAsync(categoryId);
+            var category = await _categoryService.GetByIdAsync(id);
             var categoryResponse = _mapper.Map<CategoryWithProductResponse>(category);
             return CreateActionResult(CustomResponse<CategoryWithProductResponse>.Success(200, categoryResponse));
         }
@@ -69,7 +69,7 @@ namespace Simpra.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove([FromRoute] int id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             await _categoryService.RemoveAsync(category);

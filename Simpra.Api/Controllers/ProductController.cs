@@ -34,7 +34,7 @@ namespace Simpra.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var product = await _productService.GetByIdAsync(id);
             var productResponse = _mapper.Map<ProductResponse>(product);
@@ -71,7 +71,7 @@ namespace Simpra.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove([FromRoute] int id)
         {
             var product = await _productService.GetByIdAsync(id);
             await _productService.RemoveAsync(product);

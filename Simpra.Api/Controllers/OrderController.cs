@@ -37,7 +37,7 @@ namespace Simpra.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var order = await _service.GetByIdAsync(id);
             var orderResponse = _mapper.Map<OrderResponse>(order);
@@ -55,17 +55,17 @@ namespace Simpra.Api.Controllers
 
         [HttpGet("[action]")]
         [Authorize]
-        public async Task<IActionResult> GetByUserId()
+        public IActionResult GetByUserId()
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
-            var orders = await _service.Where(x => x.UserId == userId).ToListAsync();
+            var orders = _service.WhereWithInclude(x => x.UserId == userId, "OrderDetails");
             var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
             return CreateActionResult(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Save(OrderCreateRequest orderCreateRequest)
+        public async Task<IActionResult> Save([FromBody] OrderCreateRequest orderCreateRequest)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
 
@@ -81,7 +81,7 @@ namespace Simpra.Api.Controllers
 
         [HttpPut("[action]/{id}")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] int status)
+        public async Task<IActionResult> UpdateStatus([FromRoute] int id, [FromQuery] int status)
         {
             var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
             var orderResult = await _service.UpdateOrderStatusAsync(id, status, username);

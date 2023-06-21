@@ -12,24 +12,24 @@ namespace Simpra.Api.Controllers;
 [ApiController]
 public class AuthenticationController : CustomBaseController
 {
-    private readonly IAuthenticationService service;
+    private readonly IAuthenticationService _service;
 
     public AuthenticationController(IAuthenticationService service)
     {
-        this.service = service;
+        _service = service;
     }
 
     [HttpPost("SignIn")]
-    public async Task<CustomResponse<TokenResponse>> SignIn(TokenRequest request)
+    public async Task<CustomResponse<TokenResponse>> SignIn([FromBody] TokenRequest request)
     {
-        var response = await service.SignIn(request);
+        var response = await _service.SignIn(request);
         return CustomResponse<TokenResponse>.Success(200, response);
     }
 
     [HttpPost("SignOut")]
     public async Task<CustomResponse<NoContent>> SignOut()
     {
-        await service.SignOut();
+        await _service.SignOut();
         return CustomResponse<NoContent>.Success(204);
     }
 
@@ -38,7 +38,7 @@ public class AuthenticationController : CustomBaseController
     public async Task<CustomResponse<NoContent>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserId)?.Value;
-        await service.ChangePassword(userId, request);
+        await _service.ChangePassword(userId, request);
         return CustomResponse<NoContent>.Success(204);
     }
 

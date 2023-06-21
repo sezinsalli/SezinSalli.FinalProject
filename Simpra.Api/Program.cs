@@ -11,7 +11,6 @@ using Simpra.Service.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Serilog
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 Log.Information("Application is starting...");
@@ -48,7 +47,7 @@ builder.Host.UseSerilog();
 var app = builder.Build();
 
 // Otomatik update-database ve admin user seed
-app.AddMigrateAndSeedDatabase();
+app.AddMigrateAndUserSeedDatabase();
 
 if (app.Environment.IsDevelopment())
 {
