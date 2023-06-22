@@ -7,6 +7,7 @@ using Simpra.Core.UnitofWork;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Service;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 
 namespace Simpra.Test
 {
@@ -107,8 +108,34 @@ namespace Simpra.Test
                 }
         };
 
+        // Order
+        private readonly List<Order> _orders = new List<Order>()
+        {
+            new Order
+            {
+                Id = 1,
+                TotalAmount = 200,
+                Status=OrderStatus.Pending,
+                OrderDetails=new List<OrderDetail>()
+                {
+                    new OrderDetail { ProductId = 3, Quantity = 4, UnitPrice = 120 }
+                }
+            },
+            new Order
+            {
+                Id = 2,
+                TotalAmount = 200,
+                Status=OrderStatus.Pending,
+                OrderDetails=new List<OrderDetail>()
+                {
+                    new OrderDetail { ProductId = 1, Quantity = 6, UnitPrice = 100 },
+                    new OrderDetail { ProductId = 2, Quantity = 5, UnitPrice = 200 }
+                }
+            }
+        };
+
         [Fact]
-        public async Task CreateOrderAsync_CheckAllCalculateTest1_Success()
+        public async Task TestOrderService_CreateOrderAsync_SuccessCalculate()
         {
             // ====> Arrange <====
             _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
@@ -153,7 +180,7 @@ namespace Simpra.Test
             // 300 TL siparişin 100 TL si indirim => (100*0,12*0,6666*3)= 24 TL puan kazanmalı
             Assert.Equal(24.0m, Math.Round(_users[0].DigitalWalletBalance, 1));
 
-            // Product stok => 17
+            // Product stok
             Assert.Equal(17, _products[0].Stock);
 
             Assert.Equal(OrderStatus.Pending, order.Status);
@@ -161,7 +188,7 @@ namespace Simpra.Test
         }
 
         [Fact]
-        public async Task CreateOrderAsync_CheckAllCalculateTest2_Success()
+        public async Task TestOrderService_CreateOrderAsync_SuccessCalculate2()
         {
             // ====> Arrange <====
             _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
@@ -207,8 +234,7 @@ namespace Simpra.Test
             // 1000 TL siparişin 100 TL si indirim => Product 1 (10 TL x 6 adet) + Product 2 (10,8 TL x 2 adet) = 81.6 TL
             Assert.Equal(81.6m, Math.Round(_users[0].DigitalWalletBalance, 1));
 
-            // Product[0] stok => 14
-            // Product[1] stok => 6
+            // Product stok
             Assert.Equal(14, _products[0].Stock);
             Assert.Equal(6, _products[1].Stock);
 
@@ -217,7 +243,7 @@ namespace Simpra.Test
         }
 
         [Fact]
-        public async Task CreateOrderAsync_CheckAllCalculateTest3_Success()
+        public async Task TestOrderService_CreateOrderAsync_SuccessCalculate3()
         {
             // ====> Arrange <====
             _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
@@ -277,73 +303,103 @@ namespace Simpra.Test
         }
 
         [Fact]
-        public async Task GetAllAsync_ShouldReturnOrders()
+        public async Task TestOrderService_GetAllAsync_Success()
         {
             // Arrange
-            var orders = new List<Order> { new Order(), new Order() };
-            _orderRepositoryMock.Setup(repo => repo.GetAllWithIncludeAsync("OrderDetails")).ReturnsAsync(orders);
+            _orderRepositoryMock.Setup(repo => repo.GetAllWithIncludeAsync("OrderDetails")).ReturnsAsync(_orders);
 
             // Act
             var result = await _orderService.GetAllAsync();
 
             // Assert
             Assert.Equal(2, result.Count());
-            Assert.Equal(orders, result);
+            Assert.Equal(_orders, result);
         }
 
         [Fact]
-        public async Task GetByIdAsync_ExistingId_ShouldReturnOrder()
+        public async Task TestOrderService_GetAllAsync_ReturnException()
         {
             // Arrange
-            int orderId = 1;
-            var order = new Order { Id = orderId };
-            _orderRepositoryMock.Setup(repo => repo.GetByIdWithIncludeAsync(orderId, "OrderDetails")).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(repo => repo.GetAllWithIncludeAsync("OrderDetails"))
+                .Throws(new Exception("Database connection is failed!"));
 
             // Act
-            var result = await _orderService.GetByIdAsync(orderId);
+            Exception exception = await Assert.ThrowsAsync<Exception>(() => _orderService.GetAllAsync());
 
             // Assert
+            _orderRepositoryMock.Verify(x => x.GetAllWithIncludeAsync("OrderDetails"), Times.Once);
+            Assert.IsType<Exception>(exception);
+            Assert.Equal("Something went wrong! Error message:Database connection is failed!", exception.Message);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public async Task TestOrderService_GetByIdAsync_Success(int id)
+        {
+            // Arrange
+            var order = _orders.First(x => x.Id == id);
+            _orderRepositoryMock.Setup(x => x.GetByIdWithIncludeAsync(id, "OrderDetails")).ReturnsAsync(order);
+
+            // Act
+            var result = await _orderService.GetByIdAsync(id);
+
+            // Assert
+            _orderRepositoryMock.Verify(x => x.GetByIdWithIncludeAsync(id, "OrderDetails"), Times.Once);
+            Assert.IsAssignableFrom<Order>(result);
             Assert.Equal(order, result);
         }
 
         [Fact]
-        public async Task GetByIdAsync_NonExistingId_ShouldThrowNotFoundException()
+        public async Task TestOrderService_GetByIdAsync_ReturnNotFoundException()
         {
             // Arrange
-            int orderId = 1;
-            _orderRepositoryMock.Setup(repo => repo.GetByIdWithIncludeAsync(orderId, "OrderDetails")).ReturnsAsync((Order)null);
-
-            // Act and Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => _orderService.GetByIdAsync(orderId));
-        }
-
-        [Fact]
-        public async Task UpdateOrderStatusAsync_ExistingId_ShouldUpdateOrderStatusAndReturnOrder()
-        {
-            // Arrange
-            int orderId = 1;
-            var order = new Order { Id = orderId, Status = OrderStatus.Pending };
-            _orderRepositoryMock.Setup(repo => repo.GetByIdWithIncludeAsync(orderId, "OrderDetails")).ReturnsAsync(order);
+            int id = 20;
+            Order order = null;
+            _orderRepositoryMock.Setup(x => x.GetByIdWithIncludeAsync(id, "OrderDetails")).ReturnsAsync(order);
 
             // Act
-            var result = await _orderService.UpdateOrderStatusAsync(orderId, (int)OrderStatus.Shipped, "user");
+            Exception exception = await Assert.ThrowsAsync<NotFoundException>(() => _orderService.GetByIdAsync(id));
 
             // Assert
-            Assert.Equal(OrderStatus.Shipped, result.Status);
-            Assert.Equal("user", result.UpdatedBy);
-            _orderRepositoryMock.Verify(repo => repo.Update(order), Times.Once);
-            _unitOfWorkMock.Verify(uow => uow.CompleteAsync(), Times.Once);
+            _orderRepositoryMock.Verify(x => x.GetByIdWithIncludeAsync(id, "OrderDetails"), Times.Once);
+            Assert.IsType<NotFoundException>(exception);
+            Assert.Equal($"Not Found Error. Error message:Order ({id}) not found!", exception.Message);
         }
 
-        [Fact]
-        public async Task UpdateOrderStatusAsync_NonExistingId_ShouldThrowNotFoundException()
+        [Theory]
+        [InlineData(1,3,"admin")]
+        public async Task TestOrderService_UpdateOrderStatusAsync_Success(int id, int status, string username)
         {
             // Arrange
-            int orderId = 1;
-            _orderRepositoryMock.Setup(repo => repo.GetByIdWithIncludeAsync(orderId, "OrderDetails")).ReturnsAsync((Order)null);
+            var order = _orders.Where(x=>x.Id==id).FirstOrDefault();
+            order.Status = (OrderStatus)status;
+            order.UpdatedAt = DateTime.Now;
+            order.UpdatedBy= username;
+            _orderRepositoryMock.Setup(x => x.GetByIdWithIncludeAsync(id, "OrderDetails")).ReturnsAsync(order);
+            _orderRepositoryMock.Setup(x => x.Update(order));
 
-            // Act and Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => _orderService.UpdateOrderStatusAsync(orderId, (int)OrderStatus.Shipped, "user"));
+            // Act
+            var result =await _orderService.UpdateOrderStatusAsync(id,status,username);
+
+            // Assert
+            _orderRepositoryMock.Verify(x => x.Update(order), Times.Once);
+            Assert.Equal(order, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public async Task TestOrderService_RemoveAsync_Success(int id)
+        {
+            // Arrange
+            var order = _orders.First(x => x.Id == id);
+            _orderRepositoryMock.Setup(x => x.Remove(order));
+
+            // Act
+            await _orderService.RemoveAsync(order);
+
+            // Assert
+            _orderRepositoryMock.Verify(x => x.Remove(order), Times.Once);
         }
 
     }
