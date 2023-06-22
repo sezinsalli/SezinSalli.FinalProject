@@ -152,7 +152,7 @@ namespace Simpra.Service.Service
                 return;
             }
 
-            var coupon = await _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefaultAsync();
+            var coupon = _couponRepository.Where(x => x.CouponCode == order.CouponCode).SingleOrDefault();
             if (coupon == null)
                 throw new NotFoundException($"Coupon with couponCode ({order.CouponCode}) didn't find in the database.");
 

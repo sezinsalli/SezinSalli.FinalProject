@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Simpra.Core.Attribute;
 using Simpra.Service.Response;
 
 namespace Simpra.Api.Controllers
 {
+    [ResponseGuid]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomBaseController : ControllerBase

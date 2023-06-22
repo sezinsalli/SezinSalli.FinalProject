@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Core", "Simpra.Core\Simpra.Core.csproj", "{86B83307-DB54-47FC-8D03-3F729C76C365}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Core", "Simpra.Core\Simpra.Core.csproj", "{86B83307-DB54-47FC-8D03-3F729C76C365}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Repository", "Simpra.Repository\Simpra.Repository.csproj", "{0BDA77CD-556F-4FCD-AB92-6E6C59839861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Repository", "Simpra.Repository\Simpra.Repository.csproj", "{0BDA77CD-556F-4FCD-AB92-6E6C59839861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Schema", "Simpra.Schema\Simpra.Schema.csproj", "{CF3A8DBC-DCED-4C86-9980-0F33F192115B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Schema", "Simpra.Schema\Simpra.Schema.csproj", "{CF3A8DBC-DCED-4C86-9980-0F33F192115B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Service", "Simpra.Service\Simpra.Service.csproj", "{C127D677-8AB7-4F30-B6D7-A303A9A1CF0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Service", "Simpra.Service\Simpra.Service.csproj", "{C127D677-8AB7-4F30-B6D7-A303A9A1CF0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Api", "Simpra.Api\Simpra.Api.csproj", "{C1B8B5F4-A8DC-452C-81C5-032F1726EC5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Api", "Simpra.Api\Simpra.Api.csproj", "{C1B8B5F4-A8DC-452C-81C5-032F1726EC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simpra.Test", "Simpra.Test\Simpra.Test.csproj", "{1264F510-1490-4507-8B1D-0898E4366FC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C1B8B5F4-A8DC-452C-81C5-032F1726EC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1B8B5F4-A8DC-452C-81C5-032F1726EC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1B8B5F4-A8DC-452C-81C5-032F1726EC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1264F510-1490-4507-8B1D-0898E4366FC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1264F510-1490-4507-8B1D-0898E4366FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1264F510-1490-4507-8B1D-0898E4366FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1264F510-1490-4507-8B1D-0898E4366FC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
