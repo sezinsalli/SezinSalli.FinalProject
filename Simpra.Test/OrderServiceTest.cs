@@ -42,51 +42,89 @@ namespace Simpra.Test
             );
         }
 
+        // ====> Arrange <====
+        // User
+        private readonly List<AppUser> _users = new List<AppUser>()
+        {
+            new AppUser
+            {
+                Id = "user-test-id-1",
+                UserName = "user-test-1",
+                DigitalWalletBalance = 40
+            },
+            new AppUser
+            {
+                Id = "user-test-id-2",
+                UserName = "user-test-2",
+                DigitalWalletBalance = 240
+            }
+        };
+
+        // Coupon
+        private readonly List<Coupon> _coupons = new List<Coupon>()
+        {
+            new Coupon
+            {
+                Id = 1,
+                UserId= "user-test-id-1",
+                CouponCode = "A1D2F3G4H5",
+                DiscountAmount = 60,
+                ExpirationDate = DateTime.Now.AddDays(10),
+                IsActive=true,
+
+            },
+            new Coupon
+            {
+                Id = 2,
+                UserId= "user-test-id-2",
+                CouponCode = "A5D4F3G2H1",
+                DiscountAmount = 160,
+                ExpirationDate = DateTime.Now.AddDays(10),
+                IsActive=true,
+            }
+        };
+
+        // Products
+        private readonly List<Product> _products = new List<Product>()
+        {
+                new Product
+                {
+                    Id = 1,
+                    Price = 100,
+                    EarningPercentage = 0.12,
+                    MaxPuanAmount = 10,
+                    Stock = 20
+                },
+                new Product
+                {
+                    Id = 2,
+                    Price = 200,
+                    EarningPercentage = 0.06,
+                    MaxPuanAmount = 12,
+                    Stock = 8
+                },
+                new Product
+                {
+                    Id = 3,
+                    Price = 120,
+                    EarningPercentage = 0.05,
+                    MaxPuanAmount = 4,
+                    Stock = 24
+                }
+        };
+
         [Fact]
         public async Task CreateOrderAsync_CheckAllCalculateTest1_Success()
         {
             // ====> Arrange <====
+            _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
+                .Returns((string id) => _users.FirstOrDefault(u => u.Id == id));
 
-            // User
-            var user = new AppUser
-            {
-                Id = "user-test-id",
-                UserName = "user-test",
-                DigitalWalletBalance = 50
-            };
-            _userServiceMock
-                .Setup(repo => repo.GetById(user.Id))
-                .Returns(user);
+            _productRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => _products.FirstOrDefault(p => p.Id == id));
 
-            // Product
-            var product = new Product
-            {
-                Id = 1,
-                Price = 100,
-                EarningPercentage = 0.12,
-                MaxPuanAmount = 10,
-                Stock = 20
-            };
-            _productRepositoryMock
-                .Setup(repo => repo.GetByIdAsync(product.Id))
-                .ReturnsAsync(product);
-
-            // Coupon
-            var coupons = new List<Coupon>()
-            {
-                new Coupon
-                {
-                    Id = 1,
-                    UserId= user.Id,
-                    CouponCode = "A1D2F3G4H5",
-                    DiscountAmount = 100,
-                    ExpirationDate = DateTime.Now.AddDays(10),
-                    IsActive=true,
-                }
-            };
-            _couponRepositoryMock
-                .Setup(repo => repo.Where(It.IsAny<Expression<Func<Coupon, bool>>>()))
-                .Returns<Expression<Func<Coupon, bool>>>(expression => coupons.AsQueryable().Where(expression.Compile())
+            _couponRepositoryMock.Setup(repo => repo.Where(It.IsAny<Expression<Func<Coupon, bool>>>()))
+                .Returns<Expression<Func<Coupon, bool>>>(expression => _coupons.AsQueryable().Where(expression.Compile())
                 .AsQueryable());
 
             // Order
@@ -96,32 +134,151 @@ namespace Simpra.Test
                 {
                     new OrderDetail { ProductId = 1, Quantity = 3, UnitPrice = 100 },
                 },
-                CouponCode = "A1D2F3G4H5"
+                CouponCode = _coupons[0].CouponCode
             };
 
             // ====> Act <====
-            var result = await _orderService.CreateOrderAsync(order, user.Id, "hashed-creditcard");
+            var result = await _orderService.CreateOrderAsync(order, _users[0].Id, "hashed-creditcard");
 
             // ====> Assert <====
             // 300 TL sipariş => 
             Assert.Equal(300, result.TotalAmount);
-            Assert.Equal((result.CouponAmount+result.WalletAmount+result.BillingAmount), result.TotalAmount);
+            Assert.Equal((result.CouponAmount + result.WalletAmount + result.BillingAmount), result.TotalAmount);
 
-            // 150 TL fatura => 
-            Assert.Equal(150, result.BillingAmount);
+            // 200 TL fatura => 
+            Assert.Equal(200, result.BillingAmount);
 
-            // 50 TL puan kullanımı => 
-            Assert.Equal(50, result.WalletAmount);
+            // 40 TL puan kullanımı => 
+            Assert.Equal(40, result.WalletAmount);
 
-            // 100 TL kupon kullanımı => 
-            Assert.Equal(coupons.First().DiscountAmount, result.CouponAmount);
-            Assert.Equal(100, result.CouponAmount);
-            Assert.False(coupons.First().IsActive);
+            // 60 TL kupon kullanımı => 
+            Assert.Equal(_coupons[0].DiscountAmount, result.CouponAmount);
+            Assert.Equal(60, result.CouponAmount);
+            Assert.False(_coupons[0].IsActive);
 
-            // 300 TL siparişin 150 TL si indirim => (100*0,12*0,5*3)= 18 TL puan kazanmalı
-            Assert.Equal(18, user.DigitalWalletBalance);
+            // 300 TL siparişin 100 TL si indirim => (100*0,12*0,6666*3)= 24 TL puan kazanmalı
+            Assert.Equal(24.0m, Math.Round(_users[0].DigitalWalletBalance,1));
 
-            Assert.Equal(OrderStatus.Pending,order.Status);
+            // Product stok => 17
+            Assert.Equal(17, _products[0].Stock);
+
+            Assert.Equal(OrderStatus.Pending, order.Status);
+            Assert.True(order.IsActive);
+        }
+
+        [Fact]
+        public async Task CreateOrderAsync_CheckAllCalculateTest2_Success()
+        {
+            // ====> Arrange <====
+            _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
+                .Returns((string id) => _users.FirstOrDefault(u => u.Id == id));
+
+            _productRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => _products.FirstOrDefault(p => p.Id == id));
+
+            _couponRepositoryMock.Setup(repo => repo.Where(It.IsAny<Expression<Func<Coupon, bool>>>()))
+                .Returns<Expression<Func<Coupon, bool>>>(expression => _coupons.AsQueryable().Where(expression.Compile())
+                .AsQueryable());
+
+            // Order
+            var order = new Order
+            {
+                OrderDetails = new List<OrderDetail>
+                {
+                    new OrderDetail { ProductId = 1, Quantity = 6, UnitPrice = 100 },
+                    new OrderDetail { ProductId = 2, Quantity = 2, UnitPrice = 200 },
+                },
+                CouponCode = _coupons[0].CouponCode
+            };
+
+            // ====> Act <====
+            var result = await _orderService.CreateOrderAsync(order, _users[0].Id, "hashed-creditcard");
+
+            // ====> Assert <====
+            // 1000 TL sipariş => 
+            Assert.Equal(1000, result.TotalAmount);
+            Assert.Equal((result.CouponAmount + result.WalletAmount + result.BillingAmount), result.TotalAmount);
+
+            // 900 TL fatura => 
+            Assert.Equal(900, result.BillingAmount);
+
+            // 40 TL puan kullanımı => 
+            Assert.Equal(40, result.WalletAmount);
+
+            // 60 TL kupon kullanımı => 
+            Assert.Equal(_coupons[0].DiscountAmount, result.CouponAmount);
+            Assert.Equal(60, result.CouponAmount);
+            Assert.False(_coupons[0].IsActive);
+
+            // 1000 TL siparişin 100 TL si indirim => Product 1 (10 TL x 6 adet) + Product 2 (10,8 TL x 2 adet) = 81.6 TL
+            Assert.Equal(81.6m, Math.Round(_users[0].DigitalWalletBalance,1));
+
+            // Product[0] stok => 14
+            // Product[1] stok => 6
+            Assert.Equal(14, _products[0].Stock);
+            Assert.Equal(6, _products[1].Stock);
+
+            Assert.Equal(OrderStatus.Pending, order.Status);
+            Assert.True(order.IsActive);
+        }
+
+        [Fact]
+        public async Task CreateOrderAsync_CheckAllCalculateTest3_Success()
+        {
+            // ====> Arrange <====
+            _userServiceMock.Setup(repo => repo.GetById(It.IsAny<string>()))
+                .Returns((string id) => _users.FirstOrDefault(u => u.Id == id));
+
+            _productRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => _products.FirstOrDefault(p => p.Id == id));
+
+            _couponRepositoryMock.Setup(repo => repo.Where(It.IsAny<Expression<Func<Coupon, bool>>>()))
+                .Returns<Expression<Func<Coupon, bool>>>(expression => _coupons.AsQueryable().Where(expression.Compile())
+                .AsQueryable());
+
+            // Order
+            var order = new Order
+            {
+                OrderDetails = new List<OrderDetail>
+                {
+                    new OrderDetail { ProductId = 1, Quantity = 6, UnitPrice = 100 },
+                    new OrderDetail { ProductId = 2, Quantity = 5, UnitPrice = 200 },
+                    new OrderDetail { ProductId = 3, Quantity = 4, UnitPrice = 120 },
+                },
+                CouponCode = _coupons[1].CouponCode
+            };
+
+            // ====> Act <====
+            var result = await _orderService.CreateOrderAsync(order, _users[1].Id, "hashed-creditcard");
+
+            // ====> Assert <====
+            // 2080 TL sipariş => 
+            Assert.Equal(2080, result.TotalAmount);
+            Assert.Equal((result.CouponAmount + result.WalletAmount + result.BillingAmount), result.TotalAmount);
+
+            // 1680 TL fatura => 
+            Assert.Equal(1680, result.BillingAmount);
+
+            // 240 TL puan kullanımı => 
+            Assert.Equal(240, result.WalletAmount);
+
+            // 160 TL kupon kullanımı => 
+            Assert.Equal(_coupons[1].DiscountAmount, result.CouponAmount);
+            Assert.Equal(160, result.CouponAmount);
+            Assert.False(_coupons[1].IsActive);
+
+            // 2080 TL siparişin 400 TL si indirim => 0,8076 (totalamount/billingamount)
+            // Product 1 (9,69 TL x 6 adet) =58,15 TL
+            // Product 2 (9,69 TL x 5 adet) = 48,45 TL
+            // Product 3 (4 TL x 4 adet) = 16 TL
+            Assert.Equal(122.6m, Math.Round(_users[1].DigitalWalletBalance,1));
+
+            // Product Stok
+            Assert.Equal(14, _products[0].Stock);
+            Assert.Equal(3, _products[1].Stock);
+            Assert.Equal(20, _products[2].Stock);
+
+            Assert.Equal(OrderStatus.Pending, order.Status);
             Assert.True(order.IsActive);
         }
 
