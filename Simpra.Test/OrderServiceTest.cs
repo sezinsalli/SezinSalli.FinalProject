@@ -7,7 +7,6 @@ using Simpra.Core.UnitofWork;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Service;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace Simpra.Test
 {
@@ -368,19 +367,19 @@ namespace Simpra.Test
         }
 
         [Theory]
-        [InlineData(1,3,"admin")]
+        [InlineData(1, 3, "admin")]
         public async Task TestOrderService_UpdateOrderStatusAsync_Success(int id, int status, string username)
         {
             // Arrange
-            var order = _orders.Where(x=>x.Id==id).FirstOrDefault();
+            var order = _orders.Where(x => x.Id == id).FirstOrDefault();
             order.Status = (OrderStatus)status;
             order.UpdatedAt = DateTime.Now;
-            order.UpdatedBy= username;
+            order.UpdatedBy = username;
             _orderRepositoryMock.Setup(x => x.GetByIdWithIncludeAsync(id, "OrderDetails")).ReturnsAsync(order);
             _orderRepositoryMock.Setup(x => x.Update(order));
 
             // Act
-            var result =await _orderService.UpdateOrderStatusAsync(id,status,username);
+            var result = await _orderService.UpdateOrderStatusAsync(id, status, username);
 
             // Assert
             _orderRepositoryMock.Verify(x => x.Update(order), Times.Once);

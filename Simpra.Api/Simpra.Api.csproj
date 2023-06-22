@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Simpra.Caching\Simpra.Caching.csproj" />
     <ProjectReference Include="..\Simpra.Service\Simpra.Service.csproj" />
   </ItemGroup>
 
