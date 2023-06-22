@@ -32,7 +32,7 @@ namespace Simpra.Repository.UnitofWork
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "CompleteWithTransaction Exception");                    
+                    Log.Error(ex, "CompleteWithTransaction Exception");
                     dbDcontextTransaction.Rollback();
                     throw new Exception($"Something went wrong! Error message:{ex.Message}");
                 }

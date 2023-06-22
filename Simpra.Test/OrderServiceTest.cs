@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
+﻿using Moq;
 using Simpra.Core.Entity;
 using Simpra.Core.Enum;
 using Simpra.Core.Repository;
@@ -7,12 +6,7 @@ using Simpra.Core.Service;
 using Simpra.Core.UnitofWork;
 using Simpra.Service.Exceptions;
 using Simpra.Service.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Test
 {
@@ -157,7 +151,7 @@ namespace Simpra.Test
             Assert.False(_coupons[0].IsActive);
 
             // 300 TL siparişin 100 TL si indirim => (100*0,12*0,6666*3)= 24 TL puan kazanmalı
-            Assert.Equal(24.0m, Math.Round(_users[0].DigitalWalletBalance,1));
+            Assert.Equal(24.0m, Math.Round(_users[0].DigitalWalletBalance, 1));
 
             // Product stok => 17
             Assert.Equal(17, _products[0].Stock);
@@ -211,7 +205,7 @@ namespace Simpra.Test
             Assert.False(_coupons[0].IsActive);
 
             // 1000 TL siparişin 100 TL si indirim => Product 1 (10 TL x 6 adet) + Product 2 (10,8 TL x 2 adet) = 81.6 TL
-            Assert.Equal(81.6m, Math.Round(_users[0].DigitalWalletBalance,1));
+            Assert.Equal(81.6m, Math.Round(_users[0].DigitalWalletBalance, 1));
 
             // Product[0] stok => 14
             // Product[1] stok => 6
@@ -271,7 +265,7 @@ namespace Simpra.Test
             // Product 1 (9,69 TL x 6 adet) =58,15 TL
             // Product 2 (9,69 TL x 5 adet) = 48,45 TL
             // Product 3 (4 TL x 4 adet) = 16 TL
-            Assert.Equal(122.6m, Math.Round(_users[1].DigitalWalletBalance,1));
+            Assert.Equal(122.6m, Math.Round(_users[1].DigitalWalletBalance, 1));
 
             // Product Stok
             Assert.Equal(14, _products[0].Stock);

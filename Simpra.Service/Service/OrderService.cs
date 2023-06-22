@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Serilog;
+﻿using Serilog;
 using Simpra.Core.Entity;
 using Simpra.Core.Enum;
 using Simpra.Core.Repository;

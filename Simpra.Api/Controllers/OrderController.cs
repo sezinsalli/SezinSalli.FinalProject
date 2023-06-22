@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Simpra.Api.Helper;
 using Simpra.Core.Entity;
 using Simpra.Core.Enum;
@@ -48,7 +47,7 @@ namespace Simpra.Api.Controllers
         [Authorize(Roles = Role.Admin)]
         public IActionResult GetOrdersByStatus([FromQuery] int status)
         {
-            var orders=_service.WhereWithInclude(x=> x.Status==(OrderStatus)status,"OrderDetails");
+            var orders = _service.WhereWithInclude(x => x.Status == (OrderStatus)status, "OrderDetails");
             var orderResponse = _mapper.Map<List<OrderResponse>>(orders);
             return CreateActionResult(CustomResponse<List<OrderResponse>>.Success(200, orderResponse));
         }

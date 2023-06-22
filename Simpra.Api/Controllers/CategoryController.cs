@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Simpra.Core.Attribute;
 using Simpra.Core.Entity;
 using Simpra.Core.Jwt;
 using Simpra.Core.Role;

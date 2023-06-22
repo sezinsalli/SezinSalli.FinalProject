@@ -1,5 +1,4 @@
 ﻿using Simpra.Core.Enum;
-using Simpra.Schema.OrderRR;
 
 namespace Simpra.Core.Entity
 {

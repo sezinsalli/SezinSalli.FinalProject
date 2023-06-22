@@ -4,7 +4,6 @@ using Serilog;
 using Simpra.Api.Helper;
 using Simpra.Core.Entity;
 using Simpra.Core.Service;
-using Simpra.Schema.OrderRR;
 using Simpra.Service.Messages;
 
 namespace Simpra.Api.Consumer

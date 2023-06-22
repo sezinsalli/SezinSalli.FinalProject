@@ -15,7 +15,7 @@ public class ResponseHeaderAttribute : ActionFilterAttribute
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-  
+
     }
 
     public override void OnActionExecuted(ActionExecutedContext context)

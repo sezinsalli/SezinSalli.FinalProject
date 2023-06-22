@@ -70,8 +70,8 @@ namespace Simpra.Api.Extensions
                         TwoFactorEnabled = true,
                         CreatedBy = "user",
                         CreatedAt = DateTime.Now,
-                        DigitalWalletBalance=50,
-                        DigitalWalletInformation="Wallet is active."
+                        DigitalWalletBalance = 50,
+                        DigitalWalletInformation = "Wallet is active."
                     };
 
                     userManager.CreateAsync(user, userPassword).Wait();

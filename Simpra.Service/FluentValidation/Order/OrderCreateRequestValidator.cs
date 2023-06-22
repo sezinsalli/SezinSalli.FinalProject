@@ -1,12 +1,6 @@
 ﻿using FluentValidation;
 using Simpra.Schema.OrderRR;
-using Simpra.Schema.ProductRR;
 using Simpra.Service.FluentValidation.CreditCard;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simpra.Service.FluentValidation.Order
 {
