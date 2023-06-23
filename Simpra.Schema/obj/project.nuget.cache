@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "RfLsHz3j8gZTz61X0arCBwZlG+jx07G3Mi4Tjv6xis9LNKTU0P2zZ1roI8KYMZORAarQfr3SlLWYVELca9CSUw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\salli\\OneDrive\\Masaüstü\\Project-Docker\\Simpra.FinalProject\\Simpra.Schema\\Simpra.Schema.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\salli\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\salli\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

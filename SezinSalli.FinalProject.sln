@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Api", "Simpra.Api\Si
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simpra.Test", "Simpra.Test\Simpra.Test.csproj", "{1264F510-1490-4507-8B1D-0898E4366FC7}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A526E58F-82C5-4688-BFBF-21C14DA98582}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{1264F510-1490-4507-8B1D-0898E4366FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1264F510-1490-4507-8B1D-0898E4366FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1264F510-1490-4507-8B1D-0898E4366FC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A526E58F-82C5-4688-BFBF-21C14DA98582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A526E58F-82C5-4688-BFBF-21C14DA98582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A526E58F-82C5-4688-BFBF-21C14DA98582}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A526E58F-82C5-4688-BFBF-21C14DA98582}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

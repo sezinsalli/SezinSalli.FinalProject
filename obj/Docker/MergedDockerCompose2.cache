@@ -1,0 +1,9 @@
+name: dockercompose15218143748348418407
+services:
+  catalogdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    networks:
+      default: null
+networks:
+  default:
+    name: dockercompose15218143748348418407_default

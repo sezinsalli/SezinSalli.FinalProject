@@ -1,0 +1,53 @@
+name: dockercompose15218143748348418407
+services:
+  basketdb:
+    container_name: basketdb
+    image: redis
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 6379
+      published: "6379"
+      protocol: tcp
+    restart: always
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.11.5-management
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 5672
+      published: "5672"
+      protocol: tcp
+    - mode: ingress
+      target: 15672
+      published: "15672"
+      protocol: tcp
+    restart: always
+  simpradb:
+    container_name: simpradb
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: Password12*
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 1433
+      published: "1433"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: volume
+      source: simpradb_volume
+      target: /var/opt/mssql
+      volume: {}
+networks:
+  default:
+    name: dockercompose15218143748348418407_default
+volumes:
+  simpradb_volume:
+    name: dockercompose15218143748348418407_simpradb_volume
