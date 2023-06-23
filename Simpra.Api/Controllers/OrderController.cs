@@ -85,7 +85,7 @@ namespace Simpra.Api.Controllers
             var username = User.Claims.FirstOrDefault(c => c.Type == JwtClaims.UserName)?.Value;
             var orderResult = await _service.UpdateOrderStatusAsync(id, status, username);
             var orderResponse = _mapper.Map<OrderResponse>(orderResult);
-            return CreateActionResult(CustomResponse<OrderResponse>.Success(201, orderResponse));
+            return CreateActionResult(CustomResponse<OrderResponse>.Success(200, orderResponse));
         }
 
     }
