@@ -29,7 +29,7 @@ namespace Simpra.Service.Service
             _userService = userService;
         }
 
-        public async Task<TokenResponse> SignIn(TokenRequest request)
+        public async Task<TokenResponse> SignInAsync(TokenRequest request)
         {
             if (request is null)
                 throw new ClientSideException($"Request was null!");
@@ -58,12 +58,12 @@ namespace Simpra.Service.Service
             return tokenResponse;
         }
 
-        public async Task SignOut()
+        public async Task SignOutAsync()
         {
             await _signInManager.SignOutAsync();
         }
 
-        public async Task ChangePassword(string userId, ChangePasswordRequest request)
+        public async Task ChangePasswordAsync(string userId, ChangePasswordRequest request)
         {
             if (request is null)
                 throw new ClientSideException($"Request was null!");

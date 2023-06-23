@@ -29,7 +29,7 @@ namespace Simpra.Api.Controllers
         {
             var products = await _productService.GetAllAsync();
             var productResponse = _mapper.Map<List<ProductResponse>>(products.ToList());
-            return Ok(CustomResponse<List<ProductResponse>>.Success(200, productResponse));
+            return CreateActionResult(CustomResponse<List<ProductResponse>>.Success(200, productResponse));
         }
 
         [HttpGet("{id}")]

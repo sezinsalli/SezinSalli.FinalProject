@@ -5,6 +5,7 @@ using Serilog;
 using Simpra.Api.Extensions;
 using Simpra.Api.Middleware;
 using Simpra.Api.Modules;
+using Simpra.Core.Logger;
 using Simpra.Service.FluentValidation.Category;
 using Simpra.Service.Mapper;
 
@@ -56,7 +57,18 @@ if (app.Environment.IsDevelopment())
 }
 // Add Auth
 app.UseAuthentication();
-app.UseCustomException();
+
+// Logging and erroring middleware
+Action<RequestProfilerModel> requestResponseHandler = requestProfilerModel =>
+{
+    Log.Information("-------------Request-Begin------------");
+    Log.Information(requestProfilerModel.Request);
+    Log.Information(Environment.NewLine);
+    Log.Information(requestProfilerModel.Response);
+    Log.Information("-------------Request-End------------");
+};
+app.UseMiddleware<RequestLoggingAndErrorHandlerMiddleware>(requestResponseHandler);
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

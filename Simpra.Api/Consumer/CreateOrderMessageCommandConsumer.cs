@@ -43,7 +43,7 @@ namespace Simpra.Api.Consumer
 
             var response = await _orderService.CreateOrderAsync(order, message.UserId, hashedCreditCard);
 
-            Log.Information($"Order ({response.OrderNumber}) is successfully created!");
+            Log.Information($"Order ({response.OrderNumber}) is successfully created with RabbitMQ!");
         }
     }
 }

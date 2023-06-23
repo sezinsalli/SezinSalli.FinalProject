@@ -1,4 +1,6 @@
-﻿namespace Simpra.Schema.UserRR
+﻿using Simpra.Schema.Base;
+
+namespace Simpra.Schema.UserRR
 {
     public class AppUserResponse
     {

@@ -5,8 +5,8 @@ namespace Simpra.Core.Service
 {
     public interface IAuthenticationService
     {
-        Task<TokenResponse> SignIn(TokenRequest request);
-        Task SignOut();
-        Task ChangePassword(string userId, ChangePasswordRequest request);
+        Task<TokenResponse> SignInAsync(TokenRequest request);
+        Task SignOutAsync();
+        Task ChangePasswordAsync(string userId, ChangePasswordRequest request);
     }
 }

@@ -7,13 +7,13 @@ using System.Text.Json;
 
 namespace Simpra.Api.Middleware;
 
-public class RequestLoggingMiddleware
+public class RequestLoggingAndErrorHandlerMiddleware
 {
     private readonly RequestDelegate next;
     private readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager;
     private readonly Action<RequestProfilerModel> requestResponseHandler;
     private const int ReadChunkBufferLength = 4096;
-    public RequestLoggingMiddleware(RequestDelegate next, Action<RequestProfilerModel> requestResponseHandler)
+    public RequestLoggingAndErrorHandlerMiddleware(RequestDelegate next, Action<RequestProfilerModel> requestResponseHandler)
     {
         this.next = next;
         this.requestResponseHandler = requestResponseHandler;
@@ -115,8 +115,6 @@ public class RequestLoggingMiddleware
 
     private void HandleException(Exception ex, HttpContext context)
     {
-        Log.Error(ex, "An unhandled exception occurred");
-
         context.Response.ContentType = "application/json";
 
         var statusCode = ex switch
@@ -126,6 +124,10 @@ public class RequestLoggingMiddleware
             _ => 500
         };
         context.Response.StatusCode = statusCode;
+
+        // Custom exceptionsa zaten loglama yapıyorum.
+        if(statusCode>=500)
+            Log.Error(ex, "An unhandled exception occurred");
 
         var response = CustomResponse<NoContent>.Fail(statusCode, ex.Message);
 
